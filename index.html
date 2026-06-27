@@ -568,8 +568,8 @@
     #bw-webview-wrap.visible { display:flex; }
     #bw-topbar { flex:none; height:var(--titlebar-height); background:#fff; display:flex; align-items:center; padding:0 0.6rem; border-bottom:0.1rem solid rgba(0,0,0,0.12); }
     #bw-urlbar { flex:1; display:flex; align-items:center; overflow:hidden; }
-    #bw-ssl-icon { flex:none; font-family:'gaia-icons'; font-style:normal; font-size:1.2rem; color:#323232; line-height:1; }
-    #bw-url-title { flex:1; font-size:1.2rem; color:rgba(50,50,50,0.8); overflow:hidden; white-space:nowrap; text-overflow:ellipsis; padding-left:0.6rem; }
+    #bw-ssl-icon { flex:none; font-family:'gaia-icons'; font-style:normal; font-size:1.2rem; color:#323232; line-height:1; padding-left:0.4rem; }
+    #bw-url-title { flex:1; font-size:1.2rem; color:rgba(50,50,50,0.8); overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
     #bw-progress { flex:none; height:0.3rem; background:transparent; }
     #bw-progress-fill { height:100%; background:#8000ff; width:0; transition:width 0.4s ease; }
     #bw-iframe { flex:1; border:none; width:100%; background:#fff; }
@@ -1148,8 +1148,8 @@ JAN 1</div>
     <div id="bw-webview-wrap">
       <div id="bw-topbar">
         <div id="bw-urlbar">
-          <span id="bw-ssl-icon"></span>
           <span id="bw-url-title"></span>
+          <span id="bw-ssl-icon"></span>
         </div>
       </div>
       <div id="bw-progress"><div id="bw-progress-fill"></div></div>
@@ -1719,9 +1719,9 @@ async function _bwSearchWeb(query) {
   fill.style.width = '0'; fill.style.transition = '';
   requestAnimationFrame(() => { fill.style.transition = 'width 2s ease'; fill.style.width = '75%'; });
   const _sb3 = document.getElementById('statusbar');
-  _sb3.classList.remove('bw-sb');
-  _sb3.style.background = '#2d2d2d';
-  _sb3.style.color = '#fff';
+  _sb3.classList.add('bw-sb');
+  _sb3.style.background = '';
+  _sb3.style.color = '';
   setSK('Back', '', 'Options', true);
   const bar = document.querySelector('.skbar');
   bar.style.backgroundColor = '#e6e6e6'; bar.style.backgroundImage = 'none'; bar.style.color = '#323232';
@@ -1812,9 +1812,9 @@ function openBwWebView(url) {
     _bwLoadWebFallback(url, iframe, onLoad);
   }
   const _sb = document.getElementById('statusbar');
-  _sb.classList.remove('bw-sb');
-  _sb.style.background = '#2d2d2d';
-  _sb.style.color = '#fff';
+  _sb.classList.add('bw-sb');
+  _sb.style.background = '';
+  _sb.style.color = '';
   setSK('Back', '', 'Options', true);
   const bar = document.querySelector('.skbar');
   bar.style.backgroundColor = '#e6e6e6';
@@ -1833,10 +1833,7 @@ function closeBwWebView() {
   _f.src = 'about:blank';
   document.getElementById('bw-progress-fill').style.width = '0';
   document.querySelectorAll('.bw-el').forEach(el => el.style.display = '');
-  const _sb2 = document.getElementById('statusbar');
-  _sb2.style.background = '';
-  _sb2.style.color = '';
-  _sb2.classList.add('bw-sb');
+  document.getElementById('statusbar').classList.add('bw-sb');
   renderBw();
 }
 
