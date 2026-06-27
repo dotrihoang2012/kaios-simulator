@@ -566,9 +566,9 @@
     .statusbar.bw-sb { background: #fff; color: #333; }
     #bw-webview-wrap { position:absolute; top:var(--statusbar-height); bottom:0; left:0; right:0; z-index:40; display:none; flex-direction:column; background:#fff; }
     #bw-webview-wrap.visible { display:flex; }
-    #bw-topbar { flex:none; height:var(--titlebar-height); background:#fff; display:flex; align-items:center; padding:0 0.6rem; border-top:0.15rem solid rgba(0,0,0,0.1); }
+    #bw-topbar { flex:none; height:var(--titlebar-height); background:#fff; display:flex; align-items:center; padding:0 0.6rem; }
     #bw-urlbar { flex:1; display:flex; align-items:center; overflow:hidden; }
-    #bw-ssl-icon { flex:none; font-family:'gaia-icons'; font-style:normal; font-size:1.2rem; color:#323232; line-height:1; padding-left:0.4rem; }
+    #bw-ssl-icon { flex:none; font-family:'gaia-icons'; font-style:normal; font-size:1.2rem; color:#323232; line-height:1; padding-right:0.3rem; }
     #bw-url-title { flex:none; font-size:1.2rem; color:rgba(50,50,50,0.8); overflow:hidden; white-space:nowrap; text-overflow:ellipsis; max-width:calc(100% - 2rem); }
     #bw-progress { flex:none; height:0.3rem; background:transparent; }
     #bw-progress-fill { height:100%; background:#8000ff; width:0; transition:width 0.4s ease; }
@@ -1148,8 +1148,8 @@ JAN 1</div>
     <div id="bw-webview-wrap">
       <div id="bw-topbar">
         <div id="bw-urlbar">
-          <span id="bw-url-title"></span>
           <span id="bw-ssl-icon"></span>
+          <span id="bw-url-title"></span>
         </div>
       </div>
       <div id="bw-progress"><div id="bw-progress-fill"></div></div>
