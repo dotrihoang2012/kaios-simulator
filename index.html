@@ -1408,11 +1408,11 @@ const BW_WEB_PROXY = 'https://kaios-proxy.dotrihoang2012.workers.dev';
 
 const BW_ICON_PATH = './kaiosrt/gaia/profile/webapps/installed/system/browser/style/img/';
 const BW_TILES = [
-  { icon: BW_ICON_PATH + 'ic_search_internet.png',  label: 'Search Internet' },
-  { icon: BW_ICON_PATH + 'ic_history.png',          label: 'History'         },
-  { icon: BW_ICON_PATH + 'ic_store.png',            label: 'Store'      },
-  { icon: BW_ICON_PATH + 'ic_google_assistant.png', label: 'Assistant'  },
-  { icon: './kaiosrt/gaia/profile/webapps/installed/system/browser/preload/ic_fav_facebook.png', label: 'Facebook', url: 'https://www.facebook.com' },
+  { icon: BW_ICON_PATH + 'ic_search_internet.png',  label: 'Search Internet', builtin: true },
+  { icon: BW_ICON_PATH + 'ic_history.png',          label: 'History',         builtin: true },
+  { icon: BW_ICON_PATH + 'ic_store.png',            label: 'Store',           builtin: true },
+  { icon: BW_ICON_PATH + 'ic_google_assistant.png', label: 'Assistant',       builtin: true },
+  { icon: './kaiosrt/gaia/profile/webapps/installed/system/browser/preload/ic_fav_facebook.png', label: 'Facebook', url: 'https://www.facebook.com', builtin: true },
   { icon: BW_ICON_PATH + 'ic_default.png',          label: ''                },
   { icon: BW_ICON_PATH + 'ic_default.png',          label: ''                },
   { icon: BW_ICON_PATH + 'ic_default.png',          label: ''                },
@@ -1954,7 +1954,7 @@ function _setBwSK() {
   const tile = BW_TILES[bwFocus];
   const isEmpty = !tile || tile.icon.endsWith('ic_default.png');
   const csk = isEmpty ? '' : 'Select';
-  const rsk = isEmpty ? '' : bwFocus === 0 ? `img=${BW_ICON_PATH}ic_google_home.png` : tile.label ? 'Unpin' : '';
+  const rsk = isEmpty ? '' : bwFocus === 0 ? `img=${BW_ICON_PATH}ic_google_home.png` : (!tile.builtin && tile.label) ? 'Unpin' : '';
   setSK('', csk, rsk, false);
   const bar = document.querySelector('.skbar');
   bar.style.backgroundColor = '#e6e6e6';
