@@ -141,9 +141,9 @@
       transition: background 0.2s;
     }
     .skbar.sleep-mode {
-      background: rgba(0,0,0,0.85);
-      background-image: none;
-      color: #fff;
+      background: rgba(0,0,0,0.9) !important;
+      background-image: none !important;
+      color: #fff !important;
     }
     .skbar { z-index: 9999; }
     .sk { font-size: 1.4rem; line-height: var(--softkeybar-height); padding: 0 0.5rem; background: none; border: none; cursor: pointer; color: inherit; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -2975,6 +2975,7 @@ function openSleepMenu() {
   bar.style.backgroundImage = '';
   bar.style.backgroundColor = '';
   bar.style.color = '';
+  bar.style.display = '';
   bar.classList.add('sleep-mode');
   updateSleepFocus();
 }
@@ -3000,6 +3001,7 @@ function closeSleepMenu() {
   _bar.style.backgroundImage = '';
   _bar.style.color = '';
   document.querySelector('.skbar').classList.remove('sleep-mode');
+  if (bwMode === 'web') document.querySelector('.skbar').style.display = 'none';
   restoreSK();
 }
 function setLockSK() {
