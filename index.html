@@ -1379,7 +1379,7 @@ const LAUNCHER_IMG = './kaiosrt/gaia/profile/webapps/installed/launcher/style/im
 const APPS = [
   { id:'settings',  name:'Settings',  icon: ICO.settings },
   { id:'browser',   name:'Internet',  icon: ICO.browser  },
-  { id:'google',    name:'Google',    icon: ICO.google   },
+  { id:'google',    name:'Google',    icon: ICO.google,   url: 'https://www.google.com' },
   { id:'games',     name:'Games',     icon: LAUNCHER_IMG + 'folder_games_56.png',
     type:'folder', apps:[
       { name:'Solitaire',   icon: LAUNCHER_IMG + 'default_app_56.png' },
@@ -1608,6 +1608,9 @@ function openAppView(app) {
     bwFocus = 0;
     hdr.style.display = 'none';
     buildBrowserView();
+  } else if (app.url) {
+    hdr.style.display = 'none';
+    openBwWebView(app.url);
   } else if (app.type === 'folder') {
     folderFocus = 0;
     buildFolderView(app);
@@ -1866,10 +1869,15 @@ function closeBwWebView() {
   _f.src = 'about:blank';
   _bwProgressEnd();
   document.querySelectorAll('.bw-el').forEach(el => el.style.display = '');
-  document.getElementById('statusbar').classList.add('bw-sb');
+  document.getElementById('statusbar').classList.remove('bw-sb');
   document.querySelector('.skbar').style.display = '';
   document.getElementById('bw-nav').classList.remove('visible');
-  renderBw();
+  if (openApp?.id === 'browser') {
+    document.getElementById('statusbar').classList.add('bw-sb');
+    renderBw();
+  } else {
+    goHome();
+  }
 }
 
 let bwZoom = 1.0;
