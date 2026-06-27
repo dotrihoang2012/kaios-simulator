@@ -2962,6 +2962,7 @@ function openSleepMenu() {
   document.getElementById('sm-lock').style.display = isLocked ? 'none' : '';
   sleepFocus = 0;
   document.getElementById('sleep-menu-overlay').classList.add('visible');
+  document.getElementById('bw-webview-wrap').style.visibility = 'hidden';
   document.getElementById('statusbar').classList.remove('bw-sb');
   const bar = document.querySelector('.skbar');
   bar.style.backgroundColor = '';
@@ -2980,6 +2981,7 @@ function updateSleepFocus() {
 }
 function closeSleepMenu() {
   document.getElementById('sleep-menu-overlay').classList.remove('visible');
+  document.getElementById('bw-webview-wrap').style.visibility = '';
   if (view === 'app-open' && openApp?.id === 'browser') {
     document.getElementById('statusbar').classList.add('bw-sb');
   }
