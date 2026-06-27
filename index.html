@@ -1698,10 +1698,7 @@ function _bwUrlFromText(text) {
   if (/^https?:\/\//i.test(text)) return text;
   if (/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\/|$)/.test(text) && !text.includes(' '))
     return 'https://' + text;
-  const engine = isElectron
-    ? 'https://www.google.com/search?q='
-    : 'https://www.bing.com/search?q=';
-  return engine + encodeURIComponent(text);
+  return 'https://www.google.com/search?q=' + encodeURIComponent(text);
 }
 
 function _bwDomain(url) {
@@ -1807,8 +1804,13 @@ function _fetchSuggestions(text) {
   _bwSugTimer = setTimeout(async () => {
     try {
       const sugBase = 'https://suggestqueries.google.com/complete/search?client=firefox&q=' + encodeURIComponent(text);
-      const sugUrl = isElectron ? sugBase : BW_WEB_PROXY + '?url=' + encodeURIComponent(sugBase);
-      const res = await fetch(sugUrl);
+      let res;
+      try {
+        res = await fetch(sugBase);
+        if (!res.ok) throw new Error();
+      } catch {
+        res = await fetch(BW_WEB_PROXY + '?url=' + encodeURIComponent(sugBase));
+      }
       const data = await res.json();
       bwSuggestions = (data[1] || []).slice(0, 6);
     } catch { bwSuggestions = []; }
