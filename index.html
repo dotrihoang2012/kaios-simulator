@@ -2310,8 +2310,8 @@ function pressBack() {
   if (isSleepOpen())               { closeSleepMenu();  return; }
   if (isOMOpen())                  { closeOM();         return; }
   if (view === 'browser-search')   { closeBwSearch();   return; }
-  if (view === 'app-open' && openApp?.id === 'browser' && isBwDialogOpen()) { closeBwDialog(); return; }
-  if (view === 'app-open' && openApp?.id === 'browser' && bwMode === 'web') { closeBwWebView(); return; }
+  if (view === 'app-open' && isBwDialogOpen()) { closeBwDialog(); return; }
+  if (view === 'app-open' && bwMode === 'web') { closeBwWebView(); return; }
   if (view === 'instant-settings') { closeIS();         return; }
   if (view === 'dialer')           { dialerBack();      return; }
   if (view === 'sidemenu')         { goHome();          return; }
@@ -2345,8 +2345,8 @@ function softLeft() {
   if (view === 'home')             { showStub('Notices', 'notifications');   return; }
   if (view === 'sidemenu')         { goHome();                               return; }
   if (view === 'browser-search')   { closeBwSearch();                        return; }
-  if (view === 'app-open' && openApp?.id === 'browser' && isBwDialogOpen()) { closeBwDialog(); return; }
-  if (view === 'app-open' && openApp?.id === 'browser' && bwMode === 'web') { closeBwWebView(); return; }
+  if (view === 'app-open' && isBwDialogOpen()) { closeBwDialog(); return; }
+  if (view === 'app-open' && bwMode === 'web') { closeBwWebView(); return; }
   if (view === 'app-open')         { pressBack();                            return; }
   if (view === 'stub')             { closeStub();                            return; }
   if (view === 'dialer')           { return; }
