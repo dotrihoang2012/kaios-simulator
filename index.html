@@ -570,8 +570,8 @@
     #bw-urlbar { flex:1; display:flex; align-items:center; overflow:hidden; }
     #bw-ssl-icon { flex:none; font-family:'gaia-icons'; font-style:normal; font-size:1.2rem; color:#323232; line-height:1; padding-right:0.3rem; }
     #bw-url-title { flex:none; font-size:1.2rem; color:rgba(50,50,50,0.8); overflow:hidden; white-space:nowrap; text-overflow:ellipsis; max-width:calc(100% - 2rem); }
-    #bw-progress { flex:none; height:0.3rem; background:transparent; }
-    #bw-progress-fill { height:100%; background:#8000ff; width:0; transition:width 0.4s ease; }
+    #bw-progress { flex:none; height:0.6rem; border-radius:0.3rem; overflow:hidden; background:#8c8c8c; }
+    #bw-progress-fill { position:relative; left:-100%; width:100%; height:100%; background:#1cc1c4; transform:translateX(-100%); transition:transform 0ms linear; }
     #bw-iframe { flex:1; border:none; width:100%; background:#fff; }
     #view-bw-search { position:absolute; top:var(--statusbar-height); bottom:0; left:0; right:0; z-index:45; background:#fff; display:none; flex-direction:column; padding-bottom:var(--softkeybar-height); }
     #view-bw-search.visible { display:flex; }
@@ -1716,8 +1716,8 @@ async function _bwSearchWeb(query) {
   document.getElementById('bw-ssl-icon').textContent = '';
   document.getElementById('bw-url-title').textContent = query;
   const fill = document.getElementById('bw-progress-fill');
-  fill.style.width = '0'; fill.style.transition = '';
-  requestAnimationFrame(() => { fill.style.transition = 'width 2s ease'; fill.style.width = '75%'; });
+  fill.style.transition = ''; fill.style.transform = 'translateX(-100%)';
+  requestAnimationFrame(() => { fill.style.transition = 'transform 2s ease'; fill.style.transform = 'translateX(-30%)'; });
   const _sb3 = document.getElementById('statusbar');
   _sb3.classList.add('bw-sb');
   _sb3.style.background = '';
@@ -1797,11 +1797,11 @@ function openBwWebView(url) {
   const fill = document.getElementById('bw-progress-fill');
   const iframe = document.getElementById('bw-iframe');
   // load through allorigins raw proxy directly as iframe src
-  fill.style.width = '0'; fill.style.transition = '';
-  requestAnimationFrame(() => { fill.style.transition = 'width 4s ease'; fill.style.width = '75%'; });
+  fill.style.transition = ''; fill.style.transform = 'translateX(-100%)';
+  requestAnimationFrame(() => { fill.style.transition = 'transform 4s ease'; fill.style.transform = 'translateX(-30%)'; });
   const onLoad = () => {
-    fill.style.transition = 'width 0.3s'; fill.style.width = '100%';
-    setTimeout(() => { fill.style.width = '0'; fill.style.transition = ''; }, 500);
+    fill.style.transition = 'transform 0.3s ease'; fill.style.transform = 'translateX(0%)';
+    setTimeout(() => { fill.style.transition = ''; fill.style.transform = 'translateX(-100%)'; }, 500);
   };
   if (iframe.tagName === 'WEBVIEW') {
     iframe.removeEventListener('did-finish-load', iframe._loadHandler);
@@ -1831,7 +1831,8 @@ function closeBwWebView() {
     _f.removeAttribute('srcdoc');
   }
   _f.src = 'about:blank';
-  document.getElementById('bw-progress-fill').style.width = '0';
+  const _pf = document.getElementById('bw-progress-fill');
+  _pf.style.transition = ''; _pf.style.transform = 'translateX(-100%)';
   document.querySelectorAll('.bw-el').forEach(el => el.style.display = '');
   document.getElementById('statusbar').classList.add('bw-sb');
   renderBw();
