@@ -1806,7 +1806,9 @@ function _fetchSuggestions(text) {
   if (!text) { bwSuggestions = []; renderBwSearch(); return; }
   _bwSugTimer = setTimeout(async () => {
     try {
-      const res = await fetch('https://suggestqueries.google.com/complete/search?client=firefox&q=' + encodeURIComponent(text));
+      const sugBase = 'https://suggestqueries.google.com/complete/search?client=firefox&q=' + encodeURIComponent(text);
+      const sugUrl = isElectron ? sugBase : BW_WEB_PROXY + '?url=' + encodeURIComponent(sugBase);
+      const res = await fetch(sugUrl);
       const data = await res.json();
       bwSuggestions = (data[1] || []).slice(0, 6);
     } catch { bwSuggestions = []; }
