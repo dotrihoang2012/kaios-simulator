@@ -1804,18 +1804,13 @@ function _fetchSuggestions(text) {
   _bwSugTimer = setTimeout(async () => {
     try {
       const sugBase = 'https://suggestqueries.google.com/complete/search?client=firefox&q=' + encodeURIComponent(text);
-      let res;
-      try {
-        res = await fetch(sugBase);
-        if (!res.ok) throw new Error();
-      } catch {
-        res = await fetch(BW_WEB_PROXY + '?url=' + encodeURIComponent(sugBase));
-      }
+      const sugUrl = isElectron ? sugBase : BW_WEB_PROXY + '?url=' + encodeURIComponent(sugBase);
+      const res = await fetch(sugUrl);
       const data = await res.json();
       bwSuggestions = (data[1] || []).slice(0, 6);
     } catch { bwSuggestions = []; }
     renderBwSearch();
-  }, 250);
+  }, 150);
 }
 
 function renderBwSearch() {
