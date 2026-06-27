@@ -570,10 +570,10 @@
     #bw-urlbar { flex:1; display:flex; align-items:center; overflow:hidden; }
     #bw-ssl-icon { flex:none; font-family:'gaia-icons'; font-style:normal; font-size:1.2rem; color:#323232; line-height:1; padding-right:0.3rem; }
     #bw-url-title { flex:none; font-size:1.2rem; color:rgba(50,50,50,0.8); overflow:hidden; white-space:nowrap; text-overflow:ellipsis; max-width:calc(100% - 2rem); }
-    #bw-progress { flex:none; height:0.6rem; border-radius:0.3rem; overflow:hidden; background:#8c8c8c; }
-    #bw-progress-fill { width:100%; height:100%; background:#1cc1c4; transform:translateX(-100%); }
-    #bw-progress-fill.bw-p-in  { animation:bw-p-in  1520ms cubic-bezier(0.3,0,0.4,1) forwards; }
-    #bw-progress-fill.bw-p-out { animation:bw-p-out 1520ms cubic-bezier(0.6,0,0.3,1) forwards; }
+    #bw-progress { flex:none; height:0.3rem; overflow:hidden; background:#e0e0e0; }
+    #bw-progress-fill { width:100%; height:100%; background:#8000ff; transform:translateX(-100%); display:none; }
+    #bw-progress-fill.bw-p-in  { display:block; animation:bw-p-in  1520ms cubic-bezier(0.3,0,0.4,1) forwards; }
+    #bw-progress-fill.bw-p-out { display:block; animation:bw-p-out 1520ms cubic-bezier(0.6,0,0.3,1) forwards; }
     @keyframes bw-p-in  { from{transform:translateX(-100%)} to{transform:translateX(0%)} }
     @keyframes bw-p-out { from{transform:translateX(0%)}    to{transform:translateX(100%)} }
     #bw-iframe { flex:1; border:none; width:100%; background:#fff; }
@@ -1716,7 +1716,6 @@ function _bwProgressEnd() {
   f._pOn = false;
   if (f._pEnd) { f.removeEventListener('animationend', f._pEnd); f._pEnd = null; }
   f.classList.remove('bw-p-in','bw-p-out');
-  f.style.transform = 'translateX(-100%)';
 }
 
 function _bwUrlFromText(text) {
