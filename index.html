@@ -2332,8 +2332,7 @@ function pressBack() {
       setTimeout(() => { pressBack._webBackOnce = false; }, 3000);
     } else {
       pressBack._webBackOnce = false;
-      if (_toastTimer) { clearTimeout(_toastTimer); _toastTimer = null; }
-      document.getElementById('sys-toast').classList.remove('visible');
+      showToast(openApp.name + ' is running in the background');
       closeBwWebView();
     }
     return;
