@@ -2332,7 +2332,6 @@ function pressBack() {
       setTimeout(() => { pressBack._webBackOnce = false; }, 3000);
     } else {
       pressBack._webBackOnce = false;
-      showToast(openApp.name + ' is running in the background');
       closeBwWebView();
     }
     return;
