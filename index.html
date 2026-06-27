@@ -563,7 +563,7 @@
     .oa-sub  { font-size: 1.1rem; color: #999; }
     .oa-skbar { height: var(--softkeybar-height); background: #e6e6e6; border-top: 1px solid #ccc; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; flex-shrink: 0; }
     /* ── BROWSER APP ──────────────────────────────────────── */
-    .statusbar.bw-sb { background: #1a1a1a; color: #fff; }
+    .statusbar.bw-sb { background: #fff; color: #333; }
     #bw-webview-wrap { position:absolute; top:var(--statusbar-height); bottom:0; left:0; right:0; z-index:40; display:none; flex-direction:column; background:#fff; }
     #bw-webview-wrap.visible { display:flex; }
     #bw-topbar { flex:none; height:3.6rem; background:#1a1a1a; display:flex; align-items:center; padding:0 0.8rem; border-bottom:none; }
@@ -1808,7 +1808,10 @@ function openBwWebView(url) {
   } else {
     _bwLoadWebFallback(url, iframe, onLoad);
   }
-  document.getElementById('statusbar').classList.remove('bw-sb');
+  const sb = document.getElementById('statusbar');
+  sb.classList.remove('bw-sb');
+  sb.style.background = '#1a1a1a';
+  sb.style.color = '#fff';
   setSK('Back', '', 'Options', false);
   const bar = document.querySelector('.skbar');
   bar.style.backgroundColor = '#1a1a1a';
@@ -1827,7 +1830,10 @@ function closeBwWebView() {
   _f.src = 'about:blank';
   document.getElementById('bw-progress-fill').style.width = '0';
   document.querySelectorAll('.bw-el').forEach(el => el.style.display = '');
-  document.getElementById('statusbar').classList.add('bw-sb');
+  const _sb = document.getElementById('statusbar');
+  _sb.style.background = '';
+  _sb.style.color = '';
+  _sb.classList.add('bw-sb');
   renderBw();
 }
 
