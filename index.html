@@ -2244,9 +2244,10 @@ function pressRight() {
   if (view === 'app-open' && openApp?.type === 'folder') { return; }
   if (view === 'app-open' && openApp?.id === 'browser') {
     if (isBwDialogOpen()) { if (_bwDialogConfirm) _bwDialogConfirm(); closeBwDialog(); return; }
-    if (bwFocus === 4 && BW_TILES[4]?.label) {
-      openBwDialog('Confirmation', 'Unpin website Facebook?', 'Unpin', () => {
-        BW_TILES[4] = { icon: BW_ICON_PATH + 'ic_default.png', label: '' };
+    const _unpinTile = BW_TILES[bwFocus];
+    if (_unpinTile && !_unpinTile.builtin && _unpinTile.label) {
+      openBwDialog('Confirmation', `Unpin website ${_unpinTile.label}?`, 'Unpin', () => {
+        BW_TILES[bwFocus] = { icon: BW_ICON_PATH + 'ic_default.png', label: '' };
         buildBrowserView();
       });
     }
