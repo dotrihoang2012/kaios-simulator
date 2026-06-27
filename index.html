@@ -686,7 +686,7 @@
       top: 0; left: 0; right: 0;
       bottom: var(--softkeybar-height);
       z-index: 9999;
-      background: rgba(0,0,0,0.85);
+      background: #000;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -2964,7 +2964,6 @@ function openSleepMenu() {
   sleepFocus = 0;
   document.getElementById('sleep-menu-overlay').classList.add('visible');
   document.getElementById('bw-webview-wrap').style.visibility = 'hidden';
-  document.getElementById('view-open-app').style.visibility = 'hidden';
   const _sb = document.getElementById('statusbar');
   _sb.classList.remove('bw-sb');
   _sb.style.background = 'transparent';
@@ -2987,7 +2986,6 @@ function updateSleepFocus() {
 function closeSleepMenu() {
   document.getElementById('sleep-menu-overlay').classList.remove('visible');
   document.getElementById('bw-webview-wrap').style.visibility = '';
-  document.getElementById('view-open-app').style.visibility = '';
   const _sbC = document.getElementById('statusbar');
   _sbC.style.background = '';
   _sbC.style.color = '';
