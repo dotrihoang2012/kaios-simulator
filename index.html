@@ -578,6 +578,11 @@
     @keyframes bw-p-in  { from{transform:translateX(-100%)} to{transform:translateX(0%)} }
     @keyframes bw-p-out { from{transform:translateX(0%)}    to{transform:translateX(100%)} }
     #bw-iframe { flex:1; border:none; width:100%; background:#fff; }
+    #bw-nav { position:absolute; bottom:0; left:0; right:0; pointer-events:none; z-index:5; display:none; }
+    #bw-nav.visible { display:block; }
+    #bw-nav .bw-softkey { display:flex; justify-content:space-between; padding:0 1rem 1rem; }
+    #bw-nav .bw-btn { pointer-events:auto; box-shadow:0 0.2rem 0.4rem 0 rgba(0,0,0,0.5); background:#fff; color:#000; font-size:2.4rem; border-radius:1.2rem; height:2.4rem; width:2.4rem; display:inline-flex; align-items:center; justify-content:center; overflow:hidden; cursor:pointer; }
+    #bw-nav .bw-btn-icon { font-family:'gaia-icons'; font-style:normal; line-height:1; position:relative; margin-top:-0.5rem; }
     #view-bw-search { position:absolute; top:var(--statusbar-height); bottom:0; left:0; right:0; z-index:45; background:#fff; display:none; flex-direction:column; padding-bottom:var(--softkeybar-height); }
     #view-bw-search.visible { display:flex; }
     #bws-searchbar { flex:none; padding:0.5rem 1rem; background:#fff; }
@@ -1159,6 +1164,12 @@ JAN 1</div>
       </div>
       <div id="bw-progress"><div id="bw-progress-fill"></div></div>
       <webview id="bw-iframe" allowpopups disablewebsecurity></webview>
+      <div id="bw-nav">
+        <div class="bw-softkey">
+          <div class="bw-btn" onclick="closeBwWebView()"><span class="bw-btn-icon" data-icon="browser-home"></span></div>
+          <div class="bw-btn" onclick="_bwMenuOpen()"><span class="bw-btn-icon" data-icon="menu"></span></div>
+        </div>
+      </div>
     </div>
 
     <!-- BROWSER SEARCH BAR -->
@@ -1698,6 +1709,10 @@ let bwCurrentUrl = '';
 let bwSearchText = '';
 let bwSearchFocus = 0; // 0=bar, 1=first suggestion, 2=second...
 
+function _bwMenuOpen() {
+  openBwDialog('Options', 'Reload page?', 'Reload', () => { openBwWebView(bwCurrentUrl); });
+}
+
 function _bwProgressStart() {
   document.getElementById('bw-progress').classList.add('bw-p-active');
   const f = document.getElementById('bw-progress-fill');
@@ -1748,9 +1763,8 @@ async function _bwSearchWeb(query) {
   _sb3.classList.add('bw-sb');
   _sb3.style.background = '';
   _sb3.style.color = '';
-  setSK('Back', '', 'Options', true);
-  const bar = document.querySelector('.skbar');
-  bar.style.backgroundColor = '#e6e6e6'; bar.style.backgroundImage = 'none'; bar.style.color = '#323232';
+  document.querySelector('.skbar').style.display = 'none';
+  document.getElementById('bw-nav').classList.add('visible');
 
   const iframe = document.getElementById('bw-iframe');
   const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -1837,11 +1851,8 @@ function openBwWebView(url) {
   _sb.classList.add('bw-sb');
   _sb.style.background = '';
   _sb.style.color = '';
-  setSK('Back', '', 'Options', true);
-  const bar = document.querySelector('.skbar');
-  bar.style.backgroundColor = '#e6e6e6';
-  bar.style.backgroundImage = 'none';
-  bar.style.color = '#323232';
+  document.querySelector('.skbar').style.display = 'none';
+  document.getElementById('bw-nav').classList.add('visible');
 }
 
 function closeBwWebView() {
@@ -1856,6 +1867,8 @@ function closeBwWebView() {
   _bwProgressEnd();
   document.querySelectorAll('.bw-el').forEach(el => el.style.display = '');
   document.getElementById('statusbar').classList.add('bw-sb');
+  document.querySelector('.skbar').style.display = '';
+  document.getElementById('bw-nav').classList.remove('visible');
   renderBw();
 }
 
