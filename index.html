@@ -1698,10 +1698,61 @@ function _bwUrlFromText(text) {
   if (/^https?:\/\//i.test(text)) return text;
   if (/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\/|$)/.test(text) && !text.includes(' '))
     return 'https://' + text;
-  const q = encodeURIComponent(text);
-  return isElectron
-    ? 'https://www.google.com/search?q=' + q
-    : 'https://html.duckduckgo.com/html/?q=' + q;
+  return 'https://www.google.com/search?q=' + encodeURIComponent(text);
+}
+
+function _bwIsSearch(text) {
+  text = text.trim();
+  if (/^https?:\/\//i.test(text)) return false;
+  if (/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\/|$)/.test(text) && !text.includes(' ')) return false;
+  return true;
+}
+
+async function _bwSearchWeb(query) {
+  bwMode = 'web';
+  bwCurrentUrl = 'search:' + query;
+  document.querySelectorAll('.bw-el').forEach(el => el.style.display = 'none');
+  document.getElementById('bw-webview-wrap').classList.add('visible');
+  document.getElementById('bw-ssl-icon').textContent = '';
+  document.getElementById('bw-url-title').textContent = query;
+  const fill = document.getElementById('bw-progress-fill');
+  fill.style.width = '0'; fill.style.transition = '';
+  requestAnimationFrame(() => { fill.style.transition = 'width 2s ease'; fill.style.width = '75%'; });
+  document.getElementById('statusbar').classList.remove('bw-sb');
+  setSK('Back', '', 'Options', false);
+  const bar = document.querySelector('.skbar');
+  bar.style.backgroundColor = '#e6e6e6'; bar.style.backgroundImage = 'none'; bar.style.color = '#323232';
+
+  const iframe = document.getElementById('bw-iframe');
+  const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  try {
+    const apiUrl = 'https://searx.be/search?q=' + encodeURIComponent(query) + '&format=json&categories=general';
+    const res = await fetch(BW_WEB_PROXY + '?url=' + encodeURIComponent(apiUrl));
+    const data = await res.json();
+    const results = (data.results || []).slice(0, 15);
+    iframe.srcdoc = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+      *{box-sizing:border-box;margin:0;padding:0}
+      body{font-family:sans-serif;background:#fff;padding:8px;font-size:13px}
+      .r{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #f0f0f0}
+      .r:last-of-type{border:none}
+      a.t{color:#1a0dab;font-size:14px;font-weight:600;text-decoration:none;display:block;margin-bottom:2px;line-height:1.3}
+      .u{color:#0a7a0a;font-size:11px;margin-bottom:3px;word-break:break-all}
+      .s{color:#444;font-size:12px;line-height:1.4}
+      .pw{text-align:center;color:#bbb;font-size:11px;margin-top:10px;padding-bottom:8px}
+      .none{text-align:center;color:#666;padding:2rem 1rem;font-size:13px}
+    </style></head><body>
+    ${results.length===0 ? '<div class="none">No results found</div>' :
+      results.map(r=>`<div class="r">
+        <a class="t" href="${BW_WEB_PROXY}?url=${encodeURIComponent(r.url)}">${esc(r.title||'')}</a>
+        <div class="u">${esc(r.url||'')}</div>
+        <div class="s">${esc(r.content||'')}</div>
+      </div>`).join('')}
+    <div class="pw">via SearXNG</div></body></html>`;
+  } catch {
+    iframe.srcdoc = `<!DOCTYPE html><html><body style="font-family:sans-serif;text-align:center;padding:2rem;color:#666;font-size:13px">Search failed. Please try again.</body></html>`;
+  }
+  fill.style.transition = 'width 0.3s'; fill.style.width = '100%';
+  setTimeout(() => { fill.style.width = '0'; fill.style.transition = ''; }, 500);
 }
 
 function _bwDomain(url) {
@@ -1785,17 +1836,21 @@ function bwWebKey(k) {
 }
 
 function bwSearchGo() {
-  let url;
+  let text;
   if (bwSearchFocus > 0 && bwSuggestions[bwSearchFocus - 1]) {
-    url = _bwUrlFromText(bwSuggestions[bwSearchFocus - 1]);
+    text = bwSuggestions[bwSearchFocus - 1];
   } else if (bwSearchText) {
-    url = _bwUrlFromText(bwSearchText);
+    text = bwSearchText.trim();
   } else {
     closeBwSearch(); return;
   }
   document.getElementById('view-bw-search').classList.remove('visible');
   view = 'app-open';
-  openBwWebView(url);
+  if (!isElectron && _bwIsSearch(text)) {
+    _bwSearchWeb(text);
+  } else {
+    openBwWebView(_bwUrlFromText(text));
+  }
 }
 
 let bwSuggestions = [];
