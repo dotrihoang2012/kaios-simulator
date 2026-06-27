@@ -1408,15 +1408,15 @@ const BW_WEB_PROXY = 'https://kaios-proxy.dotrihoang2012.workers.dev';
 
 const BW_ICON_PATH = './kaiosrt/gaia/profile/webapps/installed/system/browser/style/img/';
 const BW_TILES = [
-  { icon: BW_ICON_PATH + 'ic_search_internet.png', label: 'Search Internet' },
-  { icon: BW_ICON_PATH + 'ic_history.png',         label: 'History'         },
-  { icon: BW_ICON_PATH + 'ic_store.png',           label: 'Store'           },
-  { icon: BW_ICON_PATH + 'ic_google_assistant.png', label: 'Assistant'       },
-  { icon: './kaiosrt/gaia/profile/webapps/installed/system/browser/preload/ic_fav_facebook.png', label: 'Facebook' },
-  { icon: BW_ICON_PATH + 'ic_default.png',       label: ''                },
-  { icon: BW_ICON_PATH + 'ic_default.png',       label: ''                },
-  { icon: BW_ICON_PATH + 'ic_default.png',       label: ''                },
-  { icon: BW_ICON_PATH + 'ic_default.png',       label: ''                },
+  { icon: BW_ICON_PATH + 'ic_search_internet.png',  label: 'Search Internet' },
+  { icon: BW_ICON_PATH + 'ic_history.png',          label: 'History'         },
+  { icon: BW_ICON_PATH + 'ic_store.png',            label: 'Store',     url: 'https://store.kaiostech.com' },
+  { icon: BW_ICON_PATH + 'ic_google_assistant.png', label: 'Assistant', url: 'https://assistant.google.com' },
+  { icon: './kaiosrt/gaia/profile/webapps/installed/system/browser/preload/ic_fav_facebook.png', label: 'Facebook', url: 'https://www.facebook.com' },
+  { icon: BW_ICON_PATH + 'ic_default.png',          label: ''                },
+  { icon: BW_ICON_PATH + 'ic_default.png',          label: ''                },
+  { icon: BW_ICON_PATH + 'ic_default.png',          label: ''                },
+  { icon: BW_ICON_PATH + 'ic_default.png',          label: ''                },
 ];
 let bwFocus     = 0; // 0–8 flat index into BW_TILES
 let folderFocus = 0; // focused index inside open folder
@@ -2211,7 +2211,12 @@ function pressOK() {
   if (view === 'lock')             { doUnlock();                 return; }
   if (view === 'app-open' && openApp?.type === 'folder')  { return; }
   if (view === 'app-open' && openApp?.id !== 'browser')   { pressBack(); return; }
-  if (view === 'app-open' && openApp?.id === 'browser')   { if (bwFocus === 0) openBwSearch(); return; }
+  if (view === 'app-open' && openApp?.id === 'browser') {
+    if (bwFocus === 0) { openBwSearch(); return; }
+    const tile = BW_TILES[bwFocus];
+    if (tile?.url) { openBwWebView(tile.url); }
+    return;
+  }
   if (view === 'browser-search') { if (bwSearchText) bwSearchGo(); return; }
   if (view === 'instant-settings') {
     if (IS_TILES[isFocus].type === 'volume') {
