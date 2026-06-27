@@ -1498,8 +1498,10 @@ function setSK(l, c, r, dark) {
   setBtn('sk-c', c);
   setBtn('sk-r', r);
   const bar = document.querySelector('.skbar');
-  bar.style.backgroundImage = dark ? 'none' : 'linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.45))';
-  bar.style.color = dark ? '#333' : '#fff';
+  if (!bar.classList.contains('sleep-mode')) {
+    bar.style.backgroundImage = dark ? 'none' : 'linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.45))';
+    bar.style.color = dark ? '#333' : '#fff';
+  }
 }
 
 // ════════════════════════════════════════
@@ -2969,9 +2971,10 @@ function openSleepMenu() {
   _sb.style.background = 'transparent';
   _sb.style.color = '#fff';
   const bar = document.querySelector('.skbar');
-  bar.style.background = 'rgba(0,0,0,0.9)';
-  bar.style.backgroundImage = 'none';
-  bar.style.color = '#fff';
+  bar.style.background = '';
+  bar.style.backgroundImage = '';
+  bar.style.backgroundColor = '';
+  bar.style.color = '';
   bar.classList.add('sleep-mode');
   updateSleepFocus();
 }
@@ -2982,10 +2985,6 @@ function updateSleepFocus() {
   document.getElementById('sm-restart').classList.toggle('focused', isLocked ? sleepFocus === 0 : sleepFocus === 1);
   document.getElementById('sm-power').classList.toggle('focused',   isLocked ? sleepFocus === 1 : sleepFocus === 2);
   setSK('', 'Select', '', false);
-  const _sm_bar = document.querySelector('.skbar');
-  _sm_bar.style.backgroundImage = 'none';
-  _sm_bar.style.background = 'rgba(0,0,0,0.9)';
-  _sm_bar.style.color = '#fff';
 }
 function closeSleepMenu() {
   document.getElementById('sleep-menu-overlay').classList.remove('visible');
