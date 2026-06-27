@@ -1698,7 +1698,10 @@ function _bwUrlFromText(text) {
   if (/^https?:\/\//i.test(text)) return text;
   if (/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\/|$)/.test(text) && !text.includes(' '))
     return 'https://' + text;
-  return 'https://www.google.com/search?q=' + encodeURIComponent(text);
+  const q = encodeURIComponent(text);
+  return isElectron
+    ? 'https://www.google.com/search?q=' + q
+    : 'https://www.google.com/search?q=' + q + '&gbv=1&sei=0';
 }
 
 function _bwDomain(url) {
