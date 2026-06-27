@@ -1814,11 +1814,14 @@ function openBwWebView(url) {
   document.querySelectorAll('.bw-el').forEach(el => el.style.display = 'none');
   const wrap = document.getElementById('bw-webview-wrap');
   wrap.classList.add('visible');
-  document.getElementById('bw-ssl-icon').textContent = url.startsWith('https') ? 'lock' : '';
+  document.getElementById('bw-ssl-icon').textContent = '';
   document.getElementById('bw-url-title').textContent = _bwDomain(url);
   const iframe = document.getElementById('bw-iframe');
   _bwProgressStart();
-  const onLoad = () => { _bwProgressEnd(); };
+  const onLoad = () => {
+    _bwProgressEnd();
+    document.getElementById('bw-ssl-icon').textContent = url.startsWith('https') ? 'lock' : '';
+  };
   if (iframe.tagName === 'WEBVIEW') {
     iframe.removeEventListener('did-finish-load', iframe._loadHandler);
     iframe._loadHandler = onLoad;
