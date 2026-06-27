@@ -1718,8 +1718,11 @@ async function _bwSearchWeb(query) {
   const fill = document.getElementById('bw-progress-fill');
   fill.style.width = '0'; fill.style.transition = '';
   requestAnimationFrame(() => { fill.style.transition = 'width 2s ease'; fill.style.width = '75%'; });
-  document.getElementById('statusbar').classList.remove('bw-sb');
-  setSK('Back', '', 'Options', false);
+  const _sb3 = document.getElementById('statusbar');
+  _sb3.classList.remove('bw-sb');
+  _sb3.style.background = '#2d2d2d';
+  _sb3.style.color = '#fff';
+  setSK('Back', '', 'Options', true);
   const bar = document.querySelector('.skbar');
   bar.style.backgroundColor = '#e6e6e6'; bar.style.backgroundImage = 'none'; bar.style.color = '#323232';
 
@@ -1808,7 +1811,10 @@ function openBwWebView(url) {
   } else {
     _bwLoadWebFallback(url, iframe, onLoad);
   }
-  document.getElementById('statusbar').classList.remove('bw-sb');
+  const _sb = document.getElementById('statusbar');
+  _sb.classList.remove('bw-sb');
+  _sb.style.background = '#2d2d2d';
+  _sb.style.color = '#fff';
   setSK('Back', '', 'Options', true);
   const bar = document.querySelector('.skbar');
   bar.style.backgroundColor = '#e6e6e6';
@@ -1827,7 +1833,10 @@ function closeBwWebView() {
   _f.src = 'about:blank';
   document.getElementById('bw-progress-fill').style.width = '0';
   document.querySelectorAll('.bw-el').forEach(el => el.style.display = '');
-  document.getElementById('statusbar').classList.add('bw-sb');
+  const _sb2 = document.getElementById('statusbar');
+  _sb2.style.background = '';
+  _sb2.style.color = '';
+  _sb2.classList.add('bw-sb');
   renderBw();
 }
 
