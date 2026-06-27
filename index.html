@@ -2964,14 +2964,15 @@ function openSleepMenu() {
   sleepFocus = 0;
   document.getElementById('sleep-menu-overlay').classList.add('visible');
   document.getElementById('bw-webview-wrap').style.visibility = 'hidden';
+  document.getElementById('view-open-app').style.visibility = 'hidden';
   const _sb = document.getElementById('statusbar');
   _sb.classList.remove('bw-sb');
   _sb.style.background = 'transparent';
   _sb.style.color = '#fff';
   const bar = document.querySelector('.skbar');
-  bar.style.backgroundColor = '';
-  bar.style.backgroundImage = '';
-  bar.style.color = '';
+  bar.style.background = 'rgba(0,0,0,0.9)';
+  bar.style.backgroundImage = 'none';
+  bar.style.color = '#fff';
   bar.classList.add('sleep-mode');
   updateSleepFocus();
 }
@@ -2986,12 +2987,17 @@ function updateSleepFocus() {
 function closeSleepMenu() {
   document.getElementById('sleep-menu-overlay').classList.remove('visible');
   document.getElementById('bw-webview-wrap').style.visibility = '';
+  document.getElementById('view-open-app').style.visibility = '';
   const _sbC = document.getElementById('statusbar');
   _sbC.style.background = '';
   _sbC.style.color = '';
   if (view === 'app-open' && (openApp?.id === 'browser' || openApp?.url)) {
     _sbC.classList.add('bw-sb');
   }
+  const _bar = document.querySelector('.skbar');
+  _bar.style.background = '';
+  _bar.style.backgroundImage = '';
+  _bar.style.color = '';
   document.querySelector('.skbar').classList.remove('sleep-mode');
   restoreSK();
 }
