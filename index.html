@@ -715,6 +715,9 @@
       background: #8000ff;
     }
 
+    /* ── System toast (matches #system-toaster) ── */
+    #sys-toast { position:absolute; top:0; left:0; width:100%; background:#323232; color:#fff; text-align:center; font-size:1.4rem; padding:0.8rem 1rem; box-shadow:0 0.3rem 0.5rem rgba(0,0,0,0.4); box-sizing:border-box; z-index:99999; pointer-events:none; transform:translateY(-100%); transition:transform 0.25s ease; display:flex; align-items:center; justify-content:center; min-height:var(--statusbar-height); }
+    #sys-toast.visible { transform:translateY(0); }
     /* ── Volume mode toast (hold #) ── */
     #vol-toast {
       display: none; position: absolute; inset: 0; z-index: 100000;
@@ -1231,6 +1234,7 @@ JAN 1</div>
     </div>
 
     <!-- Volume mode toast (hold #) -->
+    <div id="sys-toast"></div>
     <div id="vol-toast">
       <div id="vol-toast-title">RINGTONES &amp; ALERTS</div>
       <div id="vol-toast-body">
@@ -1711,6 +1715,15 @@ let bwMode = 'home'; // 'home' | 'web'
 let bwCurrentUrl = '';
 let bwSearchText = '';
 let bwSearchFocus = 0; // 0=bar, 1=first suggestion, 2=second...
+
+let _toastTimer = null;
+function showToast(text, timeout) {
+  const el = document.getElementById('sys-toast');
+  el.textContent = text;
+  el.classList.add('visible');
+  if (_toastTimer) clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => { el.classList.remove('visible'); _toastTimer = null; }, timeout || 3000);
+}
 
 function _bwMenuOpen() {
   openBwDialog('Options', 'Reload page?', 'Reload', () => { openBwWebView(bwCurrentUrl); });
@@ -2312,7 +2325,19 @@ function pressBack() {
   if (view === 'browser-search')   { closeBwSearch();   return; }
   if (view === 'app-open' && openApp?.id === 'browser' && isBwDialogOpen()) { closeBwDialog(); return; }
   if (view === 'app-open' && openApp?.id === 'browser' && bwMode === 'web') { closeBwWebView(); return; }
-  if (view === 'app-open' && openApp?.url && bwMode === 'web') { closeBwWebView(); return; }
+  if (view === 'app-open' && openApp?.url && bwMode === 'web') {
+    if (!pressBack._webBackOnce) {
+      pressBack._webBackOnce = true;
+      showToast('Press BACK again to minimize the browser');
+      setTimeout(() => { pressBack._webBackOnce = false; }, 3000);
+    } else {
+      pressBack._webBackOnce = false;
+      if (_toastTimer) { clearTimeout(_toastTimer); _toastTimer = null; }
+      document.getElementById('sys-toast').classList.remove('visible');
+      closeBwWebView();
+    }
+    return;
+  }
   if (view === 'instant-settings') { closeIS();         return; }
   if (view === 'dialer')           { dialerBack();      return; }
   if (view === 'sidemenu')         { goHome();          return; }
