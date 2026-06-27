@@ -686,7 +686,7 @@
       top: 0; left: 0; right: 0;
       bottom: var(--softkeybar-height);
       z-index: 9999;
-      background: #000;
+      background: rgba(0,0,0,0.88);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -2982,6 +2982,10 @@ function updateSleepFocus() {
   document.getElementById('sm-restart').classList.toggle('focused', isLocked ? sleepFocus === 0 : sleepFocus === 1);
   document.getElementById('sm-power').classList.toggle('focused',   isLocked ? sleepFocus === 1 : sleepFocus === 2);
   setSK('', 'Select', '', false);
+  const _sm_bar = document.querySelector('.skbar');
+  _sm_bar.style.backgroundImage = 'none';
+  _sm_bar.style.background = 'rgba(0,0,0,0.9)';
+  _sm_bar.style.color = '#fff';
 }
 function closeSleepMenu() {
   document.getElementById('sleep-menu-overlay').classList.remove('visible');
