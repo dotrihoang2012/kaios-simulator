@@ -1904,8 +1904,8 @@ function bwWebKey(k) {
   if (wv.tagName === 'WEBVIEW') {
     if (k === '1') { bwZoom = Math.max(0.5, bwZoom - 0.1); wv.setZoomFactor(bwZoom); }
     if (k === '3') { bwZoom = Math.min(3.0, bwZoom + 0.1); wv.setZoomFactor(bwZoom); }
-    if (k === '2') wv.executeJavaScript('window.scrollTo({top:0,behavior:"smooth"})');
-    if (k === '0') wv.executeJavaScript('window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"})');
+    if (k === '2') wv.executeJavaScript('window.scrollTo(0,0);document.documentElement.scrollTop=0;document.body.scrollTop=0;');
+    if (k === '0') wv.executeJavaScript('var _h=Math.max(document.body.scrollHeight,document.documentElement.scrollHeight,document.body.offsetHeight,document.documentElement.offsetHeight);window.scrollTo(0,_h);document.documentElement.scrollTop=_h;document.body.scrollTop=_h;');
   } else {
     if (k === '1') { bwZoom = Math.max(0.5, +(bwZoom - 0.1).toFixed(1)); wv.style.transform = `scale(${bwZoom})`; wv.style.transformOrigin = '0 0'; wv.style.width = (100/bwZoom)+'%'; }
     if (k === '3') { bwZoom = Math.min(3.0, +(bwZoom + 0.1).toFixed(1)); wv.style.transform = `scale(${bwZoom})`; wv.style.transformOrigin = '0 0'; wv.style.width = (100/bwZoom)+'%'; }
