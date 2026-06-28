@@ -2870,7 +2870,7 @@ function dialerKey(k) {
 }
 function pressNum(k) {
   if (booting || inputLocked) return;
-  if (view === 'app-open' && openApp?.id === 'browser' && bwMode === 'web') { bwWebKey(k); return; }
+  if (view === 'app-open' && bwMode === 'web') { bwWebKey(k); return; }
   if (view === 'home' || view === 'apps') openDialer(k);
   else if (view === 'dialer') dialerKey(k);
 }
@@ -3131,6 +3131,7 @@ document.addEventListener('keydown', e => {
   }
   // When webview is active, forward keys to it; keep F8/F1/F2/Backspace for simulator
   if (bwMode === 'web' && view === 'app-open') {
+    if (/^[0-9#+*]$/.test(e.key)) { e.preventDefault(); showNumPress(e.key); bwWebKey(e.key); return; }
     const _wv = document.getElementById('bw-iframe');
     if (_wv && _wv.tagName === 'WEBVIEW') {
       if (e.key.length === 1) {
