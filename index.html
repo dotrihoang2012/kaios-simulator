@@ -3129,6 +3129,20 @@ document.addEventListener('keydown', e => {
     if (e.key === 'Enter')      { e.preventDefault(); bwSearchGo();        return; }
     if (e.key.length === 1)     { e.preventDefault(); bwSearchType(e.key); return; }
   }
+  // When webview is active, forward keys to it; keep F8/F1/F2/Backspace for simulator
+  if (bwMode === 'web' && view === 'app-open') {
+    const _wv = document.getElementById('bw-iframe');
+    if (_wv && _wv.tagName === 'WEBVIEW') {
+      if (e.key.length === 1) {
+        _wv.sendInputEvent({ type: 'char', keyCode: e.key }); e.preventDefault(); return;
+      }
+      if (e.key === 'Enter')      { _wv.sendInputEvent({ type: 'keyDown', keyCode: 'Return' });  _wv.sendInputEvent({ type: 'keyUp', keyCode: 'Return' });  e.preventDefault(); return; }
+      if (e.key === 'ArrowUp')    { _wv.sendInputEvent({ type: 'keyDown', keyCode: 'Up' });      _wv.sendInputEvent({ type: 'keyUp', keyCode: 'Up' });      e.preventDefault(); return; }
+      if (e.key === 'ArrowDown')  { _wv.sendInputEvent({ type: 'keyDown', keyCode: 'Down' });    _wv.sendInputEvent({ type: 'keyUp', keyCode: 'Down' });    e.preventDefault(); return; }
+      if (e.key === 'ArrowLeft')  { _wv.sendInputEvent({ type: 'keyDown', keyCode: 'Left' });    _wv.sendInputEvent({ type: 'keyUp', keyCode: 'Left' });    e.preventDefault(); return; }
+      if (e.key === 'ArrowRight') { _wv.sendInputEvent({ type: 'keyDown', keyCode: 'Right' });   _wv.sendInputEvent({ type: 'keyUp', keyCode: 'Right' });   e.preventDefault(); return; }
+    }
+  }
   switch (e.key) {
     case 'ArrowUp':    e.preventDefault(); showArrowPress('up');    nav('up');    break;
     case 'ArrowDown':  e.preventDefault(); showArrowPress('down');  nav('down');  break;
