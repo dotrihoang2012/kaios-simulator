@@ -139,7 +139,6 @@
       background: transparent;
       background-image: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.45));
       color: #fff;
-      transition: background 0.2s;
     }
     .skbar.sleep-mode {
       background: rgba(0,0,0,0.88) !important;
@@ -510,7 +509,7 @@
       display: flex; flex-direction: column;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.22s ease;
+      transition: opacity 0.18s ease;
     }
     #view-open-app.visible { opacity: 1; pointer-events: auto; }
 
@@ -598,12 +597,13 @@
     #bw-dialog-content { padding:1rem; font-size:1.7rem; font-weight:400; color:#323232; background:#fff; }
     #bw-options-menu { position:absolute; top:var(--statusbar-height); bottom:0; left:0; right:0; z-index:60; display:none; }
     #bw-options-menu.visible { display:block; }
-    #bw-options-menu .bw-om-wrap { display:flex; height:100%; flex-direction:column; }
-    #bw-options-menu .bw-om-empty { flex-grow:1; min-height:2.4rem; background:rgba(0,0,0,0.9); }
-    #bw-options-menu .bw-om-content { width:100%; max-height:calc(100% - 2.4rem); }
-    #bw-options-menu .bw-om-header { padding:1.5rem 0 1.2rem; font-weight:400; background:#fff; font-size:1.7rem; color:#323232; text-align:center; line-height:2.3rem; }
-    #bw-options-menu .bw-om-menu { overflow:hidden; max-height:calc(100vh - 13rem); }
-    #bw-options-menu .bw-om-grid { overflow:hidden; background:#fff; }
+    #bw-options-menu .bw-om-wrap { position:relative; height:100%; }
+    #bw-options-menu .bw-om-empty { position:absolute; top:0; left:0; right:0; bottom:3rem; background:rgba(0,0,0,0.9); }
+    #bw-options-menu .bw-om-content { position:absolute; top:2.4rem; bottom:3rem; left:0; right:0; }
+    #bw-options-menu .bw-om-header { position:absolute; top:0; left:0; right:0; padding:1.5rem 0 1.2rem; font-weight:400; background:#fff; font-size:1.7rem; color:#323232; text-align:center; line-height:2.3rem; }
+    #bw-options-menu .bw-om-menu { position:absolute; top:5rem; left:0; right:0; bottom:0; overflow-y:auto; scrollbar-width:none; }
+    #bw-options-menu .bw-om-menu::-webkit-scrollbar { display:none; }
+    #bw-options-menu .bw-om-grid { background:#fff; }
     #bw-options-menu .bw-om-row { display:flex; flex-direction:row; margin:0 0.4rem; }
     #bw-options-menu .bw-om-icon { color:#000; font-size:3.2rem; width:3.8rem; height:3.8rem; line-height:3.8rem; text-align:center; border-radius:1.9rem; margin:0.3rem 1rem; background:rgba(230,230,230,0.5); cursor:pointer; }
     #bw-options-menu .bw-om-icon.focused { background:#8000ff; color:#fff; }
@@ -611,7 +611,7 @@
     #bw-options-menu .bw-om-list-item { min-height:4.8rem; display:flex; align-items:center; background:#fff; color:#323232; }
     #bw-options-menu .bw-om-list-item.focused { background:#8000ff; color:#fff; }
     #bw-options-menu .bw-om-list-item span { font-size:1.7rem; padding:0 1rem; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
-    #bw-options-menu .bw-om-skbar { flex:none; height:3rem; background:#cccccc; display:grid; grid-template-columns:1fr auto 1fr; align-items:center; }
+    #bw-options-menu .bw-om-skbar { position:absolute; bottom:0; left:0; right:0; height:3rem; background:#cccccc; display:grid; grid-template-columns:1fr auto 1fr; align-items:center; }
     #bw-options-menu .bw-om-sk-l,
     #bw-options-menu .bw-om-sk-c,
     #bw-options-menu .bw-om-sk-r { font-size:1.2rem; color:#323232; padding:0 0.8rem; line-height:3rem; font-family:'Open Sans',Arial,sans-serif; }
@@ -732,7 +732,6 @@
       font-size: 1.6rem;
       color: #fff;
       cursor: pointer;
-      transition: background 0.15s;
       background: transparent;
     }
     .sleep-item.focused {
@@ -1229,10 +1228,10 @@ JAN 1</div>
                 <div class="bw-om-icon" data-icon="settings"        data-row="1" data-col="3"></div>
               </div>
             </div>
+            <div class="bw-om-list-item" data-idx="0"><span>Quit</span></div>
+            <div class="bw-om-list-item" data-idx="1"><span>Volume</span></div>
+            <div class="bw-om-list-item" data-idx="2"><span>Show shortcuts tips</span></div>
           </div>
-          <div class="bw-om-list-item" data-idx="0"><span>Quit</span></div>
-          <div class="bw-om-list-item" data-idx="1"><span>Volume</span></div>
-          <div class="bw-om-list-item" data-idx="2"><span>Show shortcuts tips</span></div>
         </div>
         <div class="bw-om-skbar">
           <span class="bw-om-sk-l" onclick="_bwMenuClose()"></span>
@@ -1675,6 +1674,8 @@ function openAppView(app) {
     buildBrowserView();
   } else if (app.url) {
     hdr.style.display = 'none';
+    document.getElementById('oa-icon').style.cssText = '';
+    document.getElementById('oa-name').textContent = '';
     openBwWebView(app.url);
   } else if (app.type === 'folder') {
     folderFocus = 0;
@@ -1814,13 +1815,21 @@ function isBwMenuOpen() {
 
 function _bwMenuOpen() {
   _bwOmRow = 0; _bwOmCol = 0;
+  const om = document.getElementById('bw-options-menu');
+  om.classList.add('visible');
+  const f = document.getElementById('bw-iframe');
+  if (f && f.tagName === 'WEBVIEW') { f.style.pointerEvents = 'none'; try { f.blur(); } catch(e) {} }
+  om.tabIndex = -1; om.focus();
+  const menu = om.querySelector('.bw-om-menu');
+  if (menu) menu.scrollTop = 0;
   _bwMenuRender();
-  document.getElementById('bw-options-menu').classList.add('visible');
   _bwMenuInjectOverlay(true);
 }
 
 function _bwMenuClose() {
   document.getElementById('bw-options-menu').classList.remove('visible');
+  const f = document.getElementById('bw-iframe');
+  if (f && f.tagName === 'WEBVIEW') f.style.pointerEvents = '';
   _bwMenuInjectOverlay(false);
 }
 
@@ -1844,11 +1853,24 @@ function _bwMenuRender() {
   document.querySelectorAll('.bw-om-list-item').forEach(el => {
     el.classList.toggle('focused', _bwOmRow === 2 && +el.dataset.idx === _bwOmCol);
   });
-  document.getElementById('bw-om-title').textContent = _BW_OM[_bwOmRow]?.[_bwOmCol]?.label || '';
+  document.getElementById('bw-om-title').textContent = _bwOmRow === 2 ? 'Options' : (_BW_OM[_bwOmRow]?.[_bwOmCol]?.label || '');
   const skr = document.getElementById('bw-om-sk-r');
   skr.innerHTML = (_bwOmRow === 0 && _bwOmCol === 0)
     ? `<img src="${BW_ICON_PATH}ic_google_home.png" style="height:2rem;width:2rem">`
     : '';
+  const menu = document.querySelector('#bw-options-menu .bw-om-menu');
+  if (menu) {
+    if (_bwOmRow < 2) {
+      menu.scrollTop = 0;
+    } else {
+      const focused = document.querySelector('#bw-options-menu .bw-om-list-item.focused');
+      if (focused) {
+        const fr = focused.getBoundingClientRect(), mr = menu.getBoundingClientRect();
+        if (fr.bottom > mr.bottom) menu.scrollTop += fr.bottom - mr.bottom;
+        else if (fr.top < mr.top) menu.scrollTop = Math.max(0, menu.scrollTop - (mr.top - fr.top));
+      }
+    }
+  }
 }
 
 function _bwMenuNav(dir) {
@@ -2289,6 +2311,7 @@ function buildGrid(keepFocus) {
 // ════════════════════════════════════════
 function nav(dir) {
   if (booting || inputLocked) return;
+  if (isBwMenuOpen()) { _bwMenuNav(dir); return; }
   if (isSleepOpen()) {
     const maxFocus = view === 'lock' ? 1 : 2;
     if (dir === 'up')   { sleepFocus = Math.max(0, sleepFocus - 1); updateSleepFocus(); }
@@ -2304,7 +2327,7 @@ function nav(dir) {
         smFocus = Math.floor(SM_APPS.length / 2);
         document.getElementById('view-home').classList.add('sidemenu-open');
         renderSidemenu();
-        setSK('', 'Open', 'Back', false);
+        setSK('', 'Select', '', false);
         lbl('Sidemenu — ' + SM_APPS[smFocus].name);
       } else if (dir === 'up') {
         openIS();
@@ -2329,7 +2352,7 @@ function nav(dir) {
         else if (dir === 'left')  { volIdx = Math.max(0, volIdx - 1); renderIS(); return; }
         else if (dir === 'right') { volIdx = Math.min(VOL_STEPS.length - 1, volIdx + 1); renderIS(); return; }
       } else {
-        if (dir === 'up')   { if (f < cols) { closeIS(); break; } f -= cols; }
+        if (dir === 'up')   { if (f >= cols) f -= cols; }
         if (dir === 'down') { if (f + cols < regular) f += cols; else f = regular; }
         if (dir === 'left')  { if (f % cols > 0) f--; }
         if (dir === 'right') { if (f % cols < cols - 1 && f + 1 < regular) f++; }
@@ -3137,10 +3160,16 @@ function openSleepMenu() {
   document.getElementById('sm-lock').style.display = isLocked ? 'none' : '';
   sleepFocus = 0;
   document.getElementById('sleep-menu-overlay').classList.add('visible');
-  document.getElementById('bw-webview-wrap').style.visibility = 'hidden';
+  const _inBw = view === 'browser-search' || (view === 'app-open' && (openApp?.id === 'browser' || openApp?.url));
+  if (!_inBw) {
+    document.getElementById('bw-webview-wrap').style.display = 'none';
+    document.getElementById('view-open-app').style.display = 'none';
+    const _bwIframe = document.getElementById('bw-iframe');
+    if (_bwIframe) _bwIframe.style.display = 'none';
+  }
   const _sb = document.getElementById('statusbar');
   _sb.classList.remove('bw-sb');
-  _sb.style.background = 'rgba(0,0,0,0.88)';
+  _sb.style.background = 'transparent';
   _sb.style.color = '#fff';
   const bar = document.querySelector('.skbar');
   bar.style.background = '';
@@ -3161,20 +3190,26 @@ function updateSleepFocus() {
 }
 function closeSleepMenu() {
   document.getElementById('sleep-menu-overlay').classList.remove('visible');
-  document.getElementById('bw-webview-wrap').style.visibility = '';
+  document.getElementById('bw-webview-wrap').style.display = '';
+  document.getElementById('view-open-app').style.display = '';
+  const _bwIframe2 = document.getElementById('bw-iframe');
+  if (_bwIframe2) _bwIframe2.style.display = '';
   const _sbC = document.getElementById('statusbar');
   _sbC.style.background = '';
   _sbC.style.color = '';
-  if (view === 'app-open' && (openApp?.id === 'browser' || openApp?.url)) {
+  if (view === 'browser-search' || (view === 'app-open' && (openApp?.id === 'browser' || openApp?.url))) {
     _sbC.classList.add('bw-sb');
   }
   const _bar = document.querySelector('.skbar');
   _bar.style.background = '';
   _bar.style.backgroundImage = '';
+  _bar.style.backgroundColor = '';
   _bar.style.color = '';
   document.querySelector('.skbar').classList.remove('sleep-mode');
   if (bwMode === 'web') document.querySelector('.skbar').style.display = 'none';
   restoreSK();
+  if (view === 'app-open' && openApp?.id === 'browser' && bwMode === 'home') _setBwSK();
+  if (view === 'browser-search') renderBwSearch();
 }
 function setLockSK() {
   setSK('', '', '', false);
@@ -3184,9 +3219,9 @@ function restoreSK() {
   if (view === 'lock')          setLockSK();
   else if (view === 'home')     setSK('Notices', 'icon:all-apps', 'Contacts', false);
   else if (view === 'apps')     setSK('', 'Select', 'Options', false);
-  else if (view === 'sidemenu') setSK('', 'Open', 'Back', false);
+  else if (view === 'sidemenu') setSK('', 'Select', '', false);
   else if (view === 'app-open' && openApp?.type === 'folder')  setSK('', 'Select', 'Options', false);
-  else if (view === 'app-open' && openApp?.id === 'browser')   setSK('', 'Select', 'Back', false);
+  else if (view === 'app-open' && openApp?.id === 'browser')   setSK('', 'Select', '', false);
   else if (view === 'app-open')                                setSK('', '', 'Back', true);
 }
 function _playPowerVideo(onEnded) {
@@ -3262,6 +3297,7 @@ function doPowerOff() {
     if (inputLocked) { cancelPowerOn(); return; }
     if (_powerTimer) {
       clearTimeout(_powerTimer); _powerTimer = null;
+      if (isSleepOpen()) { closeSleepMenu(); return; }
       if (isBwMenuOpen()) { _bwMenuClose(); return; }
       if (view === 'app-open' && bwMode === 'home' && bwLastUrl) {
         openBwWebView(bwLastUrl);
