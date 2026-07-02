@@ -4,6 +4,8 @@ main.js
 package.json
 package-lock.json
 worker.js
+wrangler.toml
+.wrangler/
 
 # KaiOS runtime binaries (not needed for web)
 kaiosrt/api-daemon/
