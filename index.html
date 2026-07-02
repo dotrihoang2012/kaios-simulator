@@ -116,6 +116,9 @@
       line-height: var(--statusbar-icon-size);
     }
     #sb-wifi.connecting::before { content: none; }
+    .sb-icon-batt { position:relative; }
+    .sb-icon-batt::before { font-family:'gaia-icons'; content:'battery-charging'; font-weight:500; font-style:normal; text-transform:none; text-rendering:optimizeLegibility; position:absolute; inset:0; }
+    .sb-icon-batt::after  { font-family:'gaia-icons'; content:'battery-10';       font-weight:500; font-style:normal; text-transform:none; text-rendering:optimizeLegibility; position:absolute; inset:0; opacity:0.35; }
     #sb-airplane { font-size: calc(var(--statusbar-icon-size) * 1.2); width: calc(var(--statusbar-icon-size) * 1.2); height: calc(var(--statusbar-icon-size) * 1.2); line-height: calc(var(--statusbar-icon-size) * 1.2); }
     .sb-icon--signal {
       width: 2.1rem;
@@ -648,6 +651,40 @@
     #bw-vol-icon::before { font-family:'gaia-icons'; content:attr(data-icon); font-weight:500; font-style:normal; text-transform:none; text-rendering:optimizeLegibility; }
     #bw-vol-num { font-size:2.5rem; font-weight:700; color:#fff; display:none; }
     #bw-vol-label { position:absolute; top:calc(50% + 4.5rem); left:0; right:0; text-align:center; font-size:1.8rem; color:#fff; }
+    /* Browser History */
+    #view-bw-history { position:absolute; top:var(--statusbar-height); left:0; right:0; bottom:var(--softkeybar-height); z-index:50; background:#fff; display:none; flex-direction:column; }
+    #view-bw-history.visible { display:flex; }
+    #bw-hist-title { height:2.7rem; margin:0.7rem 1rem 0.9rem; display:flex; align-items:center; justify-content:center; font-size:2rem; font-weight:600; color:#242424; flex-shrink:0; }
+    #bw-hist-list { flex:1; overflow-y:auto; scrollbar-width:none; }
+    #bw-hist-list::-webkit-scrollbar { display:none; }
+    .bw-hist-section { font-size:1.2rem; color:#888; padding:0.8rem 1rem 0.4rem; font-weight:500; text-transform:uppercase; letter-spacing:0.05em; }
+    .bw-hist-item { display:flex; align-items:center; min-height:5.6rem; padding:0 1rem; gap:1rem; cursor:pointer; }
+    .bw-hist-item.focused { background:#8000ff; }
+    .bw-hist-favicon { width:3.2rem; height:3.2rem; border-radius:50%; background:#f0f0f0; display:flex; align-items:center; justify-content:center; font-size:1.5rem; font-weight:700; color:#555; flex-shrink:0; overflow:hidden; border:1px solid #e0e0e0; box-sizing:border-box; }
+    .bw-hist-item.focused .bw-hist-favicon { background:rgba(255,255,255,0.25); color:#fff; border-color:transparent; }
+    .bw-hist-favicon.has-icon { background:#f0f0f0; }
+    .bw-hist-item.focused .bw-hist-favicon.has-icon { background:rgba(255,255,255,0.25); }
+    .bw-hist-favicon img { width:100%; height:100%; object-fit:cover; display:none; }
+    .bw-hist-favicon.has-icon img { display:block; }
+    .bw-hist-info { flex:1; overflow:hidden; }
+    .bw-hist-title-text { font-size:1.6rem; font-weight:600; color:#323232; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .bw-hist-url-text { font-size:1.3rem; color:#888; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .bw-hist-item.focused .bw-hist-title-text,
+    .bw-hist-item.focused .bw-hist-url-text { color:#fff; }
+    #bw-hist-empty { flex:1; display:none; flex-direction:column; align-items:center; justify-content:center; gap:1rem; }
+    #bw-hist-empty.visible { display:flex; }
+    #bw-hist-empty-icon { width:10rem; height:10rem; background:url('./kaiosrt/gaia/profile/webapps/system/browser/style/img/img_no_website.png') center/contain no-repeat; }
+    #bw-hist-empty-text { font-size:1.6rem; color:#323232; font-weight:400; }
+    /* History clear dialog */
+    #bw-hist-dialog { display:none; position:absolute; top:0; left:0; right:0; bottom:0; z-index:55; flex-direction:column; justify-content:flex-end; }
+    #bw-hist-dialog.visible { display:flex; }
+    #bw-hist-dialog-bg { position:absolute; inset:0; background:rgba(0,0,0,0.85); }
+    #bw-hist-dialog-panel { position:relative; background:#fff; z-index:1; }
+    #bw-hist-dialog-hdr { min-height:3.2rem; display:flex; align-items:center; justify-content:center; font-size:1.5rem; color:#323232; background:#cccccc; }
+    #bw-hist-dialog-body { padding:1.2rem 1rem; font-size:1.6rem; color:#323232; }
+    #bw-hist-dialog-sk { height:var(--softkeybar-height); background:#e6e6e6; display:grid; grid-template-columns:1fr auto 1fr; align-items:center; padding:0 0.8rem; }
+    #bw-hist-dialog-sk span:first-child { text-align:left; font-size:1.4rem; font-weight:600; color:#323232; cursor:pointer; }
+    #bw-hist-dialog-sk span:last-child { text-align:right; font-size:1.4rem; font-weight:600; color:#323232; cursor:pointer; }
     /* Tips badge — mirrors #bw-nav .bw-btn style */
     #bw-tips-badge { display:none; position:absolute; bottom:4rem; right:1rem; background:#fff; border-radius:1.2rem; height:2.4rem; padding:0 0.15rem 0 0.8rem; font-size:1.3rem; font-weight:600; color:#000; align-items:center; gap:0.4rem; z-index:50; box-shadow:0 0.2rem 0.4rem 0 rgba(0,0,0,0.5); pointer-events:none; }
     #bw-tips-badge.visible { display:flex; }
@@ -1155,7 +1192,7 @@
         <span class="sb-icon" id="sb-wifi" data-icon="" style="display:none;overflow:hidden;display:none;align-items:center;justify-content:center">
           <img id="sb-wifi-connecting" src="./kaiosrt/gaia/profile/webapps/system/style/statusbar/images/wifi-connecting.png" style="width:var(--statusbar-icon-size);height:var(--statusbar-icon-size);object-fit:contain;display:none">
         </span>
-        <span class="sb-icon" data-icon="battery-charging"></span>
+        <span class="sb-icon sb-icon-batt"></span>
         <span class="sb-time" id="sb-time">12:00</span>
       </div>
     </div>
@@ -1227,6 +1264,30 @@ JAN 1</div>
       </div>
       <div id="bws-hint">Type in any keyword to search the internet or type in web address to open website.</div>
       <div id="bws-results"></div>
+    </div>
+
+    <!-- BROWSER HISTORY -->
+    <div id="view-bw-history">
+      <div id="bw-hist-title">History</div>
+      <div id="bw-hist-list"></div>
+      <div id="bw-hist-empty">
+        <div id="bw-hist-empty-icon"></div>
+        <span id="bw-hist-empty-text">No websites</span>
+      </div>
+    </div>
+
+    <!-- HISTORY CLEAR DIALOG -->
+    <div id="bw-hist-dialog">
+      <div id="bw-hist-dialog-bg"></div>
+      <div id="bw-hist-dialog-panel">
+        <div id="bw-hist-dialog-hdr">Confirmation</div>
+        <div id="bw-hist-dialog-body">Clear all browsing history?</div>
+        <div id="bw-hist-dialog-sk">
+          <span onclick="_bwHistDialogCancel()">Cancel</span>
+          <span></span>
+          <span onclick="_bwHistDialogClear()">Clear</span>
+        </div>
+      </div>
     </div>
 
     <!-- BROWSER OPTIONS MENU -->
@@ -1936,11 +1997,12 @@ function _bwMenuNav(dir) {
   if (_bwOmRow < 2) {
     if (dir === 'left')  _bwOmCol = (_bwOmCol + 3) % 4;
     if (dir === 'right') _bwOmCol = (_bwOmCol + 1) % 4;
-    if (dir === 'up')    { if (_bwOmRow === 0) { _bwOmRow = 2; _bwOmCol = 2; } else _bwOmRow--; }
+    if (dir === 'up')    { if (_bwOmRow === 0) { _bwOmRow = 2; _bwOmCol = _BW_OM[2].length - 1; } else _bwOmRow--; }
     if (dir === 'down')  { if (_bwOmRow === 1) { _bwOmRow = 2; _bwOmCol = 0; } else _bwOmRow++; }
   } else {
+    const _listMax = _BW_OM[2].length - 1;
     if (dir === 'up')    { if (_bwOmCol === 0) { _bwOmRow = 1; _bwOmCol = 0; } else _bwOmCol--; }
-    if (dir === 'down')  { if (_bwOmCol === 2) { _bwOmRow = 0; _bwOmCol = 0; } else _bwOmCol++; }
+    if (dir === 'down')  { if (_bwOmCol >= _listMax) { _bwOmRow = 0; _bwOmCol = 0; } else _bwOmCol++; }
   }
   _bwMenuRender();
 }
@@ -2028,6 +2090,161 @@ function _bwTipsHide() {
   document.getElementById('bw-tips-badge').classList.remove('visible');
   _BW_OM[2][2] = { label: 'Show shortcuts tips', a: () => { _bwMenuClose(); _bwTipsShow(); } };
   document.querySelectorAll('.bw-om-list-item')[2].querySelector('span').textContent = 'Show shortcuts tips';
+}
+
+// ── Browser History ──
+let bwHistory = JSON.parse(localStorage.getItem('_bwHistory') || '[]');
+let _bwHistFocus = 0;
+let _bwHistFlat = [];
+let _bwHistDialogOpen = false;
+
+function _bwHistSave(url, title) {
+  if (!url || url === 'about:blank' || url.startsWith('search:')) return;
+  bwHistory.unshift({ url, title: title || _bwDomain(url), ts: Date.now() });
+  if (bwHistory.length > 200) bwHistory = bwHistory.slice(0, 200);
+  try { localStorage.setItem('_bwHistory', JSON.stringify(bwHistory)); } catch(e) {}
+}
+
+function isBwHistOpen() {
+  return view === 'browser-history';
+}
+
+function openBwHistory() {
+  view = 'browser-history';
+  _bwHistFocus = 0;
+  _bwHistDialogOpen = false;
+  document.getElementById('bw-webview-wrap').style.display = 'none';
+  document.getElementById('view-bw-history').classList.add('visible');
+  document.getElementById('statusbar').classList.add('bw-sb');
+  document.getElementById('statusbar').style.background = '';
+  document.getElementById('statusbar').style.color = '';
+  document.querySelector('.skbar').style.display = '';
+  _bwHistRender();
+}
+
+function closeBwHistory() {
+  document.getElementById('view-bw-history').classList.remove('visible');
+  document.getElementById('bw-hist-dialog').classList.remove('visible');
+  document.getElementById('bw-webview-wrap').style.display = '';
+  _bwHistDialogOpen = false;
+  view = 'app-open';
+  renderBw();
+}
+
+function _bwHistRender() {
+  const list = document.getElementById('bw-hist-list');
+  const empty = document.getElementById('bw-hist-empty');
+  _bwHistFlat = [];
+  if (bwHistory.length === 0) {
+    list.innerHTML = '';
+    list.style.display = 'none';
+    empty.classList.add('visible');
+    _bwHistRestoreSK();
+    return;
+  }
+  list.style.display = '';
+  empty.classList.remove('visible');
+  _bwHistRestoreSK();
+  const now = Date.now();
+  const todayStart = new Date(); todayStart.setHours(0,0,0,0);
+  const yesterdayStart = new Date(todayStart); yesterdayStart.setDate(yesterdayStart.getDate()-1);
+  const groups = new Map();
+  bwHistory.forEach(h => {
+    const d = new Date(h.ts);
+    let label;
+    if (h.ts >= todayStart.getTime()) label = 'TODAY';
+    else if (h.ts >= yesterdayStart.getTime()) label = 'YESTERDAY';
+    else label = d.toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
+    if (!groups.has(label)) groups.set(label, []);
+    groups.get(label).push(h);
+  });
+  let html = '', idx = 0;
+  groups.forEach((items, label) => {
+    html += `<div class="bw-hist-section">${label}</div>`;
+    items.forEach(h => {
+      const letter = (h.title || h.url || '?')[0].toUpperCase();
+      const bg = _bwHistColor(h.url);
+      let fav = '';
+      try { fav = `https://www.google.com/s2/favicons?domain=${new URL(h.url).hostname}&sz=32`; } catch(e) {}
+      _bwHistFlat.push(h);
+      html += `<div class="bw-hist-item" data-idx="${idx}">
+        <div class="bw-hist-favicon" style="background:${bg};color:#fff">
+          ${fav ? `<img src="${fav}" onload="this.parentElement.classList.add('has-icon');this.nextElementSibling.style.display='none'" onerror="this.remove()">` : ''}
+          <span>${letter}</span>
+        </div>
+        <div class="bw-hist-info">
+          <div class="bw-hist-title-text">${_bwHE(h.title||h.url)}</div>
+          <div class="bw-hist-url-text">${_bwHE(h.url)}</div>
+        </div></div>`;
+      idx++;
+    });
+  });
+  list.innerHTML = html;
+  _bwHistUpdateFocus();
+}
+
+function _bwHistColor(url) {
+  let h = 0; for (let i=0;i<url.length;i++) h=(h*31+url.charCodeAt(i))>>>0;
+  const hues = [200,120,280,30,0,160,340];
+  return `hsl(${hues[h%hues.length]},60%,45%)`;
+}
+
+function _bwHE(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function _bwHistUpdateFocus() {
+  document.querySelectorAll('#bw-hist-list .bw-hist-item').forEach((el,i) => {
+    el.classList.toggle('focused', i === _bwHistFocus);
+  });
+  const f = document.querySelector('#bw-hist-list .bw-hist-item.focused');
+  if (f) f.scrollIntoView({ block:'nearest' });
+}
+
+function _bwHistNav(dir) {
+  if (dir === 'up') _bwHistFocus = Math.max(0, _bwHistFocus-1);
+  else if (dir === 'down') _bwHistFocus = Math.min(_bwHistFlat.length-1, _bwHistFocus+1);
+  _bwHistUpdateFocus();
+}
+
+function _bwHistGo() {
+  const item = _bwHistFlat[_bwHistFocus];
+  if (!item) return;
+  closeBwHistory();
+  openBwWebView(item.url);
+}
+
+function _bwHistClearAll() {
+  document.getElementById('bw-hist-dialog').classList.add('visible');
+  _bwHistDialogOpen = true;
+  setSK('Cancel', '', 'Clear', false);
+  const bar = document.querySelector('.skbar');
+  bar.style.backgroundColor = '#e6e6e6';
+  bar.style.backgroundImage = 'none';
+  bar.style.color = '#323232';
+}
+
+function _bwHistDialogCancel() {
+  document.getElementById('bw-hist-dialog').classList.remove('visible');
+  _bwHistDialogOpen = false;
+  _bwHistRestoreSK();
+}
+
+function _bwHistDialogClear() {
+  bwHistory = [];
+  try { localStorage.removeItem('_bwHistory'); } catch(e) {}
+  document.getElementById('bw-hist-dialog').classList.remove('visible');
+  _bwHistDialogOpen = false;
+  _bwHistRender();
+}
+
+function _bwHistRestoreSK() {
+  if (bwHistory.length === 0) setSK('Cancel', '', '', false);
+  else setSK('Cancel', 'GO', 'Clear All', false);
+  const bar = document.querySelector('.skbar');
+  bar.style.backgroundColor = '#e6e6e6';
+  bar.style.backgroundImage = 'none';
+  bar.style.color = '#323232';
 }
 
 function _bwNavBack() {
@@ -2168,6 +2385,10 @@ function openBwWebView(url) {
   const onLoad = () => {
     _bwProgressEnd();
     document.getElementById('bw-ssl-icon').textContent = url.startsWith('https') ? 'lock' : '';
+    let title = _bwDomain(url);
+    try { if (iframe.tagName === 'WEBVIEW') title = iframe.getTitle() || title;
+          else title = iframe.contentDocument?.title || title; } catch(e) {}
+    _bwHistSave(url, title);
   };
   if (iframe.tagName === 'WEBVIEW') {
     iframe.removeEventListener('did-finish-load', iframe._loadHandler);
@@ -2456,6 +2677,7 @@ function buildGrid(keepFocus) {
 function nav(dir) {
   if (booting || inputLocked) return;
   if (isBwMenuOpen()) { _bwMenuNav(dir); return; }
+  if (isBwHistOpen()) { if (!_bwHistDialogOpen) _bwHistNav(dir); return; }
   if (isBwShareOpen()) { _bwShareNav(dir); return; }
   if (isBwVolOpen()) {
     if (dir === 'up')   { _bwVolAdj(+1); return; }
@@ -2620,6 +2842,7 @@ function pressOK() {
   }
   if (isOMOpen())                  { selectOM();                 return; }
   if (isBwMenuOpen())              { _bwMenuSelect();            return; }
+  if (isBwHistOpen())              { if (_bwHistDialogOpen) return; if (bwHistory.length) _bwHistGo(); return; }
   if (isBwShareOpen())             { _bwShareSelect();           return; }
   if (isBwVolOpen())               { _bwVolClose();              return; }
   if (view === 'home')             { showApps();                 return; }
@@ -2631,6 +2854,7 @@ function pressOK() {
   if (view === 'app-open' && openApp?.id !== 'browser' && !openApp?.url && openApp?.type !== 'folder') { return; }
   if (view === 'app-open' && openApp?.id === 'browser') {
     if (bwFocus === 0) { openBwSearch(); return; }
+    if (bwFocus === 1) { openBwHistory(); return; }
     const tile = BW_TILES[bwFocus];
     if (tile?.url) { openBwWebView(tile.url); }
     return;
@@ -2657,6 +2881,7 @@ function pressRight() {
   if (isBwShareOpen())     { return; }
   if (isBwVolOpen())       { return; }
   if (view === 'home')     { return; }
+  if (isBwHistOpen())               { if (_bwHistDialogOpen) { _bwHistDialogClear(); return; } if (bwHistory.length) _bwHistClearAll(); return; }
   if (view === 'dialer')            { openDialerOM();      return; }
   if (view === 'apps' && isMoving)  { exitMoveMode(true);  return; }
   if (view === 'apps' && !isMoving) { openOptionMenu();    return; }
@@ -2683,6 +2908,7 @@ function pressBack() {
   if (isSleepOpen())               { closeSleepMenu();  return; }
   if (isOMOpen())                  { closeOM();         return; }
   if (isBwMenuOpen())              { _bwMenuClose();    return; }
+  if (isBwHistOpen())              { if (_bwHistDialogOpen) { _bwHistDialogCancel(); return; } closeBwHistory(); return; }
   if (isBwShareOpen())             { _bwShareClose();   return; }
   if (isBwVolOpen())               { _bwVolClose();     return; }
   if (view === 'browser-search')   { closeBwSearch();   return; }
@@ -2725,6 +2951,7 @@ function softLeft() {
   if (isBwMenuOpen())              { _bwMenuClose();                         return; }
   if (isBwShareOpen())             { _bwShareClose();                        return; }
   if (isBwVolOpen())               { _bwVolClose();                          return; }
+  if (isBwHistOpen())              { if (_bwHistDialogOpen) { _bwHistDialogCancel(); return; } closeBwHistory(); return; }
   if (view === 'home')             { showStub('Notices', 'notifications');   return; }
   if (view === 'browser-search')   { closeBwSearch();                        return; }
   if (view === 'app-open' && openApp?.id === 'browser' && isBwDialogOpen()) { closeBwDialog(); return; }
@@ -3344,7 +3571,7 @@ function closeSleepMenu() {
   if (_isStub) {
     _sb.style.background = '#fff';
     _sb.style.color = '#000';
-  } else if (view === 'browser-search' || (view === 'app-open' && (openApp?.id === 'browser' || openApp?.url))) {
+  } else if (view === 'browser-search' || view === 'browser-history' || (view === 'app-open' && (openApp?.id === 'browser' || openApp?.url))) {
     _sb.classList.add('bw-sb');
   } else {
     _sb.style.background = '';
@@ -3378,6 +3605,7 @@ function restoreSK() {
   }
   else if (view === 'app-open')                                setSK('', '', 'Back', true);
   else if (view === 'dialer')                                  setSK('Contacts', 'Call', 'Options', false);
+  else if (view === 'browser-history')                         _bwHistRestoreSK();
   else                                                         setSK('', '', '', false);
 }
 function _playPowerVideo(onEnded) {
