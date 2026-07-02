@@ -141,8 +141,13 @@
       color: #fff;
     }
     .skbar.sleep-mode {
-      background: rgba(0,0,0,0.88) !important;
+      background: transparent !important;
       background-image: none !important;
+      color: #fff !important;
+    }
+    .skbar.sleep-mode #sk-c { font-weight: 700 !important; color: #fff !important; }
+    .statusbar.pm-open {
+      background: transparent !important;
       color: #fff !important;
     }
     .skbar { z-index: 9999; }
@@ -559,7 +564,7 @@
       font-size: 1.7rem;
       color: #fff;
     }
-    .oa-header { height: var(--statusbar-height); display: flex; align-items: center; padding: 0 1rem; color: #fff; font-size: 1.4rem; font-weight: 700; flex-shrink: 0; background: var(--header-purple-background); }
+    .oa-header { height: var(--statusbar-height); display: flex; align-items: center; padding: 0 1rem; color: #fff; font-size: 1.4rem; font-weight: 700; flex-shrink: 0; background: #000; }
     .oa-body { flex: 1; background: #f4f4f4; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; }
     .oa-icon { width: 7rem; height: 7rem; border-radius: 22%; display: flex; align-items: center; justify-content: center; font-size: 3.2rem; box-shadow: 0 .4rem 1.6rem rgba(0,0,0,.2); }
     .oa-name { font-size: 1.8rem; color: #333; }
@@ -620,6 +625,33 @@
     #bw-options-menu .bw-om-sk-c { font-weight:700; text-align:center; font-size:1.6rem; text-transform:uppercase; letter-spacing:0.05em; }
     #bw-options-menu .bw-om-sk-l { text-align:left; }
     #bw-options-menu .bw-om-sk-r { text-align:right; display:flex; align-items:center; justify-content:flex-end; padding-right:0.6rem; }
+    /* Share panel — same structure as #option-menu */
+    #bw-share-menu { display:none; position:absolute; top:var(--statusbar-height); bottom:0; left:0; right:0; z-index:70; flex-direction:column; justify-content:flex-end; }
+    #bw-share-menu.visible { display:flex; }
+    #bw-share-bg { position:absolute; inset:0; background:rgba(0,0,0,0.85); }
+    #bw-share-panel { position:relative; background:#fff; z-index:1; }
+    #bw-share-hdr { min-height:3.2rem; display:flex; align-items:center; justify-content:center; font-size:1.5rem; color:#323232; background:#cccccc; }
+    .bw-share-item { min-height:4.8rem; display:flex; align-items:center; padding:0 1rem; font-size:1.6rem; color:#323232; box-sizing:border-box; }
+    .bw-share-item.focused { background:#8000ff; color:#fff; }
+    #bw-share-sk { height:var(--softkeybar-height); background:#e6e6e6; display:grid; grid-template-columns:1fr auto 1fr; align-items:center; position:relative; z-index:1; }
+    #bw-share-sk span { font-size:1.4rem; color:#323232; padding:0 0.5rem; font-family:'Open Sans',Arial,sans-serif; font-weight:600; }
+    #bw-share-sk span:nth-child(2) { text-align:center; font-size:1.6rem; font-weight:700; text-transform:uppercase; }
+    #bw-share-sk span:last-child { text-align:right; }
+    /* Media volume overlay */
+    /* Media volume overlay — exact same structure as #vol-toast */
+    #bw-vol-ov { display:none; position:absolute; inset:0; z-index:100001; flex-direction:column; align-items:center; background:rgba(0,0,0,0.85); pointer-events:none; }
+    #bw-vol-ov.visible { display:flex; }
+    #bw-vol-title { position:absolute; top:4rem; left:2rem; right:2rem; font-size:2.4rem; font-weight:700; color:#fff; text-align:left; line-height:1.2; text-transform:uppercase; z-index:1; }
+    #bw-vol-body { position:relative; flex:1; width:100%; padding-top:var(--statusbar-height); box-sizing:border-box; }
+    #bw-vol-circle { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); border-radius:50%; background:linear-gradient(45deg,#3822FF 0%,#AB00C7 100%); display:flex; align-items:center; justify-content:center; transition:width 0.15s,height 0.15s; }
+    #bw-vol-icon { font-size:4.8rem; line-height:6rem; height:6rem; color:#fff; }
+    #bw-vol-icon::before { font-family:'gaia-icons'; content:attr(data-icon); font-weight:500; font-style:normal; text-transform:none; text-rendering:optimizeLegibility; }
+    #bw-vol-num { font-size:2.5rem; font-weight:700; color:#fff; display:none; }
+    #bw-vol-label { position:absolute; top:calc(50% + 4.5rem); left:0; right:0; text-align:center; font-size:1.8rem; color:#fff; }
+    /* Tips badge — mirrors #bw-nav .bw-btn style */
+    #bw-tips-badge { display:none; position:absolute; bottom:4rem; right:1rem; background:#fff; border-radius:1.2rem; height:2.4rem; padding:0 0.15rem 0 0.8rem; font-size:1.3rem; font-weight:600; color:#000; align-items:center; gap:0.4rem; z-index:50; box-shadow:0 0.2rem 0.4rem 0 rgba(0,0,0,0.5); pointer-events:none; }
+    #bw-tips-badge.visible { display:flex; }
+    #bw-tips-dot { width:2rem; height:2rem; border-radius:50%; background:#e00; display:inline-flex; align-items:center; justify-content:center; color:#fff; font-size:1.8rem; font-weight:400; line-height:1; }
     #bws-placeholder { flex:1; color:#8c8c8c; font-size:1.5rem; overflow:hidden; white-space:nowrap; margin-left:0; line-height:3rem; }
     #bws-text { flex:0 1 auto; overflow:hidden; white-space:nowrap; color:#323232; }
     #bws-cursor { flex:none; display:block; width:1px; height:2rem; background:#000; animation:blink 1s step-end infinite; }
@@ -707,40 +739,21 @@
     #lock-unlock i { font-size: 1.6rem; }
 
     /* ── Sleep menu (hold power) ── */
-    #sleep-menu-overlay {
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      bottom: var(--softkeybar-height);
-      z-index: 9999;
-      background: rgba(0,0,0,0.88);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 1rem;
-      display: none;
-      pointer-events: none;
+    #power-menu {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 99998; background: rgba(0,0,0,0.88);
+      display: none; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 1rem; pointer-events: none;
     }
-    #sleep-menu-overlay.visible {
-      display: flex;
-      pointer-events: auto;
-    }
+    #power-menu.visible { display: flex; pointer-events: auto; }
     .sleep-item {
-      width: 22rem;
-      min-height: 3.6rem;
-      border-radius: 10rem;
-      display: flex;
-      align-items: center;
-      font-weight: 600;
-      justify-content: center;
-      font-size: 1.6rem;
-      color: #fff;
-      cursor: pointer;
-      background: transparent;
+      width: 22rem; min-height: 3.6rem; border-radius: 10rem;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 600; font-size: 1.6rem; color: #fff;
+      cursor: pointer; background: transparent;
     }
-    .sleep-item.focused {
-      background: #8000ff;
-    }
+    .sleep-item.focused { background: #8000ff; }
 
     /* ── System toast (matches #system-toaster) ── */
     #sys-toast { position:absolute; top:0; left:0; width:100%; background:#323232; color:#fff; text-align:center; font-size:1.4rem; padding:0.8rem 1rem; box-shadow:0 0.3rem 0.5rem rgba(0,0,0,0.4); box-sizing:border-box; z-index:99999; pointer-events:none; transform:translateY(-100%); transition:transform 0.25s ease; display:flex; align-items:center; justify-content:center; min-height:var(--statusbar-height); }
@@ -899,6 +912,13 @@
       color: #fff; letter-spacing: .15rem;
       min-height: 3.3rem;
       white-space: nowrap; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    #dialer-cursor {
+      display: inline-block; width: 1px; height: 2.4rem;
+      background: #fff;
+      animation: blink 1s step-end infinite;
+      margin-left: 1px; flex-shrink: 0;
     }
     .dialer-info { font-size: 1.3rem; color: rgba(255,255,255,.5); min-height: 1.5rem; margin-top: .3rem; }
     .dialer-body {
@@ -932,7 +952,6 @@
       font-size: 1.5rem;
       color: #323232;
       background: #cccccc;
-      border-bottom: 1px solid #ccc;
     }
     .om-item {
       min-height: 4.8rem;
@@ -941,10 +960,8 @@
       padding: 0.5rem 1rem;
       font-size: 1.6rem;
       color: #323232;
-      border-bottom: 1px solid #e6e6e6;
       box-sizing: border-box;
     }
-    .om-item:last-child { border-bottom: none; }
     .om-item.focused { background: #8000ff; color: #fff; }
 
     /* ── Boot logo — initlogo.css ── */
@@ -1235,7 +1252,7 @@ JAN 1</div>
             </div>
             <div class="bw-om-list-item" data-idx="0"><span>Quit</span></div>
             <div class="bw-om-list-item" data-idx="1"><span>Volume</span></div>
-            <div class="bw-om-list-item" data-idx="2"><span>Show shortcuts tips</span></div>
+            <div class="bw-om-list-item" data-idx="2"><span>Hide shortcuts tips</span></div>
           </div>
         </div>
         <div class="bw-om-skbar">
@@ -1245,6 +1262,36 @@ JAN 1</div>
         </div>
       </div>
     </div>
+
+    <!-- Browser Share Panel -->
+    <div id="bw-share-menu">
+      <div id="bw-share-bg" onclick="_bwShareClose()"></div>
+      <div id="bw-share-panel">
+        <div id="bw-share-hdr">Share</div>
+        <div class="bw-share-item" data-idx="0">Messages</div>
+        <div class="bw-share-item" data-idx="1">E-Mail</div>
+      </div>
+      <div id="bw-share-sk">
+        <span onclick="_bwShareClose()">Cancel</span>
+        <span onclick="_bwShareSelect()">SELECT</span>
+        <span></span>
+      </div>
+    </div>
+
+    <!-- Media Volume Overlay -->
+    <div id="bw-vol-ov">
+      <div id="bw-vol-title">MEDIA</div>
+      <div id="bw-vol-body">
+        <div id="bw-vol-circle">
+          <i id="bw-vol-icon" data-icon="sound-max"></i>
+          <span id="bw-vol-num"></span>
+        </div>
+        <div id="bw-vol-label"></div>
+      </div>
+    </div>
+
+    <!-- Tips Badge -->
+    <div id="bw-tips-badge">Tips <span id="bw-tips-dot">#</span></div>
 
     <!-- INSTANT SETTINGS (ArrowUp from home) -->
     <div id="view-is">
@@ -1258,7 +1305,7 @@ JAN 1</div>
     <!-- DIALER (number key from home/apps) -->
     <div id="view-dialer">
       <div class="dialer-top">
-        <div class="dialer-number" id="dialer-number">&nbsp;</div>
+        <div class="dialer-number" id="dialer-number"><span id="dialer-num-text"></span><span id="dialer-cursor"></span></div>
         <div class="dialer-info" id="dialer-info"></div>
       </div>
       <div class="dialer-body">
@@ -1314,7 +1361,7 @@ JAN 1</div>
     </div>
 
     <!-- Sleep menu overlay (hold power) -->
-    <div id="sleep-menu-overlay">
+    <div id="power-menu">
       <div class="sleep-item" id="sm-lock">Lock</div>
       <div class="sleep-item" id="sm-restart">Restart</div>
       <div class="sleep-item" id="sm-power">Power off</div>
@@ -1697,6 +1744,9 @@ function openAppView(app) {
     _stubBar.style.backgroundColor = '#e6e6e6';
     _stubBar.style.backgroundImage = 'none';
     _stubBar.style.color = '#323232';
+    const _stubSb = document.getElementById('statusbar');
+    _stubSb.style.background = '#fff';
+    _stubSb.style.color = '#000';
     lbl('Open: ' + app.name);
   }
   document.getElementById('view-open-app').classList.add('visible');
@@ -1806,15 +1856,15 @@ const _BW_OM = [
     { label: 'Refresh',         a: () => { _bwMenuClose(); if (bwMode === 'web') openBwWebView(bwCurrentUrl); } },
   ],
   [
-    { label: 'Minimize',        a: () => { _bwMenuClose(); _bwCloseWebviewCommon(); goHome(); } },
-    { label: 'Share',           a: () => { _bwMenuClose(); } },
+    { label: 'Minimize',        a: () => { _bwMenuClose(); if(bwCurrentUrl) bwLastUrl=bwCurrentUrl; _bwCloseWebviewCommon(); goHome(); } },
+    { label: 'Share',           a: () => { _bwMenuClose(); _bwShareOpen(); } },
     { label: 'Pin To',          a: () => { _bwMenuClose(); } },
     { label: 'Settings',        a: () => { _bwMenuClose(); } },
   ],
   [
-    { label: 'Quit',            a: () => { _bwMenuClose(); _bwCloseWebviewCommon(); goHome(); } },
-    { label: 'Volume',          a: () => { _bwMenuClose(); } },
-    { label: 'Show shortcuts tips', a: () => { _bwMenuClose(); } },
+    { label: 'Quit',            a: () => { _bwMenuClose(); bwLastUrl=''; _bwCloseWebviewCommon(); goHome(); } },
+    { label: 'Volume',          a: () => { _bwMenuClose(); _bwVolOpen(); } },
+    { label: 'Hide shortcuts tips', a: () => { _bwMenuClose(); _bwTipsHide(); } },
   ]
 ];
 
@@ -1904,6 +1954,80 @@ function _bwMenuVoice() {
     _bwMenuClose();
     openBwWebView('https://www.google.com/webhp?hl=en');
   }
+}
+
+// ── Share panel ──
+let _bwShareFocus = 0;
+function isBwShareOpen() { return document.getElementById('bw-share-menu').classList.contains('visible'); }
+function _bwShareOpen() {
+  _bwShareFocus = 0; _bwShareRender();
+  document.getElementById('bw-share-menu').classList.add('visible');
+}
+function _bwShareClose() { document.getElementById('bw-share-menu').classList.remove('visible'); }
+function _bwShareRender() {
+  document.querySelectorAll('.bw-share-item').forEach((el, i) => el.classList.toggle('focused', i === _bwShareFocus));
+}
+function _bwShareNav(dir) {
+  if (dir === 'up')   _bwShareFocus = Math.max(0, _bwShareFocus - 1);
+  if (dir === 'down') _bwShareFocus = Math.min(1, _bwShareFocus + 1);
+  _bwShareRender();
+}
+function _bwShareSelect() { _bwShareClose(); }
+
+// ── Media Volume ──
+let _mediaVolIdx = 8;
+const MEDIA_VOL_MAX = 15;
+let _bwVolTimer = null;
+function isBwVolOpen() { return document.getElementById('bw-vol-ov').classList.contains('visible'); }
+function _bwVolOpen() {
+  document.getElementById('bw-vol-ov').classList.add('visible');
+  _bwVolRender();
+}
+function _bwVolClose() {
+  document.getElementById('bw-vol-ov').classList.remove('visible');
+  if (_bwVolTimer) { clearTimeout(_bwVolTimer); _bwVolTimer = null; }
+}
+function _bwVolRender() {
+  const circle = document.getElementById('bw-vol-circle');
+  const icon   = document.getElementById('bw-vol-icon');
+  const num    = document.getElementById('bw-vol-num');
+  const label  = document.getElementById('bw-vol-label');
+  if (_mediaVolIdx === 0) {
+    circle.style.width = circle.style.height = '6rem';
+    icon.style.display = '';
+    icon.dataset.icon  = 'mute-32px';
+    num.style.display  = 'none';
+    label.textContent  = 'Silent';
+  } else {
+    // level 1 → 7rem, level 15 → 21rem (tăng đều 1rem/nấc, luôn lớn hơn silent 6rem)
+    const size = (_mediaVolIdx + 6) + 'rem';
+    circle.style.width = circle.style.height = size;
+    icon.style.display = 'none';
+    num.style.display  = 'inline';
+    num.textContent    = _mediaVolIdx + '/' + MEDIA_VOL_MAX;
+    label.textContent  = '';
+  }
+  if (_bwVolTimer) clearTimeout(_bwVolTimer);
+  _bwVolTimer = setTimeout(_bwVolClose, 3000);
+}
+function _bwVolAdj(delta) {
+  _mediaVolIdx = Math.max(0, Math.min(MEDIA_VOL_MAX, _mediaVolIdx + delta));
+  _bwVolRender();
+}
+
+// ── Tips badge ──
+let _bwTipsVisible = true;
+function _bwTipsShow() {
+  _bwTipsVisible = true;
+  document.getElementById('bw-tips-badge').classList.add('visible');
+  _BW_OM[2][2] = { label: 'Hide shortcuts tips', a: () => { _bwMenuClose(); _bwTipsHide(); } };
+  document.querySelectorAll('.bw-om-list-item')[2].querySelector('span').textContent = 'Hide shortcuts tips';
+}
+function _bwTipsHide() {
+  _bwTipsVisible = false;
+  document.getElementById('bw-tips-badge').classList.remove('visible');
+  _BW_OM[2][2] = { label: 'Show shortcuts tips', a: () => { _bwMenuClose(); _bwTipsShow(); } };
+  document.querySelectorAll('.bw-om-list-item')[2].querySelector('span').textContent = 'Show shortcuts tips';
 }
 
 function _bwNavBack() {
@@ -2030,6 +2154,7 @@ function _bwLoadWebFallback(url, iframe, onLoad) {
 
 
 function openBwWebView(url) {
+  if (_bwTipsVisible) document.getElementById('bw-tips-badge').classList.add('visible');
   bwMode = 'web';
   bwCurrentUrl = url;
   bwZoom = 1.0;
@@ -2061,6 +2186,7 @@ function openBwWebView(url) {
 }
 
 function _bwCloseWebviewCommon() {
+  document.getElementById('bw-tips-badge').classList.remove('visible');
   bwMode = 'home';
   bwCurrentUrl = '';
   document.getElementById('bw-webview-wrap').classList.remove('visible');
@@ -2191,6 +2317,8 @@ function openBwSearch() {
   view = 'browser-search';
   document.getElementById('view-bw-search').classList.add('visible');
   document.getElementById('statusbar').classList.add('bw-sb');
+  document.querySelector('.skbar').style.display = '';
+  document.getElementById('bw-tips-badge').classList.remove('visible');
   renderBwSearch();
   lbl('Browser — Search');
 }
@@ -2198,7 +2326,13 @@ function openBwSearch() {
 function closeBwSearch() {
   document.getElementById('view-bw-search').classList.remove('visible');
   view = 'app-open';
-  renderBw();
+  if (bwMode === 'web') {
+    document.querySelector('.skbar').style.display = 'none';
+    document.getElementById('bw-nav').classList.add('visible');
+    if (_bwTipsVisible) document.getElementById('bw-tips-badge').classList.add('visible');
+  } else {
+    renderBw();
+  }
 }
 
 function bwSearchType(k) {
@@ -2322,6 +2456,12 @@ function buildGrid(keepFocus) {
 function nav(dir) {
   if (booting || inputLocked) return;
   if (isBwMenuOpen()) { _bwMenuNav(dir); return; }
+  if (isBwShareOpen()) { _bwShareNav(dir); return; }
+  if (isBwVolOpen()) {
+    if (dir === 'up')   { _bwVolAdj(+1); return; }
+    if (dir === 'down') { _bwVolAdj(-1); return; }
+    return;
+  }
   if (isSleepOpen()) {
     const maxFocus = view === 'lock' ? 1 : 2;
     if (dir === 'up')   { sleepFocus = Math.max(0, sleepFocus - 1); updateSleepFocus(); }
@@ -2479,6 +2619,9 @@ function pressOK() {
     return;
   }
   if (isOMOpen())                  { selectOM();                 return; }
+  if (isBwMenuOpen())              { _bwMenuSelect();            return; }
+  if (isBwShareOpen())             { _bwShareSelect();           return; }
+  if (isBwVolOpen())               { _bwVolClose();              return; }
   if (view === 'home')             { showApps();                 return; }
   if (view === 'sidemenu')         { openAppView(SM_APPS[smFocus]); return; }
   if (view === 'apps' && isMoving) { exitMoveMode(false);        return; }
@@ -2511,6 +2654,8 @@ function pressRight() {
   if (booting || inputLocked) return;
   if (isSleepOpen())       { closeSleepMenu();                return; }
   if (isOMOpen())          { closeOM();                       return; }
+  if (isBwShareOpen())     { return; }
+  if (isBwVolOpen())       { return; }
   if (view === 'home')     { return; }
   if (view === 'dialer')            { openDialerOM();      return; }
   if (view === 'apps' && isMoving)  { exitMoveMode(true);  return; }
@@ -2538,6 +2683,8 @@ function pressBack() {
   if (isSleepOpen())               { closeSleepMenu();  return; }
   if (isOMOpen())                  { closeOM();         return; }
   if (isBwMenuOpen())              { _bwMenuClose();    return; }
+  if (isBwShareOpen())             { _bwShareClose();   return; }
+  if (isBwVolOpen())               { _bwVolClose();     return; }
   if (view === 'browser-search')   { closeBwSearch();   return; }
   if (view === 'app-open' && openApp?.id === 'browser' && isBwDialogOpen()) { closeBwDialog(); return; }
   if (view === 'app-open' && openApp?.id === 'browser' && bwMode === 'web') { closeBwWebView(); return; }
@@ -2547,7 +2694,10 @@ function pressBack() {
   if (view === 'sidemenu')         { goHome();          return; }
   if (view === 'stub')             { closeStub();       return; }
   if (view === 'app-open') {
-    document.getElementById('statusbar').classList.remove('bw-sb');
+    const _sb = document.getElementById('statusbar');
+    _sb.classList.remove('bw-sb');
+    _sb.style.background = '';
+    _sb.style.color = '';
     const bar = document.querySelector('.skbar');
     bar.style.backgroundColor = '';
     bar.style.backgroundImage = '';
@@ -2573,6 +2723,8 @@ function softLeft() {
   if (isSleepOpen())               { closeSleepMenu();                       return; }
   if (isOMOpen())                  { closeOM();                              return; }
   if (isBwMenuOpen())              { _bwMenuClose();                         return; }
+  if (isBwShareOpen())             { _bwShareClose();                        return; }
+  if (isBwVolOpen())               { _bwVolClose();                          return; }
   if (view === 'home')             { showStub('Notices', 'notifications');   return; }
   if (view === 'browser-search')   { closeBwSearch();                        return; }
   if (view === 'app-open' && openApp?.id === 'browser' && isBwDialogOpen()) { closeBwDialog(); return; }
@@ -3042,7 +3194,8 @@ function closeDialer() {
 let _dialerProbe = null;
 function renderDialer() {
   const el = document.getElementById('dialer-number');
-  el.textContent = dialerNum || ' ';
+  const numText = document.getElementById('dialer-num-text');
+  numText.textContent = dialerNum;
   if (!dialerNum) { el.style.fontSize = '3rem'; return; }
   if (!_dialerProbe) {
     _dialerProbe = document.createElement('span');
@@ -3161,60 +3314,46 @@ function startPowerOn()  {
 function cancelPowerOn() { clearTimeout(_powerOnTimer); _powerOnTimer = null; }
 
 function isSleepOpen() {
-  return document.getElementById('sleep-menu-overlay').classList.contains('visible');
+  return document.getElementById('power-menu').classList.contains('visible');
 }
 function openSleepMenu() {
   const isLocked = view === 'lock';
   document.getElementById('sm-lock').style.display = isLocked ? 'none' : '';
   sleepFocus = 0;
-  document.getElementById('sleep-menu-overlay').classList.add('visible');
-  const _inBw = view === 'browser-search' || (view === 'app-open' && (openApp?.id === 'browser' || openApp?.url));
-  if (!_inBw) {
-    document.getElementById('bw-webview-wrap').style.display = 'none';
-    document.getElementById('view-open-app').style.display = 'none';
-    const _bwIframe = document.getElementById('bw-iframe');
-    if (_bwIframe) _bwIframe.style.display = 'none';
-  }
+  document.getElementById('power-menu').classList.add('visible');
   const _sb = document.getElementById('statusbar');
   _sb.classList.remove('bw-sb');
-  _sb.style.background = 'transparent';
-  _sb.style.color = '#fff';
+  _sb.classList.add('pm-open');
   const bar = document.querySelector('.skbar');
-  bar.style.background = '';
-  bar.style.backgroundImage = '';
-  bar.style.backgroundColor = '';
-  bar.style.color = '';
-  bar.style.display = '';
+  bar.style.zIndex = '100000';
   bar.classList.add('sleep-mode');
   updateSleepFocus();
 }
 function updateSleepFocus() {
   const isLocked = view === 'lock';
-  // khi locked: 0=Restart, 1=Power off; khi không: 0=Lock, 1=Restart, 2=Power off
   document.getElementById('sm-lock').classList.toggle('focused',    !isLocked && sleepFocus === 0);
   document.getElementById('sm-restart').classList.toggle('focused', isLocked ? sleepFocus === 0 : sleepFocus === 1);
   document.getElementById('sm-power').classList.toggle('focused',   isLocked ? sleepFocus === 1 : sleepFocus === 2);
   setSK('', 'Select', '', false);
 }
 function closeSleepMenu() {
-  document.getElementById('sleep-menu-overlay').classList.remove('visible');
-  document.getElementById('bw-webview-wrap').style.display = '';
-  document.getElementById('view-open-app').style.display = '';
-  const _bwIframe2 = document.getElementById('bw-iframe');
-  if (_bwIframe2) _bwIframe2.style.display = '';
-  const _sbC = document.getElementById('statusbar');
-  _sbC.style.background = '';
-  _sbC.style.color = '';
-  if (view === 'browser-search' || (view === 'app-open' && (openApp?.id === 'browser' || openApp?.url))) {
-    _sbC.classList.add('bw-sb');
+  document.getElementById('power-menu').classList.remove('visible');
+  const _sb = document.getElementById('statusbar');
+  _sb.classList.remove('pm-open');
+  const _isStub = view === 'app-open' && !openApp?.url && openApp?.id !== 'browser' && openApp?.type !== 'folder';
+  if (_isStub) {
+    _sb.style.background = '#fff';
+    _sb.style.color = '#000';
+  } else if (view === 'browser-search' || (view === 'app-open' && (openApp?.id === 'browser' || openApp?.url))) {
+    _sb.classList.add('bw-sb');
+  } else {
+    _sb.style.background = '';
+    _sb.style.color = '';
   }
-  const _bar = document.querySelector('.skbar');
-  _bar.style.background = '';
-  _bar.style.backgroundImage = '';
-  _bar.style.backgroundColor = '';
-  _bar.style.color = '';
-  document.querySelector('.skbar').classList.remove('sleep-mode');
-  if (bwMode === 'web') document.querySelector('.skbar').style.display = 'none';
+  const bar = document.querySelector('.skbar');
+  bar.classList.remove('sleep-mode');
+  bar.style.zIndex = '';
+  if (bwMode === 'web' && view !== 'browser-search') bar.style.display = 'none';
   restoreSK();
   if (view === 'app-open' && openApp?.id === 'browser' && bwMode === 'home') _setBwSK();
   if (view === 'browser-search') renderBwSearch();
@@ -3230,7 +3369,16 @@ function restoreSK() {
   else if (view === 'sidemenu') setSK('', 'Select', '', false);
   else if (view === 'app-open' && openApp?.type === 'folder')  setSK('', 'Select', 'Options', false);
   else if (view === 'app-open' && openApp?.id === 'browser')   setSK('', 'Select', '', false);
+  else if (view === 'app-open' && !openApp?.url) {
+    setSK('', '', '', false);
+    const _sb = document.querySelector('.skbar');
+    _sb.style.backgroundColor = '#e6e6e6';
+    _sb.style.backgroundImage = 'none';
+    _sb.style.color = '#323232';
+  }
   else if (view === 'app-open')                                setSK('', '', 'Back', true);
+  else if (view === 'dialer')                                  setSK('Contacts', 'Call', 'Options', false);
+  else                                                         setSK('', '', '', false);
 }
 function _playPowerVideo(onEnded) {
   const splash = document.getElementById('poweroff-splash');
@@ -3307,9 +3455,11 @@ function doPowerOff() {
       clearTimeout(_powerTimer); _powerTimer = null;
       if (isSleepOpen()) { closeSleepMenu(); return; }
       if (isBwMenuOpen()) { _bwMenuClose(); return; }
-      if (view === 'app-open' && bwMode === 'home' && bwLastUrl) {
+      if (isBwShareOpen()) { _bwShareClose(); return; }
+      if (isBwVolOpen()) { _bwVolClose(); return; }
+      if (view === 'app-open' && openApp?.id === 'browser' && bwMode === 'home' && bwLastUrl) {
         openBwWebView(bwLastUrl);
-      } else if (view === 'app-open' && bwMode === 'web') {
+      } else if (view === 'app-open' && openApp?.id === 'browser' && bwMode === 'web') {
         _bwCloseWebviewCommon(); goHome();
       } else {
         pressBack();
