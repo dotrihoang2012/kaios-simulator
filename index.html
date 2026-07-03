@@ -696,6 +696,40 @@
     /* Tips badge — mirrors #bw-nav .bw-btn style */
     #bw-tips-badge { display:none; position:absolute; bottom:4rem; right:1rem; background:#fff; border-radius:1.2rem; height:2.4rem; padding:0 0.15rem 0 0.8rem; font-size:1.3rem; font-weight:600; color:#000; align-items:center; gap:0.4rem; z-index:50; box-shadow:0 0.2rem 0.4rem 0 rgba(0,0,0,0.5); pointer-events:none; }
     #bw-tips-badge.visible { display:flex; }
+    /* Pin To menu (step 1) */
+    #bw-pin-menu { position:absolute; top:var(--statusbar-height); bottom:0; left:0; right:0; z-index:60; display:none; }
+    #bw-pin-menu.visible { display:block; }
+    #bw-pin-menu .bw-pin-menu-empty { position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.9); }
+    #bw-pin-menu .bw-pin-menu-sheet { position:absolute; left:0; right:0; bottom:3rem; background:#fff; }
+    #bw-pin-menu-hdr { height:3rem; line-height:3rem; text-align:center; font-size:1.5rem; color:#525252; background:#e6e6e6; }
+    .bw-pin-menu-item { height:3.6rem; line-height:3.6rem; padding:0 1rem; font-size:1.7rem; color:#323232; background:#fff; }
+    .bw-pin-menu-item.focused { background:var(--color-purple); color:#fff; }
+    #bw-pin-menu .bw-pin-menu-skbar { position:absolute; bottom:0; left:0; right:0; height:3rem; background:#000; display:grid; grid-template-columns:1fr auto 1fr; align-items:center; }
+    #bw-pin-menu .bw-pin-menu-skbar span:nth-child(2) { font-weight:700; text-align:center; font-size:1.6rem; text-transform:uppercase; letter-spacing:0.05em; color:#fff; cursor:pointer; }
+    /* Pin to Top Sites picker (step 2) — from system #browser-pin-container */
+    #bw-pin-container { position:absolute; top:var(--statusbar-height); bottom:0; left:0; right:0; background:rgba(0,0,0,0.9); z-index:60; display:none; }
+    #bw-pin-container.visible { display:block; }
+    #bw-pin-container .bw-pin-content { position:absolute; left:0; right:0; bottom:0; background:#fff; }
+    #bw-pin-container header { padding:0 1rem; text-align:center; }
+    .bw-pin-title { margin-top:0.5rem; color:#323232; font-size:1.7rem; }
+    .bw-pin-subtitle { margin-top:1rem; color:#323232; font-size:1.7rem; font-weight:600; }
+    .bw-pin-grid { display:grid; grid-template-columns:repeat(3, 33.33%); margin:1rem 1rem 2.4rem; }
+    .bw-pin-item { display:flex; justify-content:space-between; align-items:center; padding:0.8rem 0.7rem 0.8rem 1rem; border-radius:4.8rem; box-sizing:border-box; }
+    .bw-pin-item .bw-pin-ico { display:inline-block; width:3.2rem; height:3.2rem; line-height:3.2rem; font-size:3.2rem; flex-shrink:0; }
+    .bw-pin-item .bw-pin-ico.default { background:url('./kaiosrt/gaia/profile/webapps/installed/system/dist/ic_default-f7539e.png') center/3.2rem no-repeat; }
+    .bw-pin-item .bw-pin-ico img { width:100%; height:100%; }
+    .bw-pin-item .bw-pin-ico img.hidden { display:none; }
+    .bw-pin-item i { display:inline-block; width:1.8rem; height:1.8rem; line-height:1.8rem; font-size:1.3rem; font-weight:600; font-style:normal; text-align:center; border-radius:50%; color:#323232; background:#ebebeb; flex-shrink:0; }
+    .bw-pin-item.focused { background:var(--color-purple); }
+    .bw-pin-item.focused .bw-pin-ico.default { background-image:url('./kaiosrt/gaia/profile/webapps/installed/system/dist/ic_default_selected-39cbf5.png'); }
+    .bw-pin-item.focused i { background:#fff; }
+    .bw-pin-item[data-type="fixed"].focused { background:rgba(128,0,255,0.3); }
+    .bw-pin-item[data-type="fixed"] .bw-pin-ico { opacity:1; }
+    .bw-pin-item[data-type="fixed"] i { opacity:0.3; }
+    #bw-pin-container .bw-pin-skbar { height:3rem; background:#e6e6e6; display:grid; grid-template-columns:1fr auto 1fr; align-items:center; }
+    #bw-pin-container .bw-pin-skbar span:first-child { text-align:left; font-size:1.4rem; font-weight:600; color:#323232; padding:0 0.8rem; cursor:pointer; }
+    #bw-pin-container .bw-pin-skbar span:nth-child(2) { font-weight:700; text-align:center; font-size:1.6rem; text-transform:uppercase; letter-spacing:0.05em; color:#323232; cursor:pointer; }
+    #bw-pin-container .bw-pin-skbar span:nth-child(2).hidden { visibility:hidden; }
     /* Shortcut Keys Overlay */
     #bw-sc-scrim { display:none; position:absolute; top:var(--statusbar-height); left:0; right:0; height:var(--titlebar-height); background:rgba(0,0,0,0.85); z-index:65; }
     #bw-sc-scrim.visible { display:block; }
@@ -1381,6 +1415,29 @@ JAN 1</div>
       </div>
     </div>
 
+    <!-- Pin To menu (step 1) -->
+    <div id="bw-pin-menu">
+      <div class="bw-pin-menu-empty"></div>
+      <div class="bw-pin-menu-sheet">
+        <div id="bw-pin-menu-hdr">Pin to</div>
+        <div class="bw-pin-menu-item" data-i="0">Top Sites</div>
+        <div class="bw-pin-menu-item" data-i="1">Apps Menu</div>
+      </div>
+      <div class="bw-pin-menu-skbar"><span></span><span onclick="_bwPinMenuSelect()">SELECT</span><span></span></div>
+    </div>
+
+    <!-- Pin to Top Sites picker (step 2) -->
+    <div id="bw-pin-container">
+      <div class="bw-pin-content">
+        <header>
+          <div class="bw-pin-title">Pin to Top Sites</div>
+          <div class="bw-pin-subtitle">Select a spot</div>
+        </header>
+        <div class="bw-pin-grid" id="bw-pin-grid"></div>
+        <div class="bw-pin-skbar"><span onclick="_bwPinExit()">Cancel</span><span id="bw-pin-sk-c" onclick="_bwPinConfirm()">SELECT</span><span></span></div>
+      </div>
+    </div>
+
     <!-- Browser Share Panel -->
     <div id="bw-share-menu">
       <div id="bw-share-bg" onclick="_bwShareClose()"></div>
@@ -2051,6 +2108,46 @@ const isElectron = navigator.userAgent.includes('Electron');
   wv.parentNode.replaceChild(iframe, wv);
 })();
 
+// Page title: update URL bar (and latest history entry) when the loaded page reports its title
+function _bwSetPageTitle(title) {
+  if (!title || bwMode !== 'web') return;
+  document.getElementById('bw-url-title').textContent = title;
+  if (bwHistory[0] && bwHistory[0].url === bwCurrentUrl && bwHistory[0].title !== title) {
+    bwHistory[0].title = title;
+    try { localStorage.setItem('_bwHistory', JSON.stringify(bwHistory)); } catch(e) {}
+  }
+}
+// Track in-page navigation so bwCurrentUrl always reflects the real page (link clicks, redirects)
+function _bwUrlChanged(url) {
+  if (!url || bwMode !== 'web' || url === 'about:blank' || url.startsWith('data:')) return;
+  try {
+    const u = new URL(url);
+    const real = u.searchParams.get('url');
+    if (real && /^https?:/.test(real)) url = real; // unwrap proxied URL
+  } catch(e) { return; }
+  if (url === bwCurrentUrl) return;
+  bwCurrentUrl = url;
+  document.getElementById('bw-ssl-icon').textContent = url.startsWith('https') ? 'lock' : '';
+  document.getElementById('bw-url-title').textContent = _bwDomain(url);
+  _bwHistSave(url, _bwDomain(url));
+}
+// Cross-origin proxied pages post their title (+ real location) via the injected script
+window.addEventListener('message', e => {
+  if (e.data && e.data.type === 'bw-title') {
+    if (e.data.href) _bwUrlChanged(String(e.data.href));
+    _bwSetPageTitle(String(e.data.title || '').trim());
+  }
+});
+// Electron webview reports navigation and title changes natively
+(function() {
+  const wv = document.getElementById('bw-iframe');
+  if (wv && wv.tagName === 'WEBVIEW') {
+    wv.addEventListener('page-title-updated', e => _bwSetPageTitle(e.title));
+    wv.addEventListener('did-navigate', e => _bwUrlChanged(e.url));
+    wv.addEventListener('did-navigate-in-page', e => { if (e.isMainFrame) _bwUrlChanged(e.url); });
+  }
+})();
+
 let bwMode = 'home'; // 'home' | 'web'
 let bwCurrentUrl = '';
 let bwLastUrl = '';
@@ -2077,7 +2174,7 @@ const _BW_OM = [
   [
     { label: 'Minimize',        a: () => { _bwMenuClose(); if(bwCurrentUrl) bwLastUrl=bwCurrentUrl; _bwCloseWebviewCommon(); goHome(); } },
     { label: 'Share',           a: () => { _bwMenuClose(); _bwShareOpen(); } },
-    { label: 'Pin To',          a: () => { _bwMenuClose(); } },
+    { label: 'Pin To',          a: () => { _bwMenuClose(); _bwPinToStart(); } },
     { label: 'Settings',        a: () => { _bwMenuClose(); } },
   ],
   [
@@ -2248,6 +2345,107 @@ function _bwTipsHide() {
   document.getElementById('bw-tips-badge').classList.remove('visible');
   _BW_OM[2][2] = { label: 'Show shortcuts tips', a: () => { _bwMenuClose(); _bwTipsShow(); } };
   document.querySelectorAll('.bw-om-list-item')[2].querySelector('span').textContent = 'Show shortcuts tips';
+}
+
+// ── Pin To (web mode): step 1 "Pin to" menu → step 2 "Select a spot" picker ──
+let _bwPinMode = null; // null | 'menu' | 'picker'
+let _bwPinData = null, _bwPinMenuFocus = 0, _bwPinFocus = 3;
+const _BW_PIN_FIRST = 3, _BW_PIN_LAST = 8; // pinnable tile range; number badge = idx + 1
+
+function _bwPinToStart() {
+  if (openApp?.id !== 'browser' || !bwCurrentUrl || bwCurrentUrl.startsWith('search:')) { showToast('Cannot pin this page'); return; }
+  _bwPinData = {
+    url: bwCurrentUrl,
+    title: (document.getElementById('bw-url-title').textContent || '').trim() || _bwDomain(bwCurrentUrl)
+  };
+  _bwPinMode = 'menu';
+  _bwPinMenuFocus = 0;
+  document.getElementById('bw-pin-menu').classList.add('visible');
+  const f = document.getElementById('bw-iframe');
+  if (f && f.tagName === 'WEBVIEW') { f.style.pointerEvents = 'none'; try { f.blur(); } catch(e) {} }
+  _bwMenuInjectOverlay(true);
+  _bwPinMenuRender();
+}
+function _bwPinMenuRender() {
+  document.querySelectorAll('.bw-pin-menu-item').forEach((el, i) => el.classList.toggle('focused', i === _bwPinMenuFocus));
+}
+function _bwPinMenuSelect() {
+  if (_bwPinMenuFocus === 1) {
+    _bwPinCloseAll();
+    showToast('This website has been pinned to Apps Menu.');
+    return;
+  }
+  if (BW_TILES.some(t => t.url === _bwPinData.url)) {
+    _bwPinCloseAll();
+    showToast('This website was pinned to Top Sites before.');
+    return;
+  }
+  document.getElementById('bw-pin-menu').classList.remove('visible');
+  _bwPinMode = 'picker';
+  let empty = -1;
+  for (let i = _BW_PIN_FIRST; i <= _BW_PIN_LAST; i++) { if (!BW_TILES[i].builtin && !BW_TILES[i].url) { empty = i; break; } }
+  _bwPinFocus = empty >= 0 ? empty : _BW_PIN_FIRST;
+  document.getElementById('bw-pin-container').classList.add('visible');
+  _bwPinBuildGrid();
+  _bwPinRenderPicker();
+}
+function _bwPinBuildGrid() {
+  const g = document.getElementById('bw-pin-grid');
+  let html = '';
+  for (let i = _BW_PIN_FIRST; i <= _BW_PIN_LAST; i++) {
+    const t = BW_TILES[i];
+    const occupied = t.builtin || t.url;
+    html += `<div class="bw-pin-item"${t.builtin ? ' data-type="fixed"' : ''} data-idx="${i}">`
+          + `<div class="bw-pin-ico${occupied ? '' : ' default'}">${occupied ? `<img src="${t.icon}">` : ''}</div>`
+          + `<i>${i + 1}</i></div>`;
+  }
+  g.innerHTML = html;
+}
+function _bwPinRenderPicker() {
+  document.querySelectorAll('.bw-pin-item').forEach(el => el.classList.toggle('focused', +el.dataset.idx === _bwPinFocus));
+  const fixed = BW_TILES[_bwPinFocus]?.builtin;
+  document.getElementById('bw-pin-sk-c').classList.toggle('hidden', !!fixed);
+}
+function _bwPinNav(dir) {
+  if (_bwPinMode === 'menu') {
+    if (dir === 'up')   _bwPinMenuFocus = Math.max(0, _bwPinMenuFocus - 1);
+    if (dir === 'down') _bwPinMenuFocus = Math.min(1, _bwPinMenuFocus + 1);
+    _bwPinMenuRender();
+    return;
+  }
+  const pos = _bwPinFocus - _BW_PIN_FIRST, col = pos % 3, row = Math.floor(pos / 3);
+  let p = pos;
+  if (dir === 'left'  && col > 0) p--;
+  if (dir === 'right' && col < 2) p++;
+  if (dir === 'up'    && row > 0) p -= 3;
+  if (dir === 'down'  && row < 1) p += 3;
+  _bwPinFocus = _BW_PIN_FIRST + Math.max(0, Math.min(_BW_PIN_LAST - _BW_PIN_FIRST, p));
+  _bwPinRenderPicker();
+}
+function _bwPinConfirm() {
+  if (_bwPinMode === 'menu') { _bwPinMenuSelect(); return; }
+  const t = BW_TILES[_bwPinFocus];
+  if (!t || t.builtin) return;
+  let fav = BW_ICON_PATH + 'ic_default.png';
+  try { fav = 'https://www.google.com/s2/favicons?domain=' + new URL(_bwPinData.url).hostname + '&sz=64'; } catch(e) {}
+  BW_TILES[_bwPinFocus] = { icon: fav, label: _bwPinData.title, url: _bwPinData.url };
+  buildBrowserView();
+  document.querySelectorAll('.bw-el').forEach(el => el.style.display = 'none');
+  document.querySelector('.skbar').style.display = 'none';
+  _bwPinCloseAll();
+  showToast('This website has been pinned to Top Sites.');
+}
+function _bwPinExit() {
+  _bwPinCloseAll();
+}
+function _bwPinCloseAll() {
+  _bwPinMode = null;
+  _bwPinData = null;
+  document.getElementById('bw-pin-menu').classList.remove('visible');
+  document.getElementById('bw-pin-container').classList.remove('visible');
+  const f = document.getElementById('bw-iframe');
+  if (f && f.tagName === 'WEBVIEW') f.style.pointerEvents = '';
+  _bwMenuInjectOverlay(false);
 }
 
 // ── Shortcut Keys Overlay ──
@@ -2542,6 +2740,8 @@ function _bwIsSearch(text) {
 async function _bwSearchWeb(query) {
   bwMode = 'web';
   bwCurrentUrl = 'search:' + query;
+  bwZoom = 1.0;
+  _bwResetZoomStyles();
   document.querySelectorAll('.bw-el').forEach(el => el.style.display = 'none');
   document.getElementById('bw-webview-wrap').classList.add('visible');
   document.getElementById('bw-ssl-icon').textContent = '';
@@ -2617,6 +2817,7 @@ function openBwWebView(url) {
   bwMode = 'web';
   bwCurrentUrl = url;
   bwZoom = 1.0;
+  _bwResetZoomStyles();
   document.querySelectorAll('.bw-el').forEach(el => el.style.display = 'none');
   const wrap = document.getElementById('bw-webview-wrap');
   wrap.classList.add('visible');
@@ -2630,6 +2831,7 @@ function openBwWebView(url) {
     let title = _bwDomain(url);
     try { if (iframe.tagName === 'WEBVIEW') title = iframe.getTitle() || title;
           else title = iframe.contentDocument?.title || title; } catch(e) {}
+    document.getElementById('bw-url-title').textContent = title;
     _bwHistSave(url, title);
   };
   if (iframe.tagName === 'WEBVIEW') {
@@ -2651,6 +2853,8 @@ function openBwWebView(url) {
 function _bwCloseWebviewCommon() {
   document.getElementById('bw-tips-badge').classList.remove('visible');
   _bwExitScrollMode();
+  bwZoom = 1.0;
+  _bwResetZoomStyles();
   bwMode = 'home';
   bwCurrentUrl = '';
   document.getElementById('bw-webview-wrap').classList.remove('visible');
@@ -2706,9 +2910,26 @@ function bwWebKey(k) {
     if (k === '1') { bwZoom = Math.max(0.5, bwZoom - 0.1); wv.setZoomFactor(bwZoom); }
     if (k === '3') { bwZoom = Math.min(3.0, bwZoom + 0.1); wv.setZoomFactor(bwZoom); }
   } else {
-    if (k === '1') { bwZoom = Math.max(0.5, +(bwZoom - 0.1).toFixed(1)); wv.style.transform = `scale(${bwZoom})`; wv.style.transformOrigin = '0 0'; wv.style.width = (100/bwZoom)+'%'; }
-    if (k === '3') { bwZoom = Math.min(3.0, +(bwZoom + 0.1).toFixed(1)); wv.style.transform = `scale(${bwZoom})`; wv.style.transformOrigin = '0 0'; wv.style.width = (100/bwZoom)+'%'; }
+    if (k === '1') { bwZoom = Math.max(0.5, +(bwZoom - 0.1).toFixed(1)); _bwZoomFallback(wv); }
+    if (k === '3') { bwZoom = Math.min(3.0, +(bwZoom + 0.1).toFixed(1)); _bwZoomFallback(wv); }
   }
+}
+
+// Zoom for iframe mode: scale + compensate BOTH width and height so the page fills the viewport
+function _bwZoomFallback(wv) {
+  if (!wv._baseH) wv._baseH = wv.offsetHeight; // layout height at zoom 1 (before overriding flex)
+  const reset = bwZoom === 1;
+  wv.style.transformOrigin = '0 0';
+  wv.style.transform = reset ? '' : `scale(${bwZoom})`;
+  wv.style.flex      = reset ? '' : 'none';
+  wv.style.width     = reset ? '' : (100 / bwZoom) + '%';
+  wv.style.height    = reset ? '' : (wv._baseH / bwZoom) + 'px';
+}
+function _bwResetZoomStyles() {
+  const f = document.getElementById('bw-iframe');
+  if (!f || f.tagName === 'WEBVIEW') return;
+  f.style.transform = ''; f.style.width = ''; f.style.height = ''; f.style.flex = '';
+  f._baseH = null;
 }
 
 // Scroll to top/bottom of the page — works on webview, same-origin iframe (srcdoc), and proxied pages
@@ -2989,6 +3210,7 @@ function nav(dir) {
     if (dir === 'left') _bwSCPrev(); else if (dir === 'right') _bwSCNext();
     return;
   }
+  if (_bwPinMode) { _bwPinNav(dir); return; }
   if (bwMode === 'web' && view === 'app-open') { _bwWebArrow(dir); return; }
   if (isBwHistOpen()) { if (!_bwHistDialogOpen) _bwHistNav(dir); return; }
   if (isBwShareOpen()) { _bwShareNav(dir); return; }
@@ -3156,6 +3378,7 @@ function pressOK() {
   if (isOMOpen())                  { selectOM();                 return; }
   if (isBwMenuOpen())              { _bwMenuSelect();            return; }
   if (isBwSCOpen())                { closeBwShortcut();          return; }
+  if (_bwPinMode)                  { _bwPinConfirm();            return; }
   if (isBwHistOpen())              { if (_bwHistDialogOpen) return; if (bwHistory.length) _bwHistGo(); return; }
   if (isBwShareOpen())             { _bwShareSelect();           return; }
   if (isBwVolOpen())               { _bwVolClose();              return; }
@@ -3193,6 +3416,7 @@ function pressRight() {
   if (isSleepOpen())       { closeSleepMenu();                return; }
   if (isOMOpen())          { closeOM();                       return; }
   if (isBwSCOpen())        { _bwSCNext();                    return; }
+  if (_bwPinMode)          { return; }
   if (isBwShareOpen())     { return; }
   if (isBwVolOpen())       { return; }
   if (view === 'home')     { return; }
@@ -3224,6 +3448,7 @@ function pressBack() {
   if (isOMOpen())                  { closeOM();         return; }
   if (isBwMenuOpen())              { _bwMenuClose();    return; }
   if (isBwSCOpen())                { closeBwShortcut(); return; }
+  if (_bwPinMode)                  { _bwPinExit();      return; }
   if (isBwHistOpen())              { if (_bwHistDialogOpen) { _bwHistDialogCancel(); return; } closeBwHistory(); return; }
   if (isBwShareOpen())             { _bwShareClose();   return; }
   if (isBwVolOpen())               { _bwVolClose();     return; }
@@ -3266,6 +3491,7 @@ function softLeft() {
   if (isOMOpen())                  { closeOM();                              return; }
   if (isBwMenuOpen())              { _bwMenuClose();                         return; }
   if (isBwSCOpen())                { _bwSCPrev();                            return; }
+  if (_bwPinMode)                  { _bwPinExit();                           return; }
   if (isBwShareOpen())             { _bwShareClose();                        return; }
   if (isBwVolOpen())               { _bwVolClose();                          return; }
   if (isBwHistOpen())              { if (_bwHistDialogOpen) { _bwHistDialogCancel(); return; } closeBwHistory(); return; }
@@ -3771,6 +3997,14 @@ function dialerKey(k) {
 function pressNum(k) {
   if (booting || inputLocked) return;
   if (isBwMenuOpen()) return;
+  if (_bwPinMode) {
+    if (_bwPinMode === 'picker' && /^[4-9]$/.test(k)) {
+      _bwPinFocus = +k - 1;
+      _bwPinRenderPicker();
+      if (!BW_TILES[_bwPinFocus]?.builtin) _bwPinConfirm();
+    }
+    return;
+  }
   if (view === 'app-open' && bwMode === 'web') { bwWebKey(k); return; }
   if ((view === 'home' || view === 'apps') && !isOMOpen()) openDialer(k);
   else if (view === 'dialer') dialerKey(k);
@@ -4077,8 +4311,9 @@ document.addEventListener('keydown', e => {
     if (e.key === 'Enter')      { e.preventDefault(); bwSearchGo();        return; }
     if (e.key.length === 1)     { e.preventDefault(); bwSearchType(e.key); return; }
   }
+  if (_bwPinMode && /^[0-9]$/.test(e.key)) { e.preventDefault(); showNumPress(e.key); pressNum(e.key); return; }
   // When webview is active, forward keys to it; keep F8/F1/F2/Backspace for simulator
-  if (bwMode === 'web' && view === 'app-open') {
+  if (bwMode === 'web' && view === 'app-open' && !_bwPinMode) {
     if (_bwScrollMode) {
       if (e.key === 'ArrowUp')    { e.preventDefault(); showArrowPress('up');    _bwScrollBy('up');    return; }
       if (e.key === 'ArrowDown')  { e.preventDefault(); showArrowPress('down');  _bwScrollBy('down');  return; }
