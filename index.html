@@ -626,6 +626,7 @@
     #bw-options-menu .bw-om-icon { color:#000; font-size:3.2rem; width:3.8rem; height:3.8rem; line-height:3.8rem; text-align:center; border-radius:1.9rem; margin:0.3rem 1rem; background:rgba(230,230,230,0.5); cursor:pointer; }
     #bw-options-menu .bw-om-icon.focused { background:#8000ff; color:#fff; }
     #bw-options-menu .bw-om-icon.disabled { color:rgba(0,0,0,0.3); }
+    #bw-options-menu .bw-om-icon.focused.disabled { color:rgba(255,255,255,0.4); }
     #bw-options-menu .bw-om-list-item { min-height:4.8rem; display:flex; align-items:center; background:#fff; color:#323232; }
     #bw-options-menu .bw-om-list-item.focused { background:#8000ff; color:#fff; }
     #bw-options-menu .bw-om-list-item span { font-size:1.7rem; padding:0 1rem; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
@@ -668,10 +669,9 @@
     .bw-hist-section { font-size:1.2rem; color:#888; padding:0.8rem 1rem 0.4rem; font-weight:500; text-transform:uppercase; letter-spacing:0.05em; }
     .bw-hist-item { display:flex; align-items:center; min-height:5.6rem; padding:0 1rem; gap:1rem; cursor:pointer; }
     .bw-hist-item.focused { background:#8000ff; }
-    .bw-hist-favicon { width:3.2rem; height:3.2rem; border-radius:50%; background:#f0f0f0; display:flex; align-items:center; justify-content:center; font-size:1.5rem; font-weight:700; color:#555; flex-shrink:0; overflow:hidden; border:1px solid #e0e0e0; box-sizing:border-box; }
-    .bw-hist-item.focused .bw-hist-favicon { background:rgba(255,255,255,0.25); color:#fff; border-color:transparent; }
-    .bw-hist-favicon.has-icon { background:#f0f0f0; }
-    .bw-hist-item.focused .bw-hist-favicon.has-icon { background:rgba(255,255,255,0.25); }
+    .bw-hist-favicon { width:3.2rem; height:3.2rem; border-radius:50%; background:#fff url('./kaiosrt/gaia/profile/webapps/installed/system/dist/ic_not_found-5cd1ab.png') center/100% no-repeat; display:flex; align-items:center; justify-content:center; flex-shrink:0; overflow:hidden; border:1px solid #e0e0e0; box-sizing:border-box; }
+    .bw-hist-item.focused .bw-hist-favicon { border-color:transparent; }
+    .bw-hist-favicon.has-icon { background:#fff; }
     .bw-hist-favicon img { width:100%; height:100%; object-fit:cover; display:none; }
     .bw-hist-favicon.has-icon img { display:block; }
     .bw-hist-info { flex:1; overflow:hidden; }
@@ -696,6 +696,15 @@
     /* Tips badge — mirrors #bw-nav .bw-btn style */
     #bw-tips-badge { display:none; position:absolute; bottom:4rem; right:1rem; background:#fff; border-radius:1.2rem; height:2.4rem; padding:0 0.15rem 0 0.8rem; font-size:1.3rem; font-weight:600; color:#000; align-items:center; gap:0.4rem; z-index:50; box-shadow:0 0.2rem 0.4rem 0 rgba(0,0,0,0.5); pointer-events:none; }
     #bw-tips-badge.visible { display:flex; }
+    @keyframes bounceInRight {
+      from, 60%, 75%, 90%, to { animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1); }
+      from { opacity: 0; transform: translate3d(100vw, 0, 0); }
+      60%  { opacity: 1; transform: translate3d(-0.7rem, 0, 0); }
+      75%  { transform: translate3d(0.4rem, 0, 0); }
+      90%  { transform: translate3d(-0.2rem, 0, 0); }
+      to   { transform: translate3d(0, 0, 0); }
+    }
+    #bw-tips-badge.bounceInRight { animation: bounceInRight 0.8s; }
     /* Pin To menu (step 1) */
     #bw-pin-menu { position:absolute; top:var(--statusbar-height); bottom:0; left:0; right:0; z-index:60; display:none; }
     #bw-pin-menu.visible { display:block; }
@@ -788,6 +797,10 @@
     .bws-title { display:block; font-size:1.7rem; font-weight:400; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .bws-url { display:block; font-size:1.4rem; color:#6a6a6a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .bws-row.focused .bws-url { color:#fff; }
+    .bws-title-nav { font-weight:700; text-transform:none; }
+    .bws-favicon-nav { border-radius:50%; border:1px solid #e0e0e0; box-sizing:border-box; background:#fff; }
+    .bws-favicon-nav img { border-radius:50%; }
+    .bws-row.focused .bws-favicon-nav { border-color:transparent; background:rgba(255,255,255,0.9); }
     .oa-body.bw-mode { background: #fff; align-items: stretch; justify-content: flex-start; gap: 0; padding-top: var(--statusbar-height); }
     .oa-body.bw-mode > .oa-icon,
     .oa-body.bw-mode > .oa-name,
@@ -1333,7 +1346,7 @@ JAN 1</div>
         </div>
       </div>
       <div id="bw-progress"><div id="bw-progress-fill"></div></div>
-      <webview id="bw-iframe" allowpopups disablewebsecurity></webview>
+      <webview id="bw-iframe" disablewebsecurity></webview>
       <div id="bw-scroll-ind">
         <div class="sc-dir-icon top"></div>
         <div class="sc-dir-icon left"></div>
@@ -1997,7 +2010,7 @@ function openAppView(app) {
   hdr.style.display = '';
   if (app.id === 'browser') {
     bwFocus = 0;
-    bwLastUrl = '';
+    bwLastUrl = '';   // fresh open: Return chỉ hiện sau khi từ web mode nhấn Home
     hdr.style.display = 'none';
     buildBrowserView();
   } else if (app.url) {
@@ -2103,7 +2116,7 @@ const isElectron = navigator.userAgent.includes('Electron');
   if (!wv || wv.tagName !== 'WEBVIEW') return;
   const iframe = document.createElement('iframe');
   iframe.id = 'bw-iframe';
-  iframe.setAttribute('sandbox', 'allow-scripts allow-forms allow-same-origin allow-popups');
+  iframe.setAttribute('sandbox', 'allow-scripts allow-forms allow-same-origin');
   iframe.style.cssText = 'flex:1;border:none;width:100%;background:#fff;';
   wv.parentNode.replaceChild(iframe, wv);
 })();
@@ -2125,7 +2138,14 @@ function _bwUrlChanged(url) {
     const real = u.searchParams.get('url');
     if (real && /^https?:/.test(real)) url = real; // unwrap proxied URL
   } catch(e) { return; }
+  const _wasInitial = _bwNavInitial;
+  _bwNavInitial = false;
   if (url === bwCurrentUrl) return;
+  if (_wasInitial) { /* redirect of the first load — not a navigation step */ }
+  else if (_bwNavExpect === 'back')    { _bwNavDepth = Math.max(0, _bwNavDepth - 1); _bwNavFwdCount++; }
+  else if (_bwNavExpect === 'forward') { _bwNavDepth++; _bwNavFwdCount = Math.max(0, _bwNavFwdCount - 1); }
+  else                                 { _bwNavDepth++; _bwNavFwdCount = 0; }
+  _bwNavExpect = null;
   bwCurrentUrl = url;
   document.getElementById('bw-ssl-icon').textContent = url.startsWith('https') ? 'lock' : '';
   document.getElementById('bw-url-title').textContent = _bwDomain(url);
@@ -2133,9 +2153,19 @@ function _bwUrlChanged(url) {
 }
 // Cross-origin proxied pages post their title (+ real location) via the injected script
 window.addEventListener('message', e => {
-  if (e.data && e.data.type === 'bw-title') {
+  if (!e.data) return;
+  if (e.data.type === 'bw-nav-start') {
+    // Page is navigating away: show loading bar, hide the lock until the new page arrives
+    if (bwMode === 'web') { _bwProgressStart(); document.getElementById('bw-ssl-icon').textContent = ''; }
+    return;
+  }
+  if (e.data.type === 'bw-title') {
     if (e.data.href) _bwUrlChanged(String(e.data.href));
     _bwSetPageTitle(String(e.data.title || '').trim());
+    if (bwMode === 'web') {
+      _bwProgressEnd();
+      document.getElementById('bw-ssl-icon').textContent = (bwCurrentUrl || '').startsWith('https') ? 'lock' : '';
+    }
   }
 });
 // Electron webview reports navigation and title changes natively
@@ -2145,6 +2175,12 @@ window.addEventListener('message', e => {
     wv.addEventListener('page-title-updated', e => _bwSetPageTitle(e.title));
     wv.addEventListener('did-navigate', e => _bwUrlChanged(e.url));
     wv.addEventListener('did-navigate-in-page', e => { if (e.isMainFrame) _bwUrlChanged(e.url); });
+    wv.addEventListener('did-start-loading', () => {
+      if (bwMode === 'web') { _bwProgressStart(); document.getElementById('bw-ssl-icon').textContent = ''; }
+    });
+    wv.addEventListener('did-stop-loading', () => {
+      if (bwMode === 'web') { _bwProgressEnd(); document.getElementById('bw-ssl-icon').textContent = (bwCurrentUrl || '').startsWith('https') ? 'lock' : ''; }
+    });
   }
 })();
 
@@ -2167,8 +2203,8 @@ let _bwOmRow = 0, _bwOmCol = 0;
 const _BW_OM = [
   [
     { label: 'Search Internet', a: () => { _bwMenuClose(); openBwSearch(); } },
-    { label: 'Go Back',         a: () => { _bwMenuClose(); _bwNavBack(); } },
-    { label: 'Go Forward',      a: () => { _bwMenuClose(); _bwNavFwd(); } },
+    { label: 'Go Back',         a: () => { if (!_bwCanGoBack()) return; _bwMenuClose(); _bwNavBack(); } },
+    { label: 'Go Forward',      a: () => { if (!_bwCanGoForward()) return; _bwMenuClose(); _bwNavFwd(); } },
     { label: 'Refresh',         a: () => { _bwMenuClose(); if (bwMode === 'web') openBwWebView(bwCurrentUrl); } },
   ],
   [
@@ -2225,6 +2261,10 @@ function _bwMenuRender() {
   document.querySelectorAll('.bw-om-icon').forEach(el => {
     el.classList.toggle('focused', _bwOmRow < 2 && +el.dataset.row === _bwOmRow && +el.dataset.col === _bwOmCol);
   });
+  document.querySelector('.bw-om-icon[data-icon="arrow-left"]').classList.toggle('disabled', !_bwCanGoBack());
+  document.querySelector('.bw-om-icon[data-icon="arrow-right"]').classList.toggle('disabled', !_bwCanGoForward());
+  const _omDisabledFocus = _bwOmRow === 0 && ((_bwOmCol === 1 && !_bwCanGoBack()) || (_bwOmCol === 2 && !_bwCanGoForward()));
+  document.querySelector('#bw-options-menu .bw-om-sk-c').style.visibility = _omDisabledFocus ? 'hidden' : '';
   document.querySelectorAll('.bw-om-list-item').forEach(el => {
     el.classList.toggle('focused', _bwOmRow === 2 && +el.dataset.idx === _bwOmCol);
   });
@@ -2278,9 +2318,19 @@ let _bwShareFocus = 0;
 function isBwShareOpen() { return document.getElementById('bw-share-menu').classList.contains('visible'); }
 function _bwShareOpen() {
   _bwShareFocus = 0; _bwShareRender();
-  document.getElementById('bw-share-menu').classList.add('visible');
+  const menu = document.getElementById('bw-share-menu');
+  menu.classList.add('visible');
+  // Steal keyboard focus from the page so arrows reach the simulator
+  const f = document.getElementById('bw-iframe');
+  if (f) { f.style.pointerEvents = 'none'; try { f.blur(); } catch(e) {} }
+  menu.tabIndex = -1;
+  menu.focus();
 }
-function _bwShareClose() { document.getElementById('bw-share-menu').classList.remove('visible'); }
+function _bwShareClose() {
+  document.getElementById('bw-share-menu').classList.remove('visible');
+  const f = document.getElementById('bw-iframe');
+  if (f) f.style.pointerEvents = '';
+}
 function _bwShareRender() {
   document.querySelectorAll('.bw-share-item').forEach((el, i) => el.classList.toggle('focused', i === _bwShareFocus));
 }
@@ -2297,11 +2347,19 @@ const MEDIA_VOL_MAX = 15;
 let _bwVolTimer = null;
 function isBwVolOpen() { return document.getElementById('bw-vol-ov').classList.contains('visible'); }
 function _bwVolOpen() {
-  document.getElementById('bw-vol-ov').classList.add('visible');
+  const ov = document.getElementById('bw-vol-ov');
+  ov.classList.add('visible');
+  // Steal keyboard focus from the page so arrows reach the simulator
+  const f = document.getElementById('bw-iframe');
+  if (f) { f.style.pointerEvents = 'none'; try { f.blur(); } catch(e) {} }
+  ov.tabIndex = -1;
+  ov.focus();
   _bwVolRender();
 }
 function _bwVolClose() {
   document.getElementById('bw-vol-ov').classList.remove('visible');
+  const f = document.getElementById('bw-iframe');
+  if (f) f.style.pointerEvents = '';
   if (_bwVolTimer) { clearTimeout(_bwVolTimer); _bwVolTimer = null; }
 }
 function _bwVolRender() {
@@ -2334,9 +2392,24 @@ function _bwVolAdj(delta) {
 
 // ── Tips badge ──
 let _bwTipsVisible = true;
+let _bwTipsBadgeTimer = null;
+// Show with system-app bounceInRight entrance, auto-hide after 10s (như browser_window_buttons.js)
+function _bwTipsBadgeShow() {
+  if (!_bwTipsVisible) return;
+  const b = document.getElementById('bw-tips-badge');
+  b.classList.add('visible');
+  b.classList.remove('bounceInRight');
+  void b.offsetWidth;
+  b.classList.add('bounceInRight');
+  if (_bwTipsBadgeTimer) clearTimeout(_bwTipsBadgeTimer);
+  _bwTipsBadgeTimer = setTimeout(() => {
+    b.classList.remove('visible', 'bounceInRight');
+    _bwTipsBadgeTimer = null;
+  }, 10000);
+}
 function _bwTipsShow() {
   _bwTipsVisible = true;
-  document.getElementById('bw-tips-badge').classList.add('visible');
+  _bwTipsBadgeShow();
   _BW_OM[2][2] = { label: 'Hide shortcuts tips', a: () => { _bwMenuClose(); _bwTipsHide(); } };
   document.querySelectorAll('.bw-om-list-item')[2].querySelector('span').textContent = 'Hide shortcuts tips';
 }
@@ -2482,7 +2555,7 @@ function closeBwShortcut() {
   document.getElementById('bw-sc-scrim').classList.remove('visible');
   document.getElementById('bw-iframe').style.display = '';
   document.getElementById('bw-nav').style.display = '';
-  if (_bwTipsVisible) document.getElementById('bw-tips-badge').classList.add('visible');
+  _bwTipsBadgeShow();
   const bar = document.querySelector('.skbar');
   bar.style.backgroundColor = '';
   bar.style.backgroundImage = '';
@@ -2581,6 +2654,7 @@ function closeBwHistory() {
   document.getElementById('bw-webview-wrap').style.display = '';
   _bwHistDialogOpen = false;
   view = 'app-open';
+  bwFocus = 0;
   renderBw();
 }
 
@@ -2598,16 +2672,27 @@ function _bwHistRender() {
   list.style.display = '';
   empty.classList.remove('visible');
   _bwHistRestoreSK();
-  const now = Date.now();
-  const todayStart = new Date(); todayStart.setHours(0,0,0,0);
-  const yesterdayStart = new Date(todayStart); yesterdayStart.setDate(yesterdayStart.getDate()-1);
+  // Time buckets: TODAY / YESTERDAY / LAST 7 DAYS / THIS MONTH / theo tháng (12 tháng) / LAST YEAR / theo năm
+  const _t0 = new Date(); _t0.setHours(0,0,0,0);
+  const todayStart      = _t0.getTime();
+  const yesterdayStart  = todayStart - 86400e3;
+  const last7Start      = todayStart - 518400e3; // 6 ngày trước đầu hôm nay
+  const monthStart      = new Date(_t0.getFullYear(), _t0.getMonth(), 1).getTime();
+  const monthlyStart    = new Date(_t0.getFullYear(), _t0.getMonth() - 11, 1).getTime(); // 12 tháng gần nhất
+  const lastYearStart   = new Date(_t0.getFullYear() - 1, 0, 1).getTime();
   const groups = new Map();
   bwHistory.forEach(h => {
-    const d = new Date(h.ts);
     let label;
-    if (h.ts >= todayStart.getTime()) label = 'TODAY';
-    else if (h.ts >= yesterdayStart.getTime()) label = 'YESTERDAY';
-    else label = d.toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
+    if      (h.ts >= todayStart)     label = 'TODAY';
+    else if (h.ts >= yesterdayStart) label = 'YESTERDAY';
+    else if (h.ts >= last7Start)     label = 'LAST 7 DAYS';
+    else if (h.ts >= monthStart)     label = 'THIS MONTH';
+    else if (h.ts >= monthlyStart) {
+      const d = new Date(h.ts);
+      label = d.toLocaleDateString('en-US', { month:'long' }).toUpperCase() + ' ' + d.getFullYear();
+    }
+    else if (h.ts >= lastYearStart)  label = 'LAST YEAR ' + (_t0.getFullYear() - 1);
+    else                             label = 'YEAR ' + new Date(h.ts).getFullYear();
     if (!groups.has(label)) groups.set(label, []);
     groups.get(label).push(h);
   });
@@ -2615,15 +2700,12 @@ function _bwHistRender() {
   groups.forEach((items, label) => {
     html += `<div class="bw-hist-section">${label}</div>`;
     items.forEach(h => {
-      const letter = (h.title || h.url || '?')[0].toUpperCase();
-      const bg = _bwHistColor(h.url);
       let fav = '';
       try { fav = `https://www.google.com/s2/favicons?domain=${new URL(h.url).hostname}&sz=32`; } catch(e) {}
       _bwHistFlat.push(h);
       html += `<div class="bw-hist-item" data-idx="${idx}">
-        <div class="bw-hist-favicon" style="background:${bg};color:#fff">
-          ${fav ? `<img src="${fav}" onload="this.parentElement.classList.add('has-icon');this.nextElementSibling.style.display='none'" onerror="this.remove()">` : ''}
-          <span>${letter}</span>
+        <div class="bw-hist-favicon">
+          ${fav ? `<img src="${fav}" onload="this.parentElement.classList.add('has-icon')" onerror="this.remove()">` : ''}
         </div>
         <div class="bw-hist-info">
           <div class="bw-hist-title-text">${_bwHE(h.title||h.url)}</div>
@@ -2636,11 +2718,6 @@ function _bwHistRender() {
   _bwHistUpdateFocus();
 }
 
-function _bwHistColor(url) {
-  let h = 0; for (let i=0;i<url.length;i++) h=(h*31+url.charCodeAt(i))>>>0;
-  const hues = [200,120,280,30,0,160,340];
-  return `hsl(${hues[h%hues.length]},60%,45%)`;
-}
 
 function _bwHE(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -2651,7 +2728,11 @@ function _bwHistUpdateFocus() {
     el.classList.toggle('focused', i === _bwHistFocus);
   });
   const f = document.querySelector('#bw-hist-list .bw-hist-item.focused');
-  if (f) f.scrollIntoView({ block:'nearest' });
+  if (!f) return;
+  // Nếu ngay trên item là header nhóm (TODAY...) thì cuộn cả header vào tầm nhìn
+  const prev = f.previousElementSibling;
+  if (prev && prev.classList.contains('bw-hist-section')) prev.scrollIntoView({ block:'nearest' });
+  else f.scrollIntoView({ block:'nearest' });
 }
 
 function _bwHistNav(dir) {
@@ -2700,16 +2781,35 @@ function _bwHistRestoreSK() {
   bar.style.color = '#323232';
 }
 
-function _bwNavBack() {
+// Parent-side history tracking for iframe mode (cross-origin pages can't be queried)
+let _bwNavDepth = 0, _bwNavFwdCount = 0, _bwNavExpect = null, _bwNavInitial = true;
+function _bwNavReset() { _bwNavDepth = 0; _bwNavFwdCount = 0; _bwNavExpect = null; _bwNavInitial = true; }
+function _bwCanGoBack() {
   const f = document.getElementById('bw-iframe');
-  if (f.tagName === 'WEBVIEW') { try { f.goBack(); } catch(e) {} }
-  else { try { f.contentWindow?.history.back(); } catch(e) {} }
+  if (f && f.tagName === 'WEBVIEW') { try { return f.canGoBack(); } catch(e) { return false; } }
+  return _bwNavDepth > 0;
+}
+function _bwCanGoForward() {
+  const f = document.getElementById('bw-iframe');
+  if (f && f.tagName === 'WEBVIEW') { try { return f.canGoForward(); } catch(e) { return false; } }
+  return _bwNavFwdCount > 0;
+}
+function _bwNavBack() {
+  if (!_bwCanGoBack()) return;
+  const f = document.getElementById('bw-iframe');
+  if (f.tagName === 'WEBVIEW') { try { f.goBack(); } catch(e) {} return; }
+  _bwNavExpect = 'back';
+  try { f.contentWindow.history.back(); return; } catch(e) {}
+  try { f.contentWindow.postMessage({ type: 'bw-history', dir: 'back' }, '*'); } catch(e) {}
 }
 
 function _bwNavFwd() {
+  if (!_bwCanGoForward()) return;
   const f = document.getElementById('bw-iframe');
-  if (f.tagName === 'WEBVIEW') { try { f.goForward(); } catch(e) {} }
-  else { try { f.contentWindow?.history.forward(); } catch(e) {} }
+  if (f.tagName === 'WEBVIEW') { try { f.goForward(); } catch(e) {} return; }
+  _bwNavExpect = 'forward';
+  try { f.contentWindow.history.forward(); return; } catch(e) {}
+  try { f.contentWindow.postMessage({ type: 'bw-history', dir: 'forward' }, '*'); } catch(e) {}
 }
 
 function _bwProgressStart() {
@@ -2755,6 +2855,7 @@ async function _bwSearchWeb(query) {
   bwCurrentUrl = 'search:' + query;
   bwZoom = 1.0;
   _bwResetZoomStyles();
+  _bwNavReset();
   document.querySelectorAll('.bw-el').forEach(el => el.style.display = 'none');
   document.getElementById('bw-webview-wrap').classList.add('visible');
   document.getElementById('bw-ssl-icon').textContent = '';
@@ -2826,11 +2927,12 @@ function _bwLoadWebFallback(url, iframe, onLoad) {
 
 
 function openBwWebView(url) {
-  if (_bwTipsVisible) document.getElementById('bw-tips-badge').classList.add('visible');
+  _bwTipsBadgeShow();
   bwMode = 'web';
   bwCurrentUrl = url;
   bwZoom = 1.0;
   _bwResetZoomStyles();
+  _bwNavReset();
   document.querySelectorAll('.bw-el').forEach(el => el.style.display = 'none');
   const wrap = document.getElementById('bw-webview-wrap');
   wrap.classList.add('visible');
@@ -2887,10 +2989,18 @@ function _bwCloseWebviewCommon() {
   document.getElementById('bw-nav').classList.remove('visible');
 }
 
+// Return từ browser home về web mode — hỗ trợ cả trang search results lẫn URL thường
+function _bwReturnToWeb() {
+  if (!bwLastUrl) return;
+  if (bwLastUrl.startsWith('search:')) _bwSearchWeb(bwLastUrl.slice(7));
+  else openBwWebView(bwLastUrl);
+}
+
 // Home nav button: saves URL và chuyển về browser home
 function _bwNavHome() {
   if (bwCurrentUrl) bwLastUrl = bwCurrentUrl;
   _bwCloseWebviewCommon();
+  bwFocus = 0;
   if (openApp?.url) {
     openApp = APPS.find(a => a.id === 'browser') || openApp;
     document.getElementById('oa-header').style.display = 'none';
@@ -2902,8 +3012,10 @@ function _bwNavHome() {
 
 // Back/End key: đóng và về đúng màn hình (browser home nếu là browser app, main home nếu là URL app)
 function closeBwWebView() {
+  if (bwCurrentUrl) bwLastUrl = bwCurrentUrl;
   _bwCloseWebviewCommon();
   if (openApp?.id === 'browser') {
+    bwFocus = 0;
     document.getElementById('statusbar').classList.add('bw-sb');
     renderBw();
   } else {
@@ -2914,6 +3026,7 @@ function closeBwWebView() {
 let bwZoom = 1.0;
 
 function bwWebKey(k) {
+  if (isBwVolOpen() || isBwShareOpen()) return;
   if (k === '#') { isBwSCOpen() ? closeBwShortcut() : openBwShortcut(); return; }
   if (isBwSCOpen()) { _bwSCDemo(k); return; }
   if (k === '5') { _bwToggleScrollMode(); return; }
@@ -3013,7 +3126,8 @@ function _bwWebArrow(dir) {
 function bwSearchGo() {
   let text;
   if (bwSearchFocus > 0 && bwSuggestions[bwSearchFocus - 1]) {
-    text = bwSuggestions[bwSearchFocus - 1];
+    const s = bwSuggestions[bwSearchFocus - 1];
+    text = s.nav ? s.url : s.text;
   } else if (bwSearchText) {
     text = bwSearchText.trim();
   } else {
@@ -3031,35 +3145,73 @@ function bwSearchGo() {
 let bwSuggestions = [];
 let _bwSugTimer = null;
 
+function _bwNavTitleFromUrl(url) {
+  try {
+    const label = new URL(url).hostname.replace(/^www\./, '').split('.')[0];
+    return label.charAt(0).toUpperCase() + label.slice(1);
+  } catch(e) { return url; }
+}
 function _fetchSuggestions(text) {
   clearTimeout(_bwSugTimer);
   if (!text) { bwSuggestions = []; renderBwSearch(); return; }
   _bwSugTimer = setTimeout(async () => {
+    let items = [];
     try {
-      const sugBase = 'https://suggestqueries.google.com/complete/search?client=firefox&q=' + encodeURIComponent(text);
+      const sugBase = 'https://suggestqueries.google.com/complete/search?client=chrome&hl=en&q=' + encodeURIComponent(text);
       const sugUrl = isElectron ? sugBase : BW_WEB_PROXY + '?url=' + encodeURIComponent(sugBase);
       const res = await fetch(sugUrl);
       const data = await res.json();
-      bwSuggestions = (data[1] || []).slice(0, 6);
-    } catch { bwSuggestions = []; }
+      const sugs    = data[1] || [];
+      const meta    = data[4] || {};
+      const types   = meta['google:suggesttype']   || [];
+      const details = meta['google:suggestdetail'] || [];
+      items = sugs.map((s, i) => {
+        if (types[i] === 'NAVIGATION') {
+          const url = /^https?:/.test(s) ? s : 'https://' + s;
+          const title = (details[i] && (details[i].a || details[i].t)) || _bwNavTitleFromUrl(url);
+          return { nav: true, url, title };
+        }
+        return { nav: false, text: s };
+      });
+    } catch(e) { items = []; }
+    // Engine didn't return a domain but the typed text looks like one — synthesize it
+    if (!items.some(s => s.nav) && text.trim() && !_bwIsSearch(text.trim())) {
+      const url = _bwUrlFromText(text.trim());
+      items.unshift({ nav: true, url, title: _bwNavTitleFromUrl(url) });
+    }
+    // Domain suggestions first
+    items.sort((a, b) => (b.nav ? 1 : 0) - (a.nav ? 1 : 0));
+    bwSuggestions = items.slice(0, 6);
     renderBwSearch();
   }, 150);
 }
 
 function renderBwSearch() {
   document.getElementById('bws-searchbar').classList.toggle('focus', bwSearchFocus === 0);
-  document.getElementById('bws-text').textContent = bwSearchText;
+  const _bwsT = document.getElementById('bws-text');
+  _bwsT.textContent = bwSearchText;
+  _bwsT.scrollLeft = _bwsT.scrollWidth; // keep the typing end visible when text overflows
   const container = document.getElementById('bws-results');
   container.innerHTML = '';
   bwSuggestions.forEach((s, i) => {
     const row = document.createElement('div');
     row.className = 'bws-row' + (bwSearchFocus === i + 1 ? ' focused' : '');
     const fav = document.createElement('div');
-    fav.className = 'bws-favicon';
-    fav.innerHTML = `<i data-icon="search"></i>`;
     const info = document.createElement('div');
     info.className = 'bws-info';
-    info.innerHTML = `<span class="bws-title">${s}</span>`;
+    if (s.nav) {
+      fav.className = 'bws-favicon bws-favicon-nav';
+      let favUrl = '';
+      try { favUrl = 'https://www.google.com/s2/favicons?domain=' + new URL(s.url).hostname + '&sz=32'; } catch(e) {}
+      fav.innerHTML = favUrl
+        ? `<img src="${favUrl}" onerror="this.parentElement.innerHTML='<i data-icon=&quot;search&quot;></i>'">`
+        : `<i data-icon="search"></i>`;
+      info.innerHTML = `<span class="bws-title bws-title-nav">${_bwHE(s.title)}</span><span class="bws-url">${_bwHE(s.url)}</span>`;
+    } else {
+      fav.className = 'bws-favicon';
+      fav.innerHTML = `<i data-icon="search"></i>`;
+      info.innerHTML = `<span class="bws-title">${_bwHE(s.text)}</span>`;
+    }
     row.append(fav, info);
     container.appendChild(row);
   });
@@ -3093,8 +3245,9 @@ function closeBwSearch() {
   if (bwMode === 'web') {
     document.querySelector('.skbar').style.display = 'none';
     document.getElementById('bw-nav').classList.add('visible');
-    if (_bwTipsVisible) document.getElementById('bw-tips-badge').classList.add('visible');
+    _bwTipsBadgeShow();
   } else {
+    bwFocus = 0;
     renderBw();
   }
 }
@@ -3125,9 +3278,10 @@ function bwSearchNav(dir) {
 function _setBwSK() {
   const tile = BW_TILES[bwFocus];
   const isEmpty = !tile || tile.icon.endsWith('ic_default.png');
-  const csk = isEmpty ? '' : 'Select';
+  const lsk = bwLastUrl ? 'Return' : '';
+  const csk = isEmpty ? '' : (tile.url ? 'GO' : 'Select');
   const rsk = isEmpty ? '' : bwFocus === 0 ? `img=${BW_ICON_PATH}ic_google_home.png` : (!tile.builtin && tile.label) ? 'Unpin' : '';
-  setSK('', csk, rsk, false);
+  setSK(lsk, csk, rsk, false);
   const bar = document.querySelector('.skbar');
   bar.style.backgroundColor = '#e6e6e6';
   bar.style.backgroundImage = 'none';
@@ -3226,14 +3380,14 @@ function nav(dir) {
     return;
   }
   if (_bwPinMode) { _bwPinNav(dir); return; }
-  if (bwMode === 'web' && view === 'app-open') { _bwWebArrow(dir); return; }
-  if (isBwHistOpen()) { if (!_bwHistDialogOpen) _bwHistNav(dir); return; }
-  if (isBwShareOpen()) { _bwShareNav(dir); return; }
   if (isBwVolOpen()) {
     if (dir === 'up')   { _bwVolAdj(+1); return; }
     if (dir === 'down') { _bwVolAdj(-1); return; }
     return;
   }
+  if (isBwShareOpen()) { _bwShareNav(dir); return; }
+  if (bwMode === 'web' && view === 'app-open') { _bwWebArrow(dir); return; }
+  if (isBwHistOpen()) { if (!_bwHistDialogOpen) _bwHistNav(dir); return; }
   if (isSleepOpen()) {
     const maxFocus = view === 'lock' ? 1 : 2;
     if (dir === 'up')   { sleepFocus = Math.max(0, sleepFocus - 1); updateSleepFocus(); }
@@ -3396,7 +3550,7 @@ function pressOK() {
   if (_bwPinMode)                  { _bwPinConfirm();            return; }
   if (isBwHistOpen())              { if (_bwHistDialogOpen) return; if (bwHistory.length) _bwHistGo(); return; }
   if (isBwShareOpen())             { _bwShareSelect();           return; }
-  if (isBwVolOpen())               { _bwVolClose();              return; }
+  if (isBwVolOpen())               { return; }
   if (view === 'home')             { showApps();                 return; }
   if (view === 'sidemenu')         { openAppView(SM_APPS[smFocus]); return; }
   if (view === 'apps' && isMoving) { exitMoveMode(false);        return; }
@@ -3466,7 +3620,7 @@ function pressBack() {
   if (_bwPinMode)                  { _bwPinExit();      return; }
   if (isBwHistOpen())              { if (_bwHistDialogOpen) { _bwHistDialogCancel(); return; } closeBwHistory(); return; }
   if (isBwShareOpen())             { _bwShareClose();   return; }
-  if (isBwVolOpen())               { _bwVolClose();     return; }
+  if (isBwVolOpen())               { return; }
   if (view === 'browser-search')   { closeBwSearch();   return; }
   if (view === 'app-open' && openApp?.id === 'browser' && isBwDialogOpen()) { closeBwDialog(); return; }
   if (view === 'app-open' && openApp?.id === 'browser' && bwMode === 'web') { closeBwWebView(); return; }
@@ -3508,14 +3662,14 @@ function softLeft() {
   if (isBwSCOpen())                { _bwSCPrev();                            return; }
   if (_bwPinMode)                  { if (_bwPinMode === 'picker') _bwPinExit(); return; }
   if (isBwShareOpen())             { _bwShareClose();                        return; }
-  if (isBwVolOpen())               { _bwVolClose();                          return; }
+  if (isBwVolOpen())               { return; }
   if (isBwHistOpen())              { if (_bwHistDialogOpen) { _bwHistDialogCancel(); return; } closeBwHistory(); return; }
   if (view === 'home')             { showStub('Notices', 'notifications');   return; }
   if (view === 'browser-search')   { closeBwSearch();                        return; }
   if (view === 'app-open' && openApp?.id === 'browser' && isBwDialogOpen()) { closeBwDialog(); return; }
   if (view === 'app-open' && openApp?.id === 'browser' && bwMode === 'web') { closeBwWebView(); return; }
   if (view === 'app-open' && openApp?.url && bwMode === 'web') { _bwNavHome(); return; }
-  if (view === 'app-open' && openApp?.id === 'browser' && bwMode === 'home') { return; }
+  if (view === 'app-open' && openApp?.id === 'browser' && bwMode === 'home') { _bwReturnToWeb(); return; }
   if (view === 'app-open' && !openApp?.url && openApp?.id !== 'browser' && openApp?.type !== 'folder') return;
   if (view === 'app-open')         { pressBack();                            return; }
   if (view === 'dialer')           { return; }
@@ -4248,10 +4402,9 @@ function doPowerOff() {
       if (isBwSCOpen()) { closeBwShortcut(); return; }
       if (isBwShareOpen()) { _bwShareClose(); return; }
       if (isBwVolOpen()) { _bwVolClose(); return; }
-      if (view === 'app-open' && openApp?.id === 'browser' && bwMode === 'home' && bwLastUrl) {
-        openBwWebView(bwLastUrl);
-      } else if (view === 'app-open' && openApp?.id === 'browser' && bwMode === 'web') {
-        _bwCloseWebviewCommon(); goHome();
+      if (view === 'app-open' && bwMode === 'web' && (openApp?.id === 'browser' || openApp?.url)) {
+        if (_bwCanGoBack()) _bwNavBack();
+        else { if (bwCurrentUrl) bwLastUrl = bwCurrentUrl; _bwCloseWebviewCommon(); goHome(); }
       } else {
         pressBack();
       }
@@ -4323,7 +4476,7 @@ document.addEventListener('keydown', e => {
   }
   if (_bwPinMode && /^[0-9]$/.test(e.key)) { e.preventDefault(); showNumPress(e.key); pressNum(e.key); return; }
   // When webview is active, forward keys to it; keep F8/F1/F2/Backspace for simulator
-  if (bwMode === 'web' && view === 'app-open' && !_bwPinMode) {
+  if (bwMode === 'web' && view === 'app-open' && !_bwPinMode && !isBwVolOpen() && !isBwShareOpen()) {
     if (_bwScrollMode) {
       if (e.key === 'ArrowUp')    { e.preventDefault(); showArrowPress('up');    _bwScrollBy('up');    return; }
       if (e.key === 'ArrowDown')  { e.preventDefault(); showArrowPress('down');  _bwScrollBy('down');  return; }
