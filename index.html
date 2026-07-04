@@ -397,6 +397,32 @@
       transition: opacity 0.1s ease;
     }
     .app-tile.focused .app-icon::before { opacity: 1; }
+    /* web-app (bookmark) icon: favicon centered over the web_shortcut frame */
+    .app-icon.webapp-icon .webapp-favicon {
+      position: absolute; inset: 0;
+      background-size: 2.2rem 2.2rem;
+      background-position: center;
+      background-repeat: no-repeat;
+      visibility: visible;
+      z-index: 2;
+    }
+    .app-wall.list-mode .app-icon.webapp-icon .webapp-favicon { background-size: 1.6rem 1.6rem; }
+    .sm-main-icon .sm-favicon { position:absolute; inset:0; background-size:40% 40%; background-position:center; background-repeat:no-repeat; z-index:2; }
+    /* Rename dialog */
+    #rename-dialog { position:absolute; inset:0; z-index:10001; background:rgba(0,0,0,0.85); display:none; flex-direction:column; justify-content:flex-end; }
+    #rename-dialog.visible { display:flex; }
+    #rename-dialog-panel { background:#fff; }
+    #rename-dialog-hdr { min-height:3.2rem; display:flex; align-items:center; justify-content:center; font-size:1.5rem; color:#323232; background:#cccccc; }
+    #rename-field { background:var(--color-purple); padding:0.4rem 1rem 0.8rem; }
+    #rename-label { color:#fff; font-size:1.5rem; margin-bottom:0.4rem; }
+    #rename-input { padding:0.5rem 0.6rem; background:#fff; border:1px solid #ccc; font-size:1.6rem; line-height:1.35; color:#323232; white-space:nowrap; overflow:hidden; outline:none; box-sizing:border-box; }
+    #rename-input .rn-caret { display:inline-block; width:1px; background:#000; animation:rn-blink 1s step-end infinite; vertical-align:-2px; height:1.5rem; }
+    #rename-input .rn-sel { background:#accef0; color:#323232; }
+    @keyframes rn-blink { 50% { opacity:0; } }
+    #rename-url { padding:0.6rem 1rem 1rem; font-size:1.6rem; color:#8c8c8c; word-break:break-all; }
+    #rename-sk { height:var(--softkeybar-height); background:rgba(0,0,0,0.88); display:grid; grid-template-columns:1fr auto 1fr; align-items:center; padding:0 0.8rem; }
+    #rename-sk span:first-child { text-align:left; font-size:1.4rem; font-weight:600; color:#fff; cursor:pointer; }
+    #rename-sk span:last-child { text-align:right; font-size:1.4rem; font-weight:600; color:#fff; cursor:pointer; }
     /* notification badge */
     .app-notif {
       position: absolute;
@@ -448,6 +474,8 @@
     .app-wall.list-mode .app-icon::after { background-size: 5.5rem 5.5rem; }
     .app-wall.list-mode .app-tile-name {
       font-size: 2.4rem; color: #fff; font-weight: 700;
+      flex: 1; min-width: 0;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
 
     /* SINGLE VIEW — matches KaiOS launcher source */
@@ -1080,8 +1108,11 @@
     #option-menu.visible { display: flex; }
     #option-menu-panel {
       background: #fff;
+      max-height: 100%;
       overflow-y: auto;
+      scrollbar-width: none;
     }
+    #option-menu-panel::-webkit-scrollbar { width: 0; height: 0; display: none; }
     .om-header {
       min-height: 3.2rem;
       display: flex;
@@ -1092,7 +1123,7 @@
       background: #cccccc;
     }
     .om-item {
-      min-height: 4.8rem;
+      min-height: 4.6rem;
       display: flex;
       align-items: center;
       padding: 0.5rem 1rem;
@@ -1652,6 +1683,19 @@ JAN 1</div>
       </div>
     </div>
 
+    <!-- Rename dialog (pinned web app) -->
+    <div id="rename-dialog">
+      <div id="rename-dialog-panel">
+        <div id="rename-dialog-hdr">Rename</div>
+        <div id="rename-field">
+          <div id="rename-label">Title</div>
+          <div id="rename-input"></div>
+        </div>
+        <div id="rename-url"></div>
+      </div>
+      <div id="rename-sk"><span onclick="_renameCancel()">Cancel</span><span></span><span onclick="_renameConfirm()">OK</span></div>
+    </div>
+
     <!-- Sleep menu overlay (hold power) -->
     <div id="power-menu">
       <div class="sleep-item" id="sm-lock">Lock</div>
@@ -1781,6 +1825,7 @@ const ICO = {
 
 // ── Apps ──
 const LAUNCHER_IMG = './kaiosrt/gaia/profile/webapps/installed/launcher/style/images/';
+const WEB_SHORTCUT_ICON = LAUNCHER_IMG + 'web_shortcut_56.png';
 const APPS = [
   { id:'settings',  name:'Settings',  icon: ICO.settings },
   { id:'browser',   name:'Internet',  icon: ICO.browser  },
@@ -2175,6 +2220,8 @@ window.addEventListener('message', e => {
 (function() {
   const wv = document.getElementById('bw-iframe');
   if (wv && wv.tagName === 'WEBVIEW') {
+    const _bwHideScrollCSS = '::-webkit-scrollbar{width:0!important;height:0!important;display:none!important}html{scrollbar-width:none!important}';
+    wv.addEventListener('dom-ready', () => { try { wv.insertCSS(_bwHideScrollCSS); } catch(e) {} });
     wv.addEventListener('page-title-updated', e => _bwSetPageTitle(e.title));
     wv.addEventListener('did-navigate', e => _bwUrlChanged(e.url));
     wv.addEventListener('did-navigate-in-page', e => { if (e.isMainFrame) _bwUrlChanged(e.url); });
@@ -2231,8 +2278,7 @@ function _bwMenuOpen() {
   _bwOmRow = 0; _bwOmCol = 0;
   const om = document.getElementById('bw-options-menu');
   om.classList.add('visible');
-  const f = document.getElementById('bw-iframe');
-  if (f && f.tagName === 'WEBVIEW') { f.style.pointerEvents = 'none'; try { f.blur(); } catch(e) {} }
+  _bwFreezePage(true);
   om.tabIndex = -1; om.focus();
   const menu = om.querySelector('.bw-om-menu');
   if (menu) menu.scrollTop = 0;
@@ -2240,10 +2286,29 @@ function _bwMenuOpen() {
   _bwMenuInjectOverlay(true);
 }
 
+// Freeze the underlying web page: disable mouse and take keyboard focus away
+// so arrows/cursor no longer reach it while a browser overlay is open.
+function _bwFreezePage(freeze) {
+  const f = document.getElementById('bw-iframe');
+  if (!f) return;
+  if (freeze) {
+    f.style.pointerEvents = 'none';
+    _bwCursorHide();
+    try { f.blur(); } catch(e) {}
+    if (document.activeElement && document.activeElement !== document.body) { try { document.activeElement.blur(); } catch(e) {} }
+    if (f.tagName === 'WEBVIEW') {
+      try { f.executeJavaScript('(function(){try{if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();}catch(e){}})()').catch(()=>{}); } catch(e) {}
+    }
+  } else {
+    // In web mode the physical mouse stays disabled — only the virtual cursor drives the page
+    f.style.pointerEvents = (bwMode === 'web') ? 'none' : '';
+    if (bwMode === 'web' && !_bwScrollMode) _bwCursorShow();
+  }
+}
+
 function _bwMenuClose() {
   document.getElementById('bw-options-menu').classList.remove('visible');
-  const f = document.getElementById('bw-iframe');
-  if (f && f.tagName === 'WEBVIEW') f.style.pointerEvents = '';
+  _bwFreezePage(false);
   _bwMenuInjectOverlay(false);
 }
 
@@ -2323,16 +2388,13 @@ function _bwShareOpen() {
   _bwShareFocus = 0; _bwShareRender();
   const menu = document.getElementById('bw-share-menu');
   menu.classList.add('visible');
-  // Steal keyboard focus from the page so arrows reach the simulator
-  const f = document.getElementById('bw-iframe');
-  if (f) { f.style.pointerEvents = 'none'; try { f.blur(); } catch(e) {} }
+  _bwFreezePage(true);
   menu.tabIndex = -1;
   menu.focus();
 }
 function _bwShareClose() {
   document.getElementById('bw-share-menu').classList.remove('visible');
-  const f = document.getElementById('bw-iframe');
-  if (f) f.style.pointerEvents = '';
+  _bwFreezePage(false);
 }
 function _bwShareRender() {
   document.querySelectorAll('.bw-share-item').forEach((el, i) => el.classList.toggle('focused', i === _bwShareFocus));
@@ -2352,17 +2414,14 @@ function isBwVolOpen() { return document.getElementById('bw-vol-ov').classList.c
 function _bwVolOpen() {
   const ov = document.getElementById('bw-vol-ov');
   ov.classList.add('visible');
-  // Steal keyboard focus from the page so arrows reach the simulator
-  const f = document.getElementById('bw-iframe');
-  if (f) { f.style.pointerEvents = 'none'; try { f.blur(); } catch(e) {} }
+  _bwFreezePage(true);
   ov.tabIndex = -1;
   ov.focus();
   _bwVolRender();
 }
 function _bwVolClose() {
   document.getElementById('bw-vol-ov').classList.remove('visible');
-  const f = document.getElementById('bw-iframe');
-  if (f) f.style.pointerEvents = '';
+  _bwFreezePage(false);
   if (_bwVolTimer) { clearTimeout(_bwVolTimer); _bwVolTimer = null; }
 }
 function _bwVolRender() {
@@ -2453,8 +2512,7 @@ function _bwPinToStart() {
   _bwPinMode = 'menu';
   _bwPinMenuFocus = 0;
   document.getElementById('bw-pin-menu').classList.add('visible');
-  const f = document.getElementById('bw-iframe');
-  if (f && f.tagName === 'WEBVIEW') { f.style.pointerEvents = 'none'; try { f.blur(); } catch(e) {} }
+  _bwFreezePage(true);
   _bwMenuInjectOverlay(true);
   _bwPinMenuRender();
 }
@@ -2463,6 +2521,16 @@ function _bwPinMenuRender() {
 }
 function _bwPinMenuSelect() {
   if (_bwPinMenuFocus === 1) {
+    let fav = '';
+    try { fav = 'https://www.google.com/s2/favicons?domain=' + new URL(_bwPinData.url).hostname + '&sz=64'; } catch(e) {}
+    APPS.push({
+      id: 'webapp-' + Date.now(),
+      name: _bwPinData.title,
+      url: _bwPinData.url,
+      icon: WEB_SHORTCUT_ICON,
+      favicon: fav,
+      webapp: true
+    });
     _bwPinCloseAll();
     showToast('This website has been pinned to Apps Menu.');
     return;
@@ -2532,8 +2600,7 @@ function _bwPinCloseAll() {
   _bwPinData = null;
   document.getElementById('bw-pin-menu').classList.remove('visible');
   document.getElementById('bw-pin-container').classList.remove('visible');
-  const f = document.getElementById('bw-iframe');
-  if (f && f.tagName === 'WEBVIEW') f.style.pointerEvents = '';
+  _bwFreezePage(false);
   _bwMenuInjectOverlay(false);
 }
 
@@ -2856,9 +2923,10 @@ function _bwIsSearch(text) {
 async function _bwSearchWeb(query) {
   bwMode = 'web';
   bwCurrentUrl = 'search:' + query;
-  bwZoom = 1.0;
+  bwZoom = 0.7;
   _bwResetZoomStyles();
   _bwNavReset();
+  _bwCursorReset();
   document.querySelectorAll('.bw-el').forEach(el => el.style.display = 'none');
   document.getElementById('bw-webview-wrap').classList.add('visible');
   document.getElementById('bw-ssl-icon').textContent = '';
@@ -2870,6 +2938,7 @@ async function _bwSearchWeb(query) {
   _sb3.style.color = '';
   document.querySelector('.skbar').style.display = 'none';
   document.getElementById('bw-nav').classList.add('visible');
+  document.getElementById('bw-iframe').style.pointerEvents = 'none'; // physical mouse off; virtual cursor only
 
   const iframe = document.getElementById('bw-iframe');
   const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -2912,6 +2981,8 @@ async function _bwSearchWeb(query) {
     iframe.srcdoc = `<!DOCTYPE html><html><body style="font-family:sans-serif;text-align:center;padding:2rem;color:#666;font-size:13px">Search failed. Please try again.</body></html>`;
   }
   _bwProgressEnd();
+  _bwApplyZoom(iframe);
+  if (!_bwScrollMode) _bwCursorShow();
 }
 
 function _bwDomain(url) {
@@ -2933,9 +3004,10 @@ function openBwWebView(url) {
   _bwTipsBadgeShow();
   bwMode = 'web';
   bwCurrentUrl = url;
-  bwZoom = 1.0;
+  bwZoom = 0.7;
   _bwResetZoomStyles();
   _bwNavReset();
+  _bwCursorReset();
   document.querySelectorAll('.bw-el').forEach(el => el.style.display = 'none');
   const wrap = document.getElementById('bw-webview-wrap');
   wrap.classList.add('visible');
@@ -2953,6 +3025,8 @@ function openBwWebView(url) {
     // reported theirs via the injected bw-title message; don't clobber it.
     if (title) document.getElementById('bw-url-title').textContent = title;
     _bwHistSave(url, title || _bwDomain(url));
+    _bwApplyZoom(iframe);
+    if (!_bwScrollMode) _bwCursorShow();
   };
   if (iframe.tagName === 'WEBVIEW') {
     iframe.removeEventListener('did-finish-load', iframe._loadHandler);
@@ -2968,17 +3042,20 @@ function openBwWebView(url) {
   _sb.style.color = '';
   document.querySelector('.skbar').style.display = 'none';
   document.getElementById('bw-nav').classList.add('visible');
+  document.getElementById('bw-iframe').style.pointerEvents = 'none'; // physical mouse off; virtual cursor only
 }
 
 function _bwCloseWebviewCommon() {
   document.getElementById('bw-tips-badge').classList.remove('visible');
   _bwExitScrollMode();
-  bwZoom = 1.0;
+  _bwCursorHide();
+  bwZoom = 0.7;
   _bwResetZoomStyles();
   bwMode = 'home';
   bwCurrentUrl = '';
   document.getElementById('bw-webview-wrap').classList.remove('visible');
   const _f = document.getElementById('bw-iframe');
+  _f.style.pointerEvents = '';
   if (_f.tagName === 'WEBVIEW') { _f.removeAttribute('srcdoc'); }
   _f.src = 'about:blank';
   _bwProgressEnd();
@@ -3026,7 +3103,7 @@ function closeBwWebView() {
   }
 }
 
-let bwZoom = 1.0;
+let bwZoom = 0.7;
 
 function bwWebKey(k) {
   if (isBwVolOpen() || isBwShareOpen()) return;
@@ -3037,15 +3114,25 @@ function bwWebKey(k) {
   if (k === '0') { _bwScrollTo('bottom'); return; }
   const wv = document.getElementById('bw-iframe');
   if (!wv) return;
+  let zoomed = false;
   if (wv.tagName === 'WEBVIEW') {
-    if (k === '1') { bwZoom = Math.max(0.5, bwZoom - 0.1); wv.setZoomFactor(bwZoom); }
-    if (k === '3') { bwZoom = Math.min(3.0, bwZoom + 0.1); wv.setZoomFactor(bwZoom); }
+    if (k === '1') { bwZoom = Math.max(0.5, +(bwZoom - 0.1).toFixed(1)); wv.setZoomFactor(bwZoom); zoomed = true; }
+    if (k === '3') { bwZoom = Math.min(3.0, +(bwZoom + 0.1).toFixed(1)); wv.setZoomFactor(bwZoom); zoomed = true; }
   } else {
-    if (k === '1') { bwZoom = Math.max(0.5, +(bwZoom - 0.1).toFixed(1)); _bwZoomFallback(wv); }
-    if (k === '3') { bwZoom = Math.min(3.0, +(bwZoom + 0.1).toFixed(1)); _bwZoomFallback(wv); }
+    if (k === '1') { bwZoom = Math.max(0.5, +(bwZoom - 0.1).toFixed(1)); _bwZoomFallback(wv); zoomed = true; }
+    if (k === '3') { bwZoom = Math.min(3.0, +(bwZoom + 0.1).toFixed(1)); _bwZoomFallback(wv); zoomed = true; }
   }
+  // Re-draw the cursor so it recomputes its counter-scaled size (stays fixed on screen)
+  if (zoomed && _curActive) { setTimeout(() => _bwCursorPush(true), 0); }
 }
 
+// Apply the current bwZoom to a freshly loaded page (default 80%)
+function _bwApplyZoom(wv) {
+  if (!wv) return;
+  if (wv.tagName === 'WEBVIEW') { try { wv.setZoomFactor(bwZoom); } catch(e) {} }
+  else { _bwZoomFallback(wv); }
+  if (_curActive) setTimeout(() => _bwCursorPush(true), 0);
+}
 // Zoom for iframe mode: scale + compensate BOTH width and height so the page fills the viewport
 function _bwZoomFallback(wv) {
   if (!wv._baseH) wv._baseH = wv.offsetHeight; // layout height at zoom 1 (before overriding flex)
@@ -3087,15 +3174,125 @@ let _bwScrollMode = false;
 function _bwToggleScrollMode() {
   _bwScrollMode = !_bwScrollMode;
   document.getElementById('bw-scroll-ind').classList.toggle('visible', _bwScrollMode);
+  // Scroll mode hides the virtual cursor; cursor mode hides the edge arrows
+  if (_bwScrollMode) _bwCursorHide(); else _bwCursorShow();
 }
 function _bwExitScrollMode() {
   _bwScrollMode = false;
   document.getElementById('bw-scroll-ind').classList.remove('visible');
 }
+
+// ── Virtual cursor (KaiOS-style pointer in web mode) ──
+// The cursor lives INSIDE the page (fixed-position img) so it always paints on
+// top of page content — Electron <webview> otherwise composites over any parent DOM.
+const CUR_DATA_URI = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAGqADAAQAAAABAAAAGgAAAABMybYKAAACM0lEQVRIDa3Uv4saURAH8DsPjSIIaSxCuEKIBotYWMRCm1icTWzO6mxCbCyuC8Q/IATSpbESIW0CVhYHQkBsbPwDFIIgHAcBRdf9Hc/dyXeOGJZlY3Z1Fx7umzczH95jfScnDg8RvXMI+x8CxM+1/51tHVmZz+fiZrOp25b8nTKUSCRosVgo2+32jb/dLd0YwpSSySQtl0vGrizL/r3uIMbS6TStVisFsUv/hD+drBBjmUyG1us1Y699xewQY9lsliRJYuzCN8wJYiyXy5GMB+uvfMH+BTFWKBRIURTG8kdj+yDGisUiqaoqIe/lUdj/IMZKpRJjInKzB2NuIMbK5TIf4xr5Lw7C3EKMVSoVE5iAmrRnzAvEWLVaNYAtUffME+YVCgaD1Gg0DFzCP1GbcI3tg0KhEA0GA302mwm4B2U0/2UYxlbTNNE0zR+o/YbxyBVmhwKBAKVSqYeLlo+q0+nIaP4ZeU8xoq6aOiVZIT6WbrerDIdDmREe+XyeRFG8dar1FNtB4XCY+v2+jKY3OBrBuqvpdMr/oeOuIoZisRiNRiMZF+lXTM90Xf/UbDb13a7q9bopCMKNpx3Ykxkaj8cikBZeT3kdv+f4hNVIJPJwfNFolG8GDfEn9nrXcxTz89FegB18r9Vqfz+KVquFE9U+2PNcz4G8d0pG/GIymYhYo3g8Tu12+x5f3x3iAaf8g2NoeIrju+v1ehJ2ouIj+YLY84Mb7itE47cYDYzH+/Lsa78BgVUCjf/Bb48AAAAASUVORK5CYII=';
+const CUR_PTR_URI = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA4ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMDY3IDc5LjE1Nzc0NywgMjAxNS8wMy8zMC0yMzo0MDo0MiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDoxZTdiZmZmMy02NWViLTQ5YzQtODRiYi1kZTNmZmExZDU4Y2QiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RkUzOENENjU1NUI2MTFFNjhBQTY5MTE4NjE1REVCOEUiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RkUzOENENjQ1NUI2MTFFNjhBQTY5MTE4NjE1REVCOEUiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTUgKE1hY2ludG9zaCkiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDozY2M3NzUwMy01YTM5LTQ1YzYtOWVhMS1iZTlmOTEzZWIwYzMiIHN0UmVmOmRvY3VtZW50SUQ9ImFkb2JlOmRvY2lkOnBob3Rvc2hvcDowNmI1YTA1Mi05ZGJjLTExNzktODBmMi1mMzIzZWQxYjUwZjMiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5Zp5DDAAABuElEQVR42syWMWvCQBTHk5ai2MXNTUq+hh9DcNOlg9AvYMfuHTK1Q6CDe+lisFBcpBU7iGAKdnNKwUINpkFIcXh9F/rkTK+5M7XSP/zNweXul3e+9xJNk+sMfY8G9CP6nJ8EACWrQNhdkMvlgMY8bFugKJJOpwNM/X4fuMg2AukSENBmJF1fLdHjc0na03akJNDhrkAHuwLJ5KAvfgOvoa/Rr5TOvLgUJ7+gn9EWOqua3jXBRmsgwzBgOBzCaDSCfD4vArOSKMtAUd1YlgXT6RR83/8GGgwGq3Gz2QTXdWE8HkcFnclkeGA5CSQ8KhX1er3oapomgew/AZHm8zmB/KTOIOwEqtUf7x64Tv9XnSFSsVjcCkh6dKk2VTg6j/3MZrPUkDAMafiRdHSsjrRWq5Ua5Hne2kP/pGMWMav+xWIBadRutym9b/n0jkd0hb6bTCZavV5PFVG32107nSQZ6Hf2VI1GY6NogiCAQqFAEZVUvhlK1CWq1SrgHyyFLJdLqFQqwmOTZTGDBWyhbdtSkOM4BHlDH236FXQqem1IfCl6H+1LQA9f9ZBlTUJy7xP6Bjc9EU1+CjAAHiLfZiALOxAAAAAASUVORK5CYII=';
+let _curX = 0, _curY = 0, _curActive = false, _curInit = false;
+const _CUR_STEP = 6, _CUR_EDGE = 4;
+function _bwCursorReset() { _curInit = false; }
+function _bwCursorDims() {
+  // Visible web area (screen px) — NOT the iframe's own clientWidth, which balloons
+  // when zoomed out via CSS transform (width:(100/zoom)%). _curX/_curY live in screen px.
+  const wrap = document.getElementById('bw-webview-wrap');
+  const tb = document.getElementById('bw-topbar');
+  const W = (wrap && wrap.clientWidth) || 240;
+  const H = ((wrap && wrap.clientHeight) || 294) - ((tb && tb.offsetHeight) || 24);
+  return { W, H };
+}
+// Build the in-page cursor updater (defines window.__bwc once; picks default vs
+// pointer image based on the element under the point). Reused by webview + iframe.
+function _bwCursorHelperJS() {
+  return `if(!window.__bwc){window.__bwc=function(x,y,show,sz){sz=sz||26;var c=document.getElementById('__bwcur__');if(show){if(!c){c=document.createElement('img');c.id='__bwcur__';c.style.cssText='position:fixed;z-index:2147483647;pointer-events:none;';(document.documentElement||document.body).appendChild(c);}c.style.left=x+'px';c.style.top=y+'px';c.style.width=sz+'px';c.style.height=sz+'px';c.style.display='block';var pt=false;try{var n=document.elementFromPoint(x,y);while(n){var cs=(getComputedStyle(n).cursor||'');if(cs==='pointer'){pt=true;break;}var tg=n.tagName;if(tg==='A'||tg==='BUTTON'||tg==='SELECT'||tg==='TEXTAREA'||(tg==='INPUT'&&n.type!=='hidden')){pt=true;break;}n=n.parentElement;}}catch(e){}var k=pt?'p':'d';if(c.getAttribute('data-k')!==k){c.src=(pt?window.__bwcPTR:window.__bwcDEF);c.setAttribute('data-k',k);}}else if(c){c.parentNode&&c.parentNode.removeChild(c);}};window.__bwcDEF='${CUR_DATA_URI}';window.__bwcPTR='${CUR_PTR_URI}';}`;
+}
+// Counter-scale the in-page cursor so it stays a fixed 26px on screen regardless of page zoom
+function _bwCurCoords() {
+  const z = bwZoom || 1;
+  return { cx: _curX / z, cy: _curY / z, sz: 26 / z };
+}
+function _bwCursorPush(show) {
+  const wv = document.getElementById('bw-iframe');
+  if (!wv) return;
+  const { cx, cy, sz } = _bwCurCoords();
+  if (wv.tagName === 'WEBVIEW') {
+    const js = _bwCursorHelperJS() + `window.__bwc(${cx},${cy},${show?'true':'false'},${sz});`;
+    try { wv.executeJavaScript(js).catch(()=>{}); } catch(e) {}
+  } else {
+    // Same-origin (search results srcdoc) → run helper directly; else postMessage to proxied page
+    let done = false;
+    try {
+      const w = wv.contentWindow;
+      if (w && wv.contentDocument) {
+        if (!w.__bwc) { const s = wv.contentDocument.createElement('script'); s.textContent = _bwCursorHelperJS(); wv.contentDocument.documentElement.appendChild(s); }
+        if (w.__bwc) { w.__bwc(cx, cy, !!show, sz); done = true; }
+      }
+    } catch(e) {}
+    if (!done) { try { wv.contentWindow.postMessage({ type:'bw-cursor', x:cx, y:cy, sz, show:!!show }, '*'); } catch(e) {} }
+  }
+}
+function _bwCursorShow() {
+  const wv = document.getElementById('bw-iframe');
+  if (!wv || bwMode !== 'web') return;
+  if (!_curInit) {
+    const { W, H } = _bwCursorDims();
+    _curX = Math.round(W / 2);
+    _curY = Math.round(H / 2);
+    _curInit = true;
+  }
+  _curActive = true;
+  _bwCursorPush(true);
+}
+function _bwCursorHide() {
+  _curActive = false;
+  _bwCursorPush(false);
+}
+function _bwCursorRender() { _bwCursorPush(true); }
+function _bwCursorMove(dir) {
+  const { W, H } = _bwCursorDims();
+  const CUR_SZ = 26;                 // cursor image size — keep it fully on-screen
+  const MAXX = W - CUR_SZ, MAXY = H - CUR_SZ;
+  // Step scales with zoom: zoomed out → slower, zoomed in → faster (cursor size unchanged)
+  const step = Math.max(2, Math.round(_CUR_STEP * bwZoom));
+  let scroll = null;
+  if (dir === 'left')  { _curX -= step; if (_curX <= _CUR_EDGE) { _curX = _CUR_EDGE; scroll = 'left';  } }
+  if (dir === 'right') { _curX += step; if (_curX >= MAXX)      { _curX = MAXX;      scroll = 'right'; } }
+  if (dir === 'up')    { _curY -= step; if (_curY <= _CUR_EDGE) { _curY = _CUR_EDGE; scroll = 'up';    } }
+  if (dir === 'down')  { _curY += step; if (_curY >= MAXY)      { _curY = MAXY;      scroll = 'down';  } }
+  if (scroll) _bwScrollBy(scroll);
+  _bwCursorPush(true);
+}
+function _bwCursorClick() {
+  const wv = document.getElementById('bw-iframe');
+  if (!wv || !_curActive) return;
+  if (wv.tagName === 'WEBVIEW') {
+    try {
+      wv.sendInputEvent({ type:'mouseMove', x:_curX, y:_curY });
+      wv.sendInputEvent({ type:'mouseDown', x:_curX, y:_curY, button:'left', clickCount:1 });
+      wv.sendInputEvent({ type:'mouseUp',   x:_curX, y:_curY, button:'left', clickCount:1 });
+    } catch(e) {}
+  } else {
+    const { cx, cy } = _bwCurCoords();
+    let done = false;
+    try {
+      const d = wv.contentDocument;
+      if (d) { const el = d.elementFromPoint(cx, cy); if (el) { el.focus && el.focus(); el.click && el.click(); } done = true; }
+    } catch(e) {}
+    if (!done) { try { wv.contentWindow.postMessage({ type:'bw-click', x:cx, y:cy }, '*'); } catch(e) {} }
+  }
+  // A click gives the page keyboard focus; return it to the simulator so arrows keep
+  // driving the virtual cursor instead of scrolling the page.
+  setTimeout(() => {
+    try { wv.blur(); } catch(e) {}
+    if (wv.tagName === 'WEBVIEW') {
+      try { wv.executeJavaScript('(function(){try{if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();}catch(e){}})()').catch(()=>{}); } catch(e) {}
+    } else {
+      try { const d = wv.contentDocument; if (d && d.activeElement && d.activeElement.blur) d.activeElement.blur(); } catch(e) {}
+    }
+  }, 0);
+}
 function _bwScrollBy(dir) {
   const wv = document.getElementById('bw-iframe');
   if (!wv) return;
-  const STEP = 120;
+  const STEP = 10;
   const dx = dir === 'left' ? -STEP : dir === 'right' ? STEP : 0;
   const dy = dir === 'up'   ? -STEP : dir === 'down'  ? STEP : 0;
   if (wv.tagName === 'WEBVIEW') {
@@ -3112,18 +3309,11 @@ function _bwScrollBy(dir) {
     if (!done) { try { wv.contentWindow.postMessage({type:'bw-scroll-by', dx, dy}, '*'); } catch(e){} }
   }
 }
-// Forward a D-pad arrow to the browser page (mirrors the hardware keyboard path)
+// D-pad / arrow in web mode: scroll mode → scroll page, else move virtual cursor
 function _bwWebArrow(dir) {
   if (_bwScrollMode) { _bwScrollBy(dir); return; }
-  const wv = document.getElementById('bw-iframe');
-  if (!wv) return;
-  if (wv.tagName === 'WEBVIEW') {
-    const kc = dir === 'up' ? 'Up' : dir === 'down' ? 'Down' : dir === 'left' ? 'Left' : 'Right';
-    wv.sendInputEvent({ type: 'keyDown', keyCode: kc });
-    wv.sendInputEvent({ type: 'keyUp',   keyCode: kc });
-  } else {
-    _bwScrollBy(dir);
-  }
+  if (!_curActive) _bwCursorShow();
+  _bwCursorMove(dir);
 }
 
 function bwSearchGo() {
@@ -3249,6 +3439,7 @@ function closeBwSearch() {
     document.querySelector('.skbar').style.display = 'none';
     document.getElementById('bw-nav').classList.add('visible');
     _bwTipsBadgeShow();
+    if (!_bwScrollMode) _bwCursorShow();
   } else {
     bwFocus = 0;
     renderBw();
@@ -3338,6 +3529,18 @@ function navFolder(dir) {
 // ════════════════════════════════════════
 //  APP GRID
 // ════════════════════════════════════════
+// Web-app (bookmark) icon = web_shortcut frame + centered favicon overlay
+function _applyAppIcon(icoEl, app) {
+  icoEl.style.backgroundImage = `url("${app.icon}")`;
+  if (app.webapp && app.favicon) {
+    icoEl.classList.add('webapp-icon');
+    const fv = document.createElement('div');
+    fv.className = 'webapp-favicon';
+    fv.style.backgroundImage = `url("${app.favicon}")`;
+    icoEl.appendChild(fv);
+  }
+}
+
 function buildGrid(keepFocus) {
   const wall  = document.getElementById('app-wall');
   document.querySelectorAll('.single-previews').forEach(e => e.remove());
@@ -3349,7 +3552,7 @@ function buildGrid(keepFocus) {
     tile.className = 'app-tile' + (i === focus ? ' focused' : '');
     const ico = document.createElement('div');
     ico.className = 'app-icon';
-    ico.style.backgroundImage = `url("${app.icon}")`;
+    _applyAppIcon(ico, app);
     tile.appendChild(ico);
     tile.onclick = () => { focus = i; openAppView(); };
     wall.appendChild(tile);
@@ -3376,6 +3579,7 @@ function buildGrid(keepFocus) {
 // ════════════════════════════════════════
 function nav(dir) {
   if (booting || inputLocked) return;
+  if (isRenameOpen() || isAppDialogOpen()) return;
   if (isBwMenuOpen()) { _bwMenuNav(dir); return; }
   if (isBwSCOpen()) {
     if (_bwSCPage === 3 && _bwSCSwitch) { _bwSCPan(dir); return; }
@@ -3547,6 +3751,8 @@ function pressOK() {
     else { if (sleepFocus === 0) doLock(); else if (sleepFocus === 1) doRestart(); else doPowerOff(); }
     return;
   }
+  if (isRenameOpen())              { return; }
+  if (isAppDialogOpen())           { return; }
   if (isOMOpen())                  { selectOM();                 return; }
   if (isBwMenuOpen())              { _bwMenuSelect();            return; }
   if (isBwSCOpen())                { closeBwShortcut();          return; }
@@ -3560,6 +3766,7 @@ function pressOK() {
   if (view === 'apps')             { openAppView();              return; }
   if (view === 'lock')             { doUnlock();                 return; }
   if (view === 'app-open' && openApp?.type === 'folder')  { return; }
+  if (view === 'app-open' && bwMode === 'web' && (openApp?.id === 'browser' || openApp?.url)) { _bwCursorClick(); return; }
   if (view === 'app-open' && openApp?.id !== 'browser' && !openApp?.url && openApp?.type !== 'folder') { return; }
   if (view === 'app-open' && openApp?.id === 'browser') {
     if (bwFocus === 0) { openBwSearch(); return; }
@@ -3585,6 +3792,8 @@ function pressOK() {
 // RSK
 function pressRight() {
   if (booting || inputLocked) return;
+  if (isRenameOpen())      { _renameConfirm();               return; }
+  if (isAppDialogOpen())   { _appConfirmOk();                 return; }
   if (isSleepOpen())       { closeSleepMenu();                return; }
   if (isOMOpen())          { closeOM();                       return; }
   if (isBwSCOpen())        { _bwSCNext();                    return; }
@@ -3616,6 +3825,8 @@ function pressRight() {
 
 // Back / End key short-press
 function pressBack() {
+  if (isRenameOpen())              { _renameCancel();   return; }
+  if (isAppDialogOpen())           { _appConfirmClose(); return; }
   if (isSleepOpen())               { closeSleepMenu();  return; }
   if (isOMOpen())                  { closeOM();         return; }
   if (isBwMenuOpen())              { _bwMenuClose();    return; }
@@ -3659,6 +3870,8 @@ function pressBack() {
 // LSK
 function softLeft() {
   if (booting || inputLocked) return;
+  if (isRenameOpen())              { _renameCancel();                        return; }
+  if (isAppDialogOpen())           { _appConfirmClose();                     return; }
   if (isSleepOpen())               { closeSleepMenu();                       return; }
   if (isOMOpen())                  { closeOM();                              return; }
   if (isBwMenuOpen())              { _bwMenuClose();                         return; }
@@ -3711,7 +3924,13 @@ function openOptionMenu() {
   if (!app) return;
   omFocus = 0;
   omItems = [];
-  if (appViewMode !== 'single') omItems.push({ label: 'Move',        action: () => enterMoveMode()         });
+  if (app.webapp) {
+    omItems.push({ label: 'Rename', action: () => _webAppRename(app) });
+    if (appViewMode !== 'single') omItems.push({ label: 'Move', action: () => enterMoveMode() });
+    omItems.push({ label: 'Unpin', action: () => _webAppUnpin(app) });
+  } else {
+    if (appViewMode !== 'single') omItems.push({ label: 'Move',        action: () => enterMoveMode()         });
+  }
   if (appViewMode !== 'list')   omItems.push({ label: 'List view',   action: () => switchAppView('list')   });
   if (appViewMode !== 'single') omItems.push({ label: 'Single view', action: () => switchAppView('single') });
   if (appViewMode !== 'grid')   omItems.push({ label: 'Grid view',   action: () => switchAppView('grid')   });
@@ -3724,6 +3943,93 @@ function openDialerOM() {
     { label: 'Create new contact',      action: () => {} }
   ];
   buildOMPanel('Options');
+}
+
+// ── Pinned web app: Unpin / Rename ──
+let _appDialogCb = null;
+function isAppDialogOpen() { return _appDialogCb !== null; }
+function _appConfirmOpen(header, content, okLabel, onOk) {
+  document.getElementById('bw-dialog-header').textContent = header;
+  document.getElementById('bw-dialog-content').textContent = content;
+  document.getElementById('bw-dialog').classList.add('visible');
+  _appDialogCb = onOk;
+  setSK('Cancel', '', okLabel, false);
+  const bar = document.querySelector('.skbar');
+  bar.style.backgroundColor = 'rgba(0,0,0,0.88)';
+  bar.style.backgroundImage = 'none';
+  bar.style.color = '#fff';
+}
+function _appConfirmClose() {
+  document.getElementById('bw-dialog').classList.remove('visible');
+  _appDialogCb = null;
+  rebuildCurrentView();
+}
+function _appConfirmOk() {
+  const cb = _appDialogCb;
+  document.getElementById('bw-dialog').classList.remove('visible');
+  _appDialogCb = null;
+  if (cb) cb(); else rebuildCurrentView();
+}
+function _webAppUnpin(app) {
+  _appConfirmOpen('Confirmation', 'Unpin the website?', 'Unpin', () => {
+    const i = APPS.indexOf(app);
+    if (i >= 0) APPS.splice(i, 1);
+    // keep focus in range
+    const total = APPS.length;
+    if (appViewMode === 'grid') {
+      const flat = Math.min(page * PER + focus, total - 1);
+      page = Math.floor(flat / PER); focus = flat % PER;
+    } else {
+      listFocus = Math.min(listFocus, total - 1);
+      listWindowStart = Math.max(0, Math.min(listWindowStart, total - LIST_PER));
+    }
+    rebuildCurrentView();
+  });
+}
+
+// Rename dialog — editable title with selection, URL shown below
+let _renameApp = null, _renameText = '', _renameSelAll = false;
+function isRenameOpen() { return _renameApp !== null; }
+function _webAppRename(app) {
+  _renameApp = app;
+  _renameText = app.name || '';
+  _renameSelAll = true;
+  document.getElementById('rename-url').textContent = app.url || '';
+  document.getElementById('rename-dialog').classList.add('visible');
+  _renameRender();
+}
+function _renameRender() {
+  const el = document.getElementById('rename-input');
+  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  if (_renameSelAll && _renameText) {
+    el.innerHTML = `<span class="rn-sel">${esc(_renameText)}</span>`;
+    el.scrollLeft = 0;
+  } else {
+    el.innerHTML = `${esc(_renameText)}<span class="rn-caret"></span>`;
+    el.scrollLeft = el.scrollWidth; // keep caret/end visible
+  }
+}
+function _renameType(ch) {
+  if (_renameSelAll) { _renameText = ''; _renameSelAll = false; }
+  if (_renameText.length < 60) _renameText += ch;
+  _renameRender();
+}
+function _renameBackspace() {
+  if (_renameSelAll) { _renameText = ''; _renameSelAll = false; }
+  else _renameText = _renameText.slice(0, -1);
+  _renameRender();
+}
+function _renameConfirm() {
+  const name = _renameText.trim();
+  if (name && _renameApp) _renameApp.name = name;
+  _renameApp = null;
+  document.getElementById('rename-dialog').classList.remove('visible');
+  rebuildCurrentView();
+}
+function _renameCancel() {
+  _renameApp = null;
+  document.getElementById('rename-dialog').classList.remove('visible');
+  rebuildCurrentView();
 }
 function closeOM() {
   document.getElementById('option-menu').classList.remove('visible');
@@ -3765,7 +4071,7 @@ function buildList() {
     tile.className = 'app-tile' + (globalIdx === listFocus ? ' focused' : '');
     const ico = document.createElement('div');
     ico.className = 'app-icon';
-    ico.style.backgroundImage = `url("${app.icon}")`;
+    _applyAppIcon(ico, app);
     const name = document.createElement('span');
     name.className = 'app-tile-name';
     name.textContent = app.name;
@@ -3805,6 +4111,12 @@ function buildSingle() {
   const mainIco = document.createElement('div');
   mainIco.className = 'sm-main-icon';
   mainIco.style.backgroundImage = `url("${app.icon}")`;
+  if (app.webapp && app.favicon) {
+    const fv = document.createElement('div');
+    fv.className = 'webapp-favicon sm-favicon';
+    fv.style.backgroundImage = `url("${app.favicon}")`;
+    mainIco.appendChild(fv);
+  }
   wrap.appendChild(mainIco);
   wall.appendChild(wrap);
   // main name
@@ -3823,7 +4135,10 @@ function buildSingle() {
   lbl('Apps — ' + (app.name || ''));
 }
 function rebuildCurrentView() {
+  const bar = document.querySelector('.skbar');
+  bar.style.backgroundColor = '';
   if (appViewMode === 'list') buildList();
+  else if (appViewMode === 'single') buildSingle();
   else buildGrid();
 }
 function enterMoveMode() {
@@ -3842,6 +4157,8 @@ function exitMoveMode(cancel) {
 function renderOM() {
   document.querySelectorAll('.om-item').forEach((el, i) =>
     el.classList.toggle('focused', i === omFocus));
+  const f = document.querySelector('.om-item.focused');
+  if (f) f.scrollIntoView({ block: 'nearest' });
 }
 function selectOM() {
   const action = omItems[omFocus]?.action;
@@ -4170,6 +4487,7 @@ function pressNum(k) {
   if (booting || inputLocked) return;
   if (isBwMenuOpen()) return;
   if (_bwPinMode) return;
+  if (isAppDialogOpen() || isRenameOpen()) return;
   if (view === 'app-open' && bwMode === 'web') { bwWebKey(k); return; }
   if ((view === 'home' || view === 'apps') && !isOMOpen()) openDialer(k);
   else if (view === 'dialer') dialerKey(k);
@@ -4427,15 +4745,26 @@ document.addEventListener('keydown', e => {
     if (inputLocked && (e.key === 'F8' || e.key === 'Escape' || e.key === 'Backspace')) startPowerOn();
     return;
   }
+  // Rename dialog captures typing
+  if (isRenameOpen()) {
+    e.preventDefault();
+    if (e.key === 'Enter')      { return; }             // center does nothing
+    if (e.key === 'Escape')     { _renameCancel();   return; }
+    if (e.key === 'F1')         { _renameCancel();   return; }
+    if (e.key === 'F2')         { _renameConfirm();  return; }
+    if (e.key === 'Backspace')  { _renameBackspace(); return; }
+    if (e.key.length === 1)     { _renameType(e.key); return; }
+    return;
+  }
   // Number keys → dialer
-  if (/^[0-9#+]$/.test(e.key) && (view === 'home' || view === 'apps') && !isOMOpen()) {
+  if (/^[0-9#+]$/.test(e.key) && (view === 'home' || view === 'apps') && !isOMOpen() && !isAppDialogOpen()) {
     e.preventDefault(); showNumPress(e.key); openDialer(e.key); return;
   }
   if (/^[0-9#+]$/.test(e.key) && view === 'dialer') {
     e.preventDefault(); showNumPress(e.key); dialerKey(e.key); return;
   }
   // * key — long press handled in keyup
-  if (e.key === '*' && (view === 'home' || view === 'apps' || view === 'dialer')) {
+  if (e.key === '*' && (view === 'home' || view === 'apps' || view === 'dialer') && !isAppDialogOpen()) {
     e.preventDefault();
     showNumPress('*');
     if (!_starTimer) {
@@ -4488,16 +4817,15 @@ document.addEventListener('keydown', e => {
       if (e.key === 'Escape' || e.key === 'Backspace') { e.preventDefault(); _bwExitScrollMode(); return; }
     }
     if (/^[0-9#+*]$/.test(e.key)) { e.preventDefault(); showNumPress(e.key); bwWebKey(e.key); return; }
+    // Cursor mode: arrows move the virtual pointer, Enter clicks at it
+    if (e.key === 'ArrowUp')    { e.preventDefault(); showArrowPress('up');    _bwWebArrow('up');    return; }
+    if (e.key === 'ArrowDown')  { e.preventDefault(); showArrowPress('down');  _bwWebArrow('down');  return; }
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); showArrowPress('left');  _bwWebArrow('left');  return; }
+    if (e.key === 'ArrowRight') { e.preventDefault(); showArrowPress('right'); _bwWebArrow('right'); return; }
+    if (e.key === 'Enter')      { e.preventDefault(); showOkPress(); _bwCursorClick(); return; }
     const _wv = document.getElementById('bw-iframe');
-    if (_wv && _wv.tagName === 'WEBVIEW') {
-      if (e.key.length === 1) {
-        _wv.sendInputEvent({ type: 'char', keyCode: e.key }); e.preventDefault(); return;
-      }
-      if (e.key === 'Enter')      { _wv.sendInputEvent({ type: 'keyDown', keyCode: 'Return' });  _wv.sendInputEvent({ type: 'keyUp', keyCode: 'Return' });  e.preventDefault(); return; }
-      if (e.key === 'ArrowUp')    { _wv.sendInputEvent({ type: 'keyDown', keyCode: 'Up' });      _wv.sendInputEvent({ type: 'keyUp', keyCode: 'Up' });      e.preventDefault(); return; }
-      if (e.key === 'ArrowDown')  { _wv.sendInputEvent({ type: 'keyDown', keyCode: 'Down' });    _wv.sendInputEvent({ type: 'keyUp', keyCode: 'Down' });    e.preventDefault(); return; }
-      if (e.key === 'ArrowLeft')  { _wv.sendInputEvent({ type: 'keyDown', keyCode: 'Left' });    _wv.sendInputEvent({ type: 'keyUp', keyCode: 'Left' });    e.preventDefault(); return; }
-      if (e.key === 'ArrowRight') { _wv.sendInputEvent({ type: 'keyDown', keyCode: 'Right' });   _wv.sendInputEvent({ type: 'keyUp', keyCode: 'Right' });   e.preventDefault(); return; }
+    if (_wv && _wv.tagName === 'WEBVIEW' && e.key.length === 1) {
+      _wv.sendInputEvent({ type: 'char', keyCode: e.key }); e.preventDefault(); return;
     }
   }
   switch (e.key) {
