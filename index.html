@@ -3046,21 +3046,10 @@ async function _bwSearchWeb(query) {
   const iframe = document.getElementById('bw-iframe');
   const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   try {
-    const instances = [
-      'https://searx.be',
-      'https://search.privacyguides.net',
-      'https://paulgo.io',
-      'https://search.bus-hit.me',
-    ];
-    const q = encodeURIComponent(query);
-    const data = await Promise.any(instances.map(async inst => {
-      const apiUrl = inst + '/search?q=' + q + '&format=json&categories=general';
-      const res = await fetch(BW_WEB_PROXY + '?url=' + encodeURIComponent(apiUrl));
-      if (!res.ok) throw new Error();
-      const d = await res.json();
-      if (!d.results) throw new Error();
-      return d;
-    }));
+    const res = await fetch(BW_WEB_PROXY + '?search=' + encodeURIComponent(query));
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    if (!data.results) throw new Error();
     const results = (data.results || []).slice(0, 15);
     iframe.srcdoc = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>
       *{box-sizing:border-box;margin:0;padding:0}
@@ -3079,7 +3068,7 @@ async function _bwSearchWeb(query) {
         <div class="u">${esc(r.url||'')}</div>
         <div class="s">${esc(r.content||'')}</div>
       </div>`).join('')}
-    <div class="pw">via SearXNG</div></body></html>`;
+    <div class="pw">via Bing</div></body></html>`;
   } catch {
     iframe.srcdoc = `<!DOCTYPE html><html><body style="font-family:sans-serif;text-align:center;padding:2rem;color:#666;font-size:13px">Search failed. Please try again.</body></html>`;
   }
