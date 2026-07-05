@@ -3064,7 +3064,16 @@ async function _bwSearchWeb(query) {
       if (data) break;
     }
     if (!data) throw new Error();
-    const results = (data.results || []).slice(0, 15);
+    // Bing wraps result links in a bing.com/ck/a?...&u=a1<base64url> tracker;
+    // decode to the real URL client-side so we show/open it clean regardless of
+    // which proxy build is deployed.
+    const _unBing = u => {
+      u = String(u || '').replace(/&amp;/g, '&');
+      const m = u.match(/[?&]u=a1([^&]+)/);
+      if (m) { try { let b = m[1].replace(/-/g, '+').replace(/_/g, '/'); while (b.length % 4) b += '='; return atob(b); } catch (e) {} }
+      return u;
+    };
+    const results = (data.results || []).slice(0, 15).map(r => ({ ...r, url: _unBing(r.url) }));
     iframe.srcdoc = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>
       *{box-sizing:border-box;margin:0;padding:0}
       body{font-family:sans-serif;background:#fff;padding:8px;font-size:13px}
