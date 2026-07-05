@@ -3101,6 +3101,18 @@ function _bwLoadWebFallback(url, iframe, onLoad) {
 
 
 function openBwWebView(url) {
+  // Google bot-blocks proxy IPs (429/captcha/endless load) — in browser mode
+  // route Google search to our own results and its homepage to the search UI.
+  if (!isElectron) {
+    try {
+      const gu = new URL(url);
+      if (/(^|\.)google\.[a-z.]+$/.test(gu.hostname)) {
+        const gq = gu.searchParams.get('q');
+        if (gu.pathname === '/search' && gq) { _bwSearchWeb(gq); return; }
+        if (gu.pathname === '/' || gu.pathname === '/webhp') { openBwSearch(); return; }
+      }
+    } catch (e) {}
+  }
   _bwTipsBadgeShow();
   bwMode = 'web';
   bwCurrentUrl = url;
