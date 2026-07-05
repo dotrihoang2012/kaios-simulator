@@ -3452,8 +3452,13 @@ function bwSearchGo() {
   }
   document.getElementById('view-bw-search').classList.remove('visible');
   view = 'app-open';
-  if (!isElectron && _bwIsSearch(text)) {
-    _bwSearchWeb(text);
+  if (_bwIsSearch(text)) {
+    // Electron loads real Google natively; the proxied web build loads
+    // DuckDuckGo's plain-HTML results (a real engine page that renders through
+    // the proxy — Google blocks proxied requests with a bot challenge).
+    openBwWebView(isElectron
+      ? 'https://www.google.com/search?q=' + encodeURIComponent(text)
+      : 'https://html.duckduckgo.com/html/?q=' + encodeURIComponent(text));
   } else {
     openBwWebView(_bwUrlFromText(text));
   }
