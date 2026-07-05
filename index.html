@@ -940,10 +940,13 @@
     /* ── System generic dialog — bottom sheet that slides UP; scrim fades in (matches system app) ── */
     #sys-dialog { position:absolute; inset:0; z-index:10000; visibility:hidden; }
     #sys-dialog.visible { visibility:visible; }
-    #sys-dialog-scrim { position:absolute; inset:0; background:rgba(0,0,0,0.85); }
+    #sys-dialog-scrim { position:absolute; inset:0; background:rgba(0,0,0,0.85); transform:translateY(100%); transition:transform 0.26s ease-in-out; }
+    #sys-dialog.visible #sys-dialog-scrim { transform:translateY(0); }
+    #sys-dialog.visible.closing #sys-dialog-scrim { transform:translateY(100%); }
     #sys-dialog-panel { position:absolute; left:0; right:0; bottom:var(--softkeybar-height); max-height:calc(100% - var(--softkeybar-height) - var(--statusbar-height) - 2rem); overflow-y:auto; scrollbar-width:none; display:flex; flex-direction:column; transform:translateY(100%); transition:transform 0.26s ease-in-out; }
     #sys-dialog-panel::-webkit-scrollbar { width:0; display:none; }
     #sys-dialog.visible #sys-dialog-panel { transform:translateY(0); }
+    #sys-dialog.visible.closing #sys-dialog-panel { transform:translateY(100%); }
     #sys-dialog-hdr { padding:0.6rem 1rem; text-align:center; background:#cccccc; color:#242424; font-size:1.5rem; flex-shrink:0; }
     #sys-dialog-content { padding:1rem; background:#fff; color:#242424; font-size:1.6rem; line-height:1.4; white-space:pre-line; word-break:break-word; }
     #sys-dialog-content .sys-dialog-sub { margin:0.6rem 0 0; color:#242424; font-size:1.6rem; }
@@ -2312,14 +2315,28 @@ function showDialog(o) {
   const d = document.getElementById('sys-dialog');
   d.classList.toggle('dark', !!o.dark);
   // Ensure the panel starts off-screen, then transition up (slide from bottom)
-  d.classList.remove('visible');
+  d.classList.remove('visible', 'closing');
+  if (_sdCloseTimer) { clearTimeout(_sdCloseTimer); _sdCloseTimer = null; }
   void document.getElementById('sys-dialog-panel').offsetWidth;
   requestAnimationFrame(() => d.classList.add('visible'));
 }
+let _sdCloseTimer = null;
 function closeDialog(confirmed) {
-  document.getElementById('sys-dialog').classList.remove('visible');
+  const d = document.getElementById('sys-dialog');
+  if (!d.classList.contains('visible') || d.classList.contains('closing')) return;
   const ok = _sdOk, cancel = _sdCancel;
   _sdOk = null; _sdCancel = null;
+  // Slide the whole dialog (scrim + panel + softkeys) down together, then hide
+  const panel = document.getElementById('sys-dialog-panel');
+  void panel.offsetWidth;            // commit the current open position so the slide-down transitions
+  d.classList.add('closing');
+  const finish = () => {
+    if (_sdCloseTimer) { clearTimeout(_sdCloseTimer); _sdCloseTimer = null; }
+    panel.removeEventListener('transitionend', finish);
+    d.classList.remove('visible', 'closing');
+  };
+  panel.addEventListener('transitionend', finish);
+  _sdCloseTimer = setTimeout(finish, 380);   // fallback if transitionend doesn't fire
   if (confirmed) { if (ok) ok(); }
   else { if (cancel) cancel(); }
 }
@@ -4067,24 +4084,19 @@ function _appConfirmOk() {
   if (cb) cb(); else rebuildCurrentView();
 }
 function _webAppUnpin(app) {
-  showDialog({
-    header: 'Confirmation',
-    content: 'Unpin the website?',
-    cancel: 'Cancel', ok: 'Unpin',
-    onOk: () => {
-      const i = APPS.indexOf(app);
-      if (i >= 0) APPS.splice(i, 1);
-      // keep focus in range
-      const total = APPS.length;
-      if (appViewMode === 'grid') {
-        const flat = Math.min(page * PER + focus, total - 1);
-        page = Math.floor(flat / PER); focus = flat % PER;
-      } else {
-        listFocus = Math.min(listFocus, total - 1);
-        listWindowStart = Math.max(0, Math.min(listWindowStart, total - LIST_PER));
-      }
-      rebuildCurrentView();
+  _appConfirmOpen('Confirmation', 'Unpin the website?', 'Unpin', () => {
+    const i = APPS.indexOf(app);
+    if (i >= 0) APPS.splice(i, 1);
+    // keep focus in range
+    const total = APPS.length;
+    if (appViewMode === 'grid') {
+      const flat = Math.min(page * PER + focus, total - 1);
+      page = Math.floor(flat / PER); focus = flat % PER;
+    } else {
+      listFocus = Math.min(listFocus, total - 1);
+      listWindowStart = Math.max(0, Math.min(listWindowStart, total - LIST_PER));
     }
+    rebuildCurrentView();
   });
 }
 
