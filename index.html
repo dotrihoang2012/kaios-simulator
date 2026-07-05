@@ -1921,8 +1921,10 @@ let _moveOrigApps = null;
 
 // ── Browser app state ──────────────────────
 // Electron: proxy.js auto-starts local server port 8899 và cập nhật BW_WEB_PROXY
-// GitHub Pages: dùng Cloudflare worker bên dưới
-var BW_WEB_PROXY = 'https://kaios-proxy.dotrihoang2012.workers.dev';
+// GitHub Pages: dùng Deno Deploy (IP sạch, không bị Google/site chặn như Cloudflare).
+// Cloudflare worker giữ làm fallback tự động khi Deno lỗi.
+var BW_WEB_PROXY = 'https://rigid-tapir-7342.dotrihoang2012.deno.net';
+var BW_WEB_PROXY_FALLBACK = 'https://kaios-proxy.dotrihoang2012.workers.dev';
 
 const BW_ICON_PATH = './kaiosrt/gaia/profile/webapps/installed/system/browser/style/img/';
 const BW_TILES = [
@@ -3046,16 +3048,20 @@ async function _bwSearchWeb(query) {
   const iframe = document.getElementById('bw-iframe');
   const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   try {
-    // Worker egress IPs vary per request and engines bot-block some of them,
-    // so a failed attempt usually succeeds on retry from a different IP.
+    // Try the primary proxy (Deno), then the Cloudflare fallback; a couple of
+    // attempts each since some egress IPs get bot-blocked intermittently.
     let data = null;
-    for (let att = 0; att < 3 && !data; att++) {
-      try {
-        const r = await fetch(BW_WEB_PROXY + '?search=' + encodeURIComponent(query));
-        if (!r.ok) continue;
-        const d = await r.json();
-        if (d.results && d.results.length) data = d;
-      } catch (e) {}
+    const _proxies = [BW_WEB_PROXY, BW_WEB_PROXY_FALLBACK].filter(Boolean);
+    for (const px of _proxies) {
+      for (let att = 0; att < 2 && !data; att++) {
+        try {
+          const r = await fetch(px + '?search=' + encodeURIComponent(query));
+          if (!r.ok) continue;
+          const d = await r.json();
+          if (d.results && d.results.length) data = d;
+        } catch (e) {}
+      }
+      if (data) break;
     }
     if (!data) throw new Error();
     const results = (data.results || []).slice(0, 15);

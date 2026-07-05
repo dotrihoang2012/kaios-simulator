@@ -6,6 +6,7 @@ package-lock.json
 worker.js
 wrangler.toml
 .wrangler/
+deno-proxy.js
 
 # KaiOS runtime binaries (not needed for web)
 kaiosrt/api-daemon/
