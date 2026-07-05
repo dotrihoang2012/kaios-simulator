@@ -3082,7 +3082,7 @@ async function _bwSearchWeb(query) {
         <div class="u">${esc(r.url||'')}</div>
         <div class="s">${esc(r.content||'')}</div>
       </div>`).join('')}
-    <div class="pw">via Bing</div></body></html>`;
+    <div class="pw">Web results</div></body></html>`;
   } catch {
     iframe.srcdoc = `<!DOCTYPE html><html><body style="font-family:sans-serif;text-align:center;padding:2rem;color:#666;font-size:13px">Search failed. Please try again.</body></html>`;
   }
