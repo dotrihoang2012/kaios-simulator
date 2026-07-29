@@ -2174,29 +2174,7 @@ function stBuildWebview() {
   } else {
     wv = document.createElement('iframe');
     wv.style.cssText = 'width:100%;height:100%;border:none;background:#fff;';
-    wv.addEventListener('load', () => {
-      // Inject a key-forwarding bridge into the iframe so KeyboardEvent is
-      // created and dispatched inside the iframe's own JS realm (parent-realm
-      // events are rejected by Chrome). The function is accessible via
-      // contentWindow so stKey() can call it without eval/postMessage roundtrips.
-      try {
-        var doc = wv.contentDocument;
-        if (doc && doc.head) {
-          var s = doc.createElement('script');
-          s.textContent =
-            'window.__stInjectKey=function(k){' +
-              'var ev=new KeyboardEvent("keydown",{key:k,code:k,bubbles:true,cancelable:true});' +
-              'var t=document.querySelector(".focus")||window;' +
-              't.dispatchEvent(ev);' +
-              'window.dispatchEvent(new KeyboardEvent("keydown",{key:k,code:k,bubbles:true,cancelable:true}));' +
-              't.dispatchEvent(new KeyboardEvent("keyup",{key:k,code:k,bubbles:true,cancelable:true}));' +
-              'window.dispatchEvent(new KeyboardEvent("keyup",{key:k,code:k,bubbles:true,cancelable:true}));' +
-            '};';
-          doc.head.appendChild(s);
-        }
-      } catch (e) {}
-      stFocusFirst(wv);
-    });
+    wv.addEventListener('load', () => { stFocusFirst(wv); });
   }
   wv.id = 'st-webview';
   wv.src = ST_URL;

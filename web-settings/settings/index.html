@@ -2769,7 +2769,7 @@ window.__KAIOS_L10N_ENUS = [{"$i":"softkey-options","$v":"Options"},{"$i":"stopp
   if (window.WebActivity) installActivityHook();
   else setTimeout(installActivityHook, 0);
 })();
-<\/script>
+<\/script><script>window.__stInjectKey=function(k){var ev=new KeyboardEvent("keydown",{key:k,code:k,bubbles:true,cancelable:true});var t=document.querySelector(".focus")||window;t.dispatchEvent(ev);window.dispatchEvent(new KeyboardEvent("keydown",{key:k,code:k,bubbles:true,cancelable:true}));t.dispatchEvent(new KeyboardEvent("keyup",{key:k,code:k,bubbles:true,cancelable:true}));window.dispatchEvent(new KeyboardEvent("keyup",{key:k,code:k,bubbles:true,cancelable:true}));};<\/script>
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1">
     <meta charset="utf-8">
     <meta name="theme-color" content="rgb(255, 255, 255)">
