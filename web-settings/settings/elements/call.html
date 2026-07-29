@@ -1,0 +1,65 @@
+<element name="call" extends="section">
+  <template>
+
+    <gaia-header data-href="#root">
+      <h1 slot="text" data-l10n-id="callSettings-header"></h1>
+    </gaia-header>
+
+    <div>
+      <ul role="menu">
+        <li role="menuitem" id="voice-privacy-mode"  class="hidden">
+          <span data-l10n-id="voicePrivacyMode">Voice Privacy Mode</span>
+          <div class="button icon icon-dialog">
+            <select data-value-type="boolean">
+              <option data-l10n-id="on" value="true">On</option>
+              <option data-l10n-id="off" value="false">Off</option>
+            </select>
+          </div>
+        </li>
+
+        <li role="menuitem" id="call-waiting-item"  class="hidden">
+          <a class="menu-item">
+            <span data-l10n-id="callWaiting"></span>
+          </a>
+        </li>
+
+        <li role="menuitem" id="caller-id-item"  class="hidden">
+          <a class="menu-item">
+            <span data-l10n-id="callerId"></span>
+          </a>
+        </li>
+
+        <li role="menuitem" id="call-forwarding-item" aria-disabled="true"  class="hidden">
+          <a class="menu-item">
+            <span data-l10n-id="callForwarding">Call forwarding</span>
+          </a>
+        </li>
+
+        <li role="menuitem" id="call-barring-item"  class="hidden">
+          <a class="menu-item">
+            <span data-l10n-id="callBarring">Call barring</span>
+          </a>
+        </li>
+
+        <li role="menuitem" id="call-fdn-item"  class="hidden">
+          <a class="menu-item">
+            <span data-l10n-id="fdn">Fixed dialing numbers</span>
+          </a>
+        </li>
+
+        <li role="menuitem" id="call-dtmf-item" class="hidden">
+          <span data-l10n-id="dtmftones" class="dtmftones-title"></span>
+          <span class="button icon icon-dialog">
+            <select data-name="phone.dtmf.type" data-track-class="dtmftones-title">
+              <option value="short" data-l10n-id="dtmf-tones-normal"></option>
+              <option value="long" data-l10n-id="dtmf-tones-long"></option>
+            </select>
+          </span>
+        </li>
+      </ul>
+    </div>
+
+    <panel data-path="panels/call/panel"></panel>
+
+  </template>
+</element>

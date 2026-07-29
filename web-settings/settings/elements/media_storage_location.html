@@ -1,0 +1,70 @@
+<element name="media_storage_location" extends="section">
+  <template>
+
+    <gaia-header>
+      <h1 slot="text" data-l10n-id="storage"></h1>
+    </gaia-header>
+    <div>
+      <ul role="menu">
+        <li id="menu-clean-up" class="clean-up button" role="menuitem">
+          <button data-l10n-id="clean-up-storage"></button>
+        </li>
+        <li role="menuitem" id="location-item" aria-disabled="true" class="none-select">
+          <span class="menu-item" data-l10n-id="default-media-location"></span>
+          <small id="default-media-location-desc"></small>
+          <span class="button icon icon-dialog">
+            <select data-name="device.storage.writable.name"  class="no-open" data-track-class="default_media_location">
+              <option data-l10n-id="short-storage-name-internal" value="sdcard">Internal</option>
+              <option data-l10n-id="short-storage-name-external-0" value="sdcard1">SD Card</option>
+            </select>
+          </span>
+        </li>
+      </ul>
+
+      <header>
+        <h2 id="header-internal-size" data-l10n-id="short-storage-name-internal"></h2>
+      </header>
+      <ul role="menu">
+        <li role="menuitem" id="storage-media-internal">
+          <a class="menu-item">
+            <div>
+              <aside class="storage-status"></aside>
+              <span data-l10n-id="mediaStorage"></span>
+            </div>
+            <small id="media-internal-desc" class="menu-item-desc"></small>
+          </a>
+        </li>
+        <li role="menuitem" id="storage-application">
+          <a class="menu-item">
+            <div>
+              <aside class="storage-status"></aside>
+              <span data-l10n-id="appStorage"></span>
+            </div>
+            <small id="application-storage-desc" class="menu-item-desc"></small>
+          </a>
+        </li>
+        <li role="menuitem" class="none-select">
+          <span data-l10n-id="short-storage-name-system"></span>
+          <small id="system-storage-desc" class="menu-item-desc"></small>
+        </li>
+      </ul>
+      <header id="media-sdcard-header" class="hidden">
+        <h2 id="header-sdcard-size" data-l10n-id="short-storage-name-external-0"></h2>
+      </header>
+      <ul>
+        <li role="menuitem" id="storage-media-sdcard" class="hidden">
+          <a class="menu-item">
+            <div>
+              <aside class="storage-status"></aside>
+              <span data-l10n-id="mediaStorage"></span>
+            </div>
+            <small id="media-sdcard-desc" class="menu-item-desc"></small>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <panel data-path="panels/media_storage_location/panel"></panel>
+
+  </template>
+</element>

@@ -1,0 +1,19 @@
+<element name="user_dictionary" extends="section">
+  <template>
+
+    <gaia-header data-href="#input_method_config">
+      <h1 slot="text" data-l10n-id="user-dictionary"></h1>
+    </gaia-header>
+
+    <div>
+      <li role="menuitem" class="empty-user-dictionary hidden non-focus">
+        <div class="empty_user_dict_title" data-l10n-id="empty-user-dictionary-title"></div>
+        <div class="empty_user_dict_desc" data-l10n-id="empty-user-dictionary-desc"></div>
+      </li>
+      <ul role="menu"></ul>
+    </div>
+
+    <panel data-path="panels/user_dictionary/panel"></panel>
+
+  </template>
+</element>

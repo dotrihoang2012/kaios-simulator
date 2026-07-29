@@ -1,0 +1,38 @@
+<element name="kaios_account_login" extends="section">
+  <template>
+    <gaia-header data-href="#root">
+      <h1 slot="text" data-l10n-id="account-info"></h1>
+    </gaia-header>
+
+    <div>
+      <ul>
+        <li id="phone-info" role="menuitem" class="none-select">
+          <span data-l10n-id="phone-number"></span>
+          <small class="menu-item-desc"></small>
+        </li>
+        <li id="email-info" role="menuitem" class="none-select">
+          <span data-l10n-id="email"></span>
+          <small class="menu-item-desc"></small>
+        </li>
+        <li id="resend-mail" class="button hidden" role="menuitem">
+          <button data-l10n-id="resend-mail">
+          </button>
+        </li>
+        <li id="alt-phone-info" role="menuitem" class="none-select">
+          <span data-l10n-id="alternative-phone" class="no-wrap"></span>
+          <small class="menu-item-desc"></small>
+        </li>
+        <li id="send-altPhone" class="button hidden" role="menuitem">
+          <button data-l10n-id="send-sms">
+          </button>
+        </li>
+        <li id="personal-info" role="menuitem" class="none-select">
+          <span data-l10n-id="personal-info-header"></span>
+          <small class="menu-item-desc"></small>
+        </li>
+      </ul>
+    </div>
+
+    <panel data-path="panels/kaios_account_login/panel"></panel>
+  </template>
+</element>

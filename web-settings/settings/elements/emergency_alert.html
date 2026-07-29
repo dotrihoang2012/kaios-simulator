@@ -1,0 +1,74 @@
+<element name="emergency_alert" extends="section">
+  <template>
+    <gaia-header data-href="#root">
+      <h1 slot="text" data-l10n-id="emergency-alert-header"></h1>
+    </gaia-header>
+    <div>
+      <ul role="menu">
+        <li role="menuitem" id="alert-inbox">
+          <a class="menu-item">
+            <span data-l10n-id="alert-inbox"></span>
+          </a>
+        </li>
+      </ul>
+      <ul role="menu" id="receive-alert-body" class="hidden">
+        <header>
+          <h2 data-l10n-id="receive-alert"></h2>
+        </header>
+        <li role="menuitem" class="none-select" aria-disabled="true">
+          <label class="pack-checkbox">
+            <input type="checkbox" data-name="cmas.presidential.enabled" disabled="true">
+            <span data-l10n-id="presidential-alert"></span>
+          </label>
+        </li>
+        <li role="menuitem">
+          <label class="pack-checkbox">
+            <input type="checkbox" data-name="cmas.extreme.enabled">
+            <span data-l10n-id="extreme-alert"></span>
+          </label>
+        </li>
+        <li role="menuitem" id="severe-item">
+          <label class="pack-checkbox">
+            <input type="checkbox" data-name="cmas.severe.enabled">
+            <span data-l10n-id="severe-alert"></span>
+          </label>
+        </li>
+        <li role="menuitem">
+          <label class="pack-checkbox">
+            <input type="checkbox" data-name="cmas.amber.enabled">
+            <span data-l10n-id="amber-alert"></span>
+          </label>
+        </li>
+        <li role="menuitem">
+          <label class="pack-checkbox">
+            <input type="checkbox" data-name="cmas.safety.enabled">
+            <span data-l10n-id="public-safety-alert"></span>
+          </label>
+        </li>
+        <li role="menuitem">
+          <label class="pack-checkbox">
+            <input type="checkbox" data-name="cmas.weatest.enabled" checked>
+            <span data-l10n-id="wea-test"></span>
+          </label>
+        </li>
+        <li role="menuitem" class="hidden">
+          <label class="pack-checkbox">
+            <input type="checkbox" data-name="cmas.monthlytest.enabled">
+            <span data-l10n-id="required-monthly-test"></span>
+          </label>
+        </li>
+      </ul>
+      <ul role="menu" id="wea-ringtone-preview">
+        <header>
+          <h2 data-l10n-id="wea-ringtone-preview"></h2>
+        </header>
+        <li role="menuitem">
+          <a class="menu-item" href="#ringtone_preview">
+            <span data-l10n-id="wea-ring"></span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <panel data-path="panels/emergency_alert/panel"></panel>
+  </template>
+</element>

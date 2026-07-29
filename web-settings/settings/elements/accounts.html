@@ -1,0 +1,53 @@
+<element name="accounts" extends="section">
+  <template>
+    <gaia-header  data-href="#root">
+      <h1 slot="text" data-l10n-id="accounts"></h1>
+    </gaia-header>
+
+    <div>
+      <header class="kai-account hidden">
+        <h2 id="id-operator" data-l10n-id="accounts"></h2>
+      </header>
+      <ul class="kai-account">
+        <li id="kai-account-item">
+          <a aria-labelledby="id-operator" class="menu-item">
+            <span data-l10n-id="kaios-account"></span>
+            <small class="menu-item-desc"></small>
+          </a>
+        </li>
+      </ul>
+      <header class="kai-account">
+        <h2 data-l10n-id="antitheft-services"></h2>
+      </header>
+      <ul class="kai-account">
+        <li role="menuitem" id="anti-theft-item" aria-disabled="true" class="none-select">
+          <span data-l10n-id="antitheft"></span>
+          <span class="button icon icon-dialog">
+                <select id="anti-theft-select" class="no-open" data-value-type="boolean">
+                  <option value="true" data-l10n-id="on"></option>
+                  <option value="false" data-l10n-id="off"></option>
+                </select>
+              </span>
+        </li>
+        <li id="anti-theft-note1" role="menuitem" class="description none-select hidden">
+          <span data-l10n-id="antitheft-note1"></span>
+        </li>
+        <li id="anti-theft-note2" role="menuitem" class="description none-select hidden">
+          <span data-l10n-id="antitheft-note2"></span>
+          <span data-l10n-id="antitheft-note3"></span>
+          <span data-l10n-id="antitheft-note4"></span>
+        </li>
+      </ul>
+      <header>
+        <h2 data-l10n-id="other-accounts"></h2>
+      </header>
+      <ul id="other-accounts">
+        <li id="add-account-button" class="button" role="menuitem">
+          <button data-l10n-id="add-account"></button>
+        </li>
+      </ul>
+    </div>
+
+    <panel data-path="panels/accounts/panel"></panel>
+  </template>
+</element>

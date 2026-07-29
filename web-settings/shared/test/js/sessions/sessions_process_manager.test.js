@@ -1,0 +1,1 @@
+describe("session js <process_manager> test",()=>{beforeEach(e=>{require("../../../js/session/process_manager/process_manager"),e()}),test("process manager methods",async e=>{require("../../mock/daemon_task_scheduler_mock");const{ProcManager:a}=window;await a.abort(),await a.add([]),await a.begin([]),await a.commit(),await a.pending(),await a.remove(),await a.reset(),e()})});

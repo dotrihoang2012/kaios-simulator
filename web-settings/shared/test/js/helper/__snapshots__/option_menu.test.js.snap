@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`helper js <option_menu> test OptionMenu function test OptionMenu should be renders correctly 1`] = `
+Object {
+  Symbol(jest-snapshot-serializer-raw): <form
+    class="containerClass visible"
+    data-subtype="menu"
+    data-type="action"
+    id="option-menu"
+    role="dialog"
+    tabindex="-1"
+  >
+    <section>
+      section
+    </section>
+    <h1
+      aria-labelledby="option-menu-first-item"
+      role="heading"
+      style="bottom:0px"
+    >
+      header
+    </h1>
+    <menu
+      data-items="1"
+      id="mainmenu"
+    >
+      <button
+        class="menu-button p-pri disabled"
+        data-l10n-args="\\"ipsum\\""
+        data-l10n-id="lorem"
+        id="option-menu-first-item"
+        type="button"
+      >
+        Lorem ipsum
+      </button>
+    </menu>
+  </form>,
+}
+`;

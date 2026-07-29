@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`helper js <confirm_dialog_helper> test function executed result test dialog.show should appendchild to parent 1`] = `
+Object {
+  Symbol(jest-snapshot-serializer-raw): <div
+    id="confirm-dialog-container"
+  >
+    <gaia-confirm
+      class=""
+      data-type="undefined"
+      role="menuitem"
+      tabindex="-1"
+    >
+      <h1
+        data-l10n-args="{}"
+        data-l10n-id="error-pair-title"
+        slot="title"
+        style="text-align:center;"
+      />
+      <div
+        class="content"
+        slot="content"
+        style="max-height: 740px;"
+      >
+        <div>
+          <p
+            data-l10n-args="{\\"devicename\\":\\"deviceItem.name\\"}"
+            data-l10n-id="error-pair-fail"
+            style="font-weight: normal;word-wrap: break-word;margin: 0;padding: 1rem;line-height: 2.4rem;color: var(--color-gs90);background: var(--color-gs10);"
+          />
+          <p
+            class="noborder"
+            data-l10n-args="{}"
+            data-l10n-id="error-pair-checkpin"
+            style="font-weight: normal;word-wrap: break-word;margin: 0;padding: 1rem;line-height: 2.4rem;color: var(--color-gs90);background: var(--color-gs10);"
+          />
+        </div>
+      </div>
+    </gaia-confirm>
+  </div>,
+}
+`;

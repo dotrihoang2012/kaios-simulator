@@ -1,0 +1,60 @@
+<element name="simcard_manager" extends="section">
+  <template>
+    <gaia-header data-href="#root">
+      <h1 slot="text" data-l10n-id="simManager-header"></h1>
+    </gaia-header>
+
+    <div>
+      <ul role="menu" class="sim-card-container">
+        <li role="menuitem" class="sim-card" id="sim-card-0">
+          <div class="sim-card-icon"></div>
+          <div class="information-container">
+            <span class="sim-card-name"></span>
+            <p class="sim-card-operator"></p>
+          </div>
+        </li>
+        <li role="menuitem" class="sim-card" id="sim-card-1">
+          <div class="sim-card-icon"></div>
+          <div class="information-container">
+            <span class="sim-card-name"></span>
+            <p class="sim-card-operator"></p>
+          </div>
+        </li>
+      </ul>
+
+      <ul role="menu" class="sim-manager-select-list">
+        <header class="sim-manager-settings-header">
+          <h2 data-l10n-id="simSettings"></h2>
+        </header>
+        <li role="menuitem" id="outgoing-calls-container">
+          <span data-l10n-id="sim-manager-outgoing-calls"></span>
+          <span class="button icon icon-dialog">
+            <select class="sim-manager-outgoing-call-select"></select>
+          </span>
+        </li>
+        <li role="menuitem" id="outgoing-messages-container">
+          <span data-l10n-id="sim-manager-outgoing-messages"></span>
+          <span class="button icon icon-dialog">
+            <select class="sim-manager-outgoing-messages-select"></select>
+          </span>
+        </li>
+        <li role="menuitem" id="outgoing-data-container">
+          <span data-l10n-id="sim-manager-outgoing-data"></span>
+          <span class="button icon icon-dialog">
+            <select class="sim-manager-outgoing-data-select"></select>
+          </span>
+        </li>
+      </ul>
+
+      <ul>
+        <li role="menuitem">
+          <a class="menu-item" href="#sim_security">
+            <span data-l10n-id="simSecurity"></span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <panel data-path="panels/simcard_manager/panel"></panel>
+  </template>
+</element>

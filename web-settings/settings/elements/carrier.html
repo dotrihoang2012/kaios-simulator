@@ -1,0 +1,77 @@
+<element name="carrier" extends="section">
+  <template>
+    <gaia-header data-href="#root">
+      <h1 slot="text" data-l10n-id="cellular-and-data-header"></h1>
+    </gaia-header>
+    <div>
+      <ul role="menu">
+        <li role="menuitem" id="carrier-sim1">
+          <a class="menu-item">
+            <span data-l10n-id="carrier-sim1">Carrier - SIM1</span>
+            <small></small>
+          </a>
+        </li>
+        <li role="menuitem" id="carrier-sim2" class="hidden">
+          <a class="menu-item">
+            <span data-l10n-id="carrier-sim2">Carrier - SIM2</span>
+            <small></small>
+          </a>
+        </li>
+      </ul>
+
+      <div id="data-section">
+        <header>
+          <h2 role="heading" data-l10n-id="dataConnectivity">Data</h2>
+        </header>
+        <ul role="menu">
+          <li role="menuitem" id="liItem-dataConnection" class="liItem-dataConnection">
+            <span data-l10n-id="dataConnection" class="data_connection_switch">Data Connection</span>
+            <span class="button icon icon-dialog">
+            <select data-value-type="boolean" data-name="ril.data.enabled" data-track-class="data_connection_switch">
+              <option value="true" data-l10n-id="on">On</option>
+              <option value="false" data-l10n-id="off">Off</option>
+            </select>
+          </span>
+          </li>
+          <p class="ums-confirm description" data-l10n-id="dataConnection-warning-message"></p>
+          <li role="menuitem" id="liItem-dataRoaming" class="liItem-dataRoaming">
+            <a id="menuItem-dataRoaming" class="menu-item" href="#data_roaming">
+              <span data-l10n-id="dataRoaming">Data Roaming</span>
+              <small id="data-roaming-desc" class="menu-item-desc"></small>
+            </a>
+          </li>
+          <p class="ums-confirm description" data-l10n-id="dataRoaming-warning-message"></p>
+          <li role="menuitem" id="operator-roaming-preference" class="hidden">
+            <span data-l10n-id="operator-roamingPreference"
+                  class="operator-roaming-preference-title">Roaming preference</span>
+            <span class="button icon icon-dialog">
+            <select id="operator-roaming-preference-selector" data-track-class="operator-roaming-preference-title">
+              <option data-l10n-id="operator-roamingPreference-home" value="home">Home</option>
+              <option data-l10n-id="operator-roamingPreference-any" value="any">Any</option>
+            </select>
+          </span>
+          </li>
+        </ul>
+      </div>
+      <header>
+        <h2 role="heading" data-l10n-id="advancedSettings">Advanced Settings</h2>
+      </header>
+      <ul role="menu">
+        <li role="menuitem" id="apn-sim1">
+          <a class="menu-item" href="#apn_settings">
+            <span data-l10n-id="apn-sim1">APN Settings - SIM1</span>
+            <small></small>
+          </a>
+        </li>
+        <li role="menuitem" id="apn-sim2">
+          <a class="menu-item" href="#apn_settings">
+            <span data-l10n-id="apn-sim2">APN Settings - SIM2</span>
+            <small></small>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <panel data-path="panels/carrier/panel"></panel>
+  </template>
+</element>

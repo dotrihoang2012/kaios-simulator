@@ -1,0 +1,1 @@
+!function(n){const o=function(){jest.fn()};o.prototype={open:(n,o,e,s,t)=>{s.onsessionconnected()}},n.Session=o}(window);
