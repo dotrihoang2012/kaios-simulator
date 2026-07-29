@@ -2255,9 +2255,7 @@ function stKey(code) {
           var ev = new KeyboardEvent('keydown', { key: k, code: k, bubbles: true, cancelable: true });
           var t = document.querySelector('.focus') || document.activeElement || document.body;
           t.dispatchEvent(ev);
-          window.dispatchEvent(new KeyboardEvent('keydown', { key: k, code: k, bubbles: true, cancelable: true }));
           t.dispatchEvent(new KeyboardEvent('keyup', { key: k, code: k, bubbles: true, cancelable: true }));
-          window.dispatchEvent(new KeyboardEvent('keyup', { key: k, code: k, bubbles: true, cancelable: true }));
         }.toString() + ';window.__stInjectKey=_bridge;');
       } catch (e) {}
       if (win.__stInjectKey) {

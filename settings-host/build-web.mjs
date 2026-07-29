@@ -245,11 +245,9 @@ const INJECT =
    '<script>' +
      'window.__stInjectKey=function(k){' +
        'var ev=new KeyboardEvent("keydown",{key:k,code:k,bubbles:true,cancelable:true});' +
-       'var t=document.querySelector(".focus")||window;' +
+       'var t=document.querySelector(".focus")||document.activeElement||document.body;' +
        't.dispatchEvent(ev);' +
-       'window.dispatchEvent(new KeyboardEvent("keydown",{key:k,code:k,bubbles:true,cancelable:true}));' +
        't.dispatchEvent(new KeyboardEvent("keyup",{key:k,code:k,bubbles:true,cancelable:true}));' +
-       'window.dispatchEvent(new KeyboardEvent("keyup",{key:k,code:k,bubbles:true,cancelable:true}));' +
      '};' +
    '</script>';
 idx = idx.replace(/(<head[^>]*>)/i, '$1' + INJECT);
