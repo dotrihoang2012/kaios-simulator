@@ -117,20 +117,122 @@ console.log('· patch settings.js — pending-nav queue for early clicks');
   fs.writeFileSync(sf, s);
 }
 
-// ── patch startup.js: guard against missing l10n global ─────────────────
-// The l10n shim sets document.l10n & navigator.mozL10n but startup.js:136
-// references bare `l10n`. If window10n doesn't exist for any reason the
-// l10n...once() callback (which calls this.loadAlameda()) never fires and
-// Settings.init() is never called → everything breaks.
-console.log('· patch startup.js — l10n guard');
+// ── patch startup.js: loadAlameda before l10n, safe stub ─────────────
+// Problem: startup.js calls bare `l10n.once(...)` but the l10n shim only
+// sets document.l10n and navigator.mozL10n — not window.l10n. In Chromium
+// this means `l10n` is undefined and the whole line throws before reaching
+// this.loadAlameda() → Alameda never loads → Settings.init() never fires.
+//
+// Fix: (1) call this.loadAlameda() FIRST so Boot always happens regardless
+// of l10n; (2) wrap the l10n block in a safe IIFE that creates a fallback
+// stub `L` with both .once() and .get(), so no reference to bare `l10n`
+// inside the callback can crash.
+console.log('· patch startup.js — loadAlameda before l10n, safe stub');
 {
   const sf = path.join(OUT, 'settings/js/startup.js');
   let s = fs.readFileSync(sf, 'utf8');
-  s = s.replace(
-    'l10n.once(function l10nDone() {',
-    '(l10n || {once: function(cb) { cb(); }}).once(function l10nDone() {'
-  );
-  fs.writeFileSync(sf, s);
+
+  const oldBlock = [
+    '        l10n.once(function l10nDone() {',
+    '          const codeNode = document.querySelector(\'.current\');',
+    '          const dataL10ns = codeNode.querySelectorAll(\'[data-l10n-id]\');',
+    '          for (let i = 0; i < dataL10ns.length; i++) {',
+    '            if (dataL10ns[i].getAttribute(\'data-l10n-args\')) {',
+    '              dataL10ns[i].textContent = l10n.get(',
+    '                dataL10ns[i].getAttribute(\'data-l10n-id\'),',
+    '                JSON.parse(dataL10ns[i].getAttribute(\'data-l10n-args\'))',
+    '              );',
+    '            } else {',
+    '              dataL10ns[i].textContent = l10n.get(',
+    '                dataL10ns[i].getAttribute(\'data-l10n-id\')',
+    '              );',
+    '            }',
+    '          }',
+    '          SettingsCache.saveSettingsCache();',
+    '          window.performance.mark(\'navigationLoaded\');',
+    '          window.performance.mark(\'navigationInteractive\');',
+    '        });',
+    '        this.loadAlameda();',
+  ].join('\n');
+
+  const newBlock = [
+    '        this.loadAlameda();',
+    '        (function() {',
+    '          try {',
+    '            var L = (typeof l10n !== \'undefined\' && l10n) || { once: function(cb) { cb(); }, get: function() { return \'\'; } };',
+    '            L.once(function l10nDone() {',
+    '              var codeNode = document.querySelector(\'.current\');',
+    '              if (!codeNode) return;',
+    '              var dataL10ns = codeNode.querySelectorAll(\'[data-l10n-id]\');',
+    '              for (var i = 0; i < dataL10ns.length; i++) {',
+    '                try {',
+    '                  if (dataL10ns[i].getAttribute(\'data-l10n-args\')) {',
+    '                    dataL10ns[i].textContent = L.get(',
+    '                      dataL10ns[i].getAttribute(\'data-l10n-id\'),',
+    '                      JSON.parse(dataL10ns[i].getAttribute(\'data-l10n-args\'))',
+    '                    );',
+    '                  } else {',
+    '                    dataL10ns[i].textContent = L.get(',
+    '                      dataL10ns[i].getAttribute(\'data-l10n-id\')',
+    '                    );',
+    '                  }',
+    '                } catch(e) {}',
+    '              }',
+    '              SettingsCache.saveSettingsCache();',
+    '              window.performance.mark(\'navigationLoaded\');',
+    '              window.performance.mark(\'navigationInteractive\');',
+    '            });',
+    '          } catch(e) {}',
+    '        })();',
+  ].join('\n');
+
+  if (s.includes(oldBlock)) {
+    s = s.replace(oldBlock, newBlock);
+    fs.writeFileSync(sf, s);
+    console.log('  ✓ startup.js patched');
+  } else {
+    console.log('  ✗ startup.js patch NOT matched — file may already be patched');
+    console.log('    checking for partial patch...');
+    // The previous broken build may have left a half-patched file.
+    // Look for the previous guard pattern and fix it too.
+    const prevPatch = [
+      '(l10n || {once: function(cb) { cb(); }}).once(function l10nDone() {',
+    ].join('\n');
+    if (s.includes(prevPatch)) {
+      // Find the full old block from the previous (broken) build
+      const midOld = [
+        '        (l10n || {once: function(cb) { cb(); }}).once(function l10nDone() {',
+        '          const codeNode = document.querySelector(\'.current\');',
+        '          const dataL10ns = codeNode.querySelectorAll(\'[data-l10n-id]\');',
+        '          for (let i = 0; i < dataL10ns.length; i++) {',
+        '            if (dataL10ns[i].getAttribute(\'data-l10n-args\')) {',
+        '              dataL10ns[i].textContent = l10n.get(',
+        '                dataL10ns[i].getAttribute(\'data-l10n-id\'),',
+        '                JSON.parse(dataL10ns[i].getAttribute(\'data-l10n-args\'))',
+        '              );',
+        '            } else {',
+        '              dataL10ns[i].textContent = l10n.get(',
+        '                dataL10ns[i].getAttribute(\'data-l10n-id\')',
+        '              );',
+        '            }',
+        '          }',
+        '          SettingsCache.saveSettingsCache();',
+        '          window.performance.mark(\'navigationLoaded\');',
+        '          window.performance.mark(\'navigationInteractive\');',
+        '        });',
+        '        this.loadAlameda();',
+      ].join('\n');
+      if (s.includes(midOld)) {
+        s = s.replace(midOld, newBlock);
+        fs.writeFileSync(sf, s);
+        console.log('  ✓ startup.js patched (fixed previous broken patch)');
+      } else {
+        console.log('  ✗ startup.js in unexpected state — needs manual review');
+      }
+    } else {
+      console.log('  ✗ startup.js already patched or source changed');
+    }
+  }
 }
 
 // ── overwrite the two files the Electron server substitutes ───────────

@@ -133,26 +133,34 @@
         }
         ApiManager.setL10n();
 
-        (l10n || {once: function(cb) { cb(); }}).once(function l10nDone() {
-          const codeNode = document.querySelector('.current');
-          const dataL10ns = codeNode.querySelectorAll('[data-l10n-id]');
-          for (let i = 0; i < dataL10ns.length; i++) {
-            if (dataL10ns[i].getAttribute('data-l10n-args')) {
-              dataL10ns[i].textContent = l10n.get(
-                dataL10ns[i].getAttribute('data-l10n-id'),
-                JSON.parse(dataL10ns[i].getAttribute('data-l10n-args'))
-              );
-            } else {
-              dataL10ns[i].textContent = l10n.get(
-                dataL10ns[i].getAttribute('data-l10n-id')
-              );
-            }
-          }
-          SettingsCache.saveSettingsCache();
-          window.performance.mark('navigationLoaded');
-          window.performance.mark('navigationInteractive');
-        });
         this.loadAlameda();
+        (function() {
+          try {
+            var L = (typeof l10n !== 'undefined' && l10n) || { once: function(cb) { cb(); }, get: function() { return ''; } };
+            L.once(function l10nDone() {
+              var codeNode = document.querySelector('.current');
+              if (!codeNode) return;
+              var dataL10ns = codeNode.querySelectorAll('[data-l10n-id]');
+              for (var i = 0; i < dataL10ns.length; i++) {
+                try {
+                  if (dataL10ns[i].getAttribute('data-l10n-args')) {
+                    dataL10ns[i].textContent = L.get(
+                      dataL10ns[i].getAttribute('data-l10n-id'),
+                      JSON.parse(dataL10ns[i].getAttribute('data-l10n-args'))
+                    );
+                  } else {
+                    dataL10ns[i].textContent = L.get(
+                      dataL10ns[i].getAttribute('data-l10n-id')
+                    );
+                  }
+                } catch(e) {}
+              }
+              SettingsCache.saveSettingsCache();
+              window.performance.mark('navigationLoaded');
+              window.performance.mark('navigationInteractive');
+            });
+          } catch(e) {}
+        })();
       });
     },
 
