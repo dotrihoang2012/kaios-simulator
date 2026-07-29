@@ -2245,17 +2245,31 @@ function stKey(code) {
     if (wv.contentWindow && wv.contentWindow.__stInjectKey) {
       wv.contentWindow.__stInjectKey(domKey);
     } else {
-      // Direct fallback — move .focus between li[role="menuitem"] and
-      // dispatch click for Enter. Works even before Gaia NavigationMap inits.
+      // __stInjectKey bridge not available (engine init errors may have
+      // prevented the baked-in script from running). Inject it now via
+      // contentWindow.eval() — same-origin on GitHub Pages so this works.
       var win = wv.contentWindow, doc = wv.contentDocument;
       if (!doc) return;
+      try {
+        win.eval('(' + function _bridge(k) {
+          var ev = new KeyboardEvent('keydown', { key: k, code: k, bubbles: true, cancelable: true });
+          var t = document.querySelector('.focus') || document.activeElement || document.body;
+          t.dispatchEvent(ev);
+          window.dispatchEvent(new KeyboardEvent('keydown', { key: k, code: k, bubbles: true, cancelable: true }));
+          t.dispatchEvent(new KeyboardEvent('keyup', { key: k, code: k, bubbles: true, cancelable: true }));
+          window.dispatchEvent(new KeyboardEvent('keyup', { key: k, code: k, bubbles: true, cancelable: true }));
+        }.toString() + ';window.__stInjectKey=_bridge;');
+      } catch (e) {}
+      if (win.__stInjectKey) {
+        win.__stInjectKey(domKey);
+        return;
+      }
+      // Ultimate fallback: direct DOM manipulation. Handles all keys so
+      // navigation is usable even if the engine init chain is broken.
       if (domKey === 'ArrowDown' || domKey === 'ArrowUp') {
-        // Only items in the currently-visible section/tab; otherwise
-      // the NodeList spans every panel in the app (~29 items) and
-      // ArrowDown would jump into hidden sections.
-      var section = doc.querySelector('.current');
-      if (!section) section = doc;
-      var all = section.querySelectorAll('li[role="menuitem"]:not(.hidden):not(.non-focus), [role="tab"]:not(.hidden)');
+        var section = doc.querySelector('.current');
+        if (!section) section = doc;
+        var all = section.querySelectorAll('li[role="menuitem"]:not(.hidden):not(.non-focus), [role="tab"]:not(.hidden)');
         var cur = doc.querySelector('.focus'); if (!cur && all.length) cur = all[0];
         if (cur && all.length) {
           var idx = -1;
@@ -2268,18 +2282,28 @@ function stKey(code) {
             all[next].scrollIntoView({ block: 'nearest' });
           }
         }
+      } else if (domKey === 'Escape' || domKey === 'Backspace') {
+        try { win.NavigationMap && win.NavigationMap.navigateBack(); } catch (e) {}
+        var backBtn = doc.querySelector('.current > header a[href], [data-icon="back"], button.gaia-icon-back');
+        if (backBtn) { try { backBtn.click(); } catch (e) {} }
+      } else if (domKey === 'SoftLeft') {
+        var skL = doc.getElementById('software-keys-left');
+        if (skL) { try { skL.click(); } catch (e) {} }
+      } else if (domKey === 'SoftRight') {
+        var skR = doc.getElementById('software-keys-right');
+        if (skR) { try { skR.click(); } catch (e) {} }
       } else if (domKey === 'Enter') {
-        var focus = doc.querySelector('.focus');
-        if (focus) { try { focus.click(); } catch (e) {} }
+        var fcs = doc.querySelector('.focus');
+        if (fcs) { try { fcs.click(); } catch (e) {} }
       }
     }
   } catch (e) {}
 }
 function stKeyFromEvent(e) {
   const map = { ArrowUp: 'Up', ArrowDown: 'Down', ArrowLeft: 'Left', ArrowRight: 'Right',
-    Enter: 'Return', Backspace: 'Backspace', F1: 'F1', F2: 'F2', Delete: 'Delete', Tab: 'Tab' };
+    Enter: 'Return', Backspace: 'Backspace', Escape: 'Backspace', F1: 'F1', F2: 'F2', Delete: 'Delete', Tab: 'Tab' };
   if (map[e.key]) { stKey(map[e.key]); return; }
-  if (e.key.length === 1) stKey(e.key);
+  if (e.key && e.key.length === 1) stKey(e.key);
 }
 function pressEnd() {
   if (isStOpen()) { stCloseSettings(); return; }
@@ -5317,10 +5341,6 @@ updateSbIcons();
 })();
 </script>
 <script src="proxy.js"></script>
-<script src="/settings-host/b2g.js"></script>
-<script src="/settings-host/l10n.js"></script>
-<script src="/settings-host/datetime-ui.js"></script>
-<script src="/settings-host/account-fake-ui.js"></script>
-<script src="/settings-host/activity-ui.js"></script>
+<!-- settings-host shims are inlined into the iframe bundle; no external scripts needed -->
 </body>
 </html>
