@@ -2250,7 +2250,12 @@ function stKey(code) {
       var win = wv.contentWindow, doc = wv.contentDocument;
       if (!doc) return;
       if (domKey === 'ArrowDown' || domKey === 'ArrowUp') {
-        var all = doc.querySelectorAll('li[role="menuitem"]:not(.hidden), [role="tab"]:not(.hidden)');
+        // Only items in the currently-visible section/tab; otherwise
+      // the NodeList spans every panel in the app (~29 items) and
+      // ArrowDown would jump into hidden sections.
+      var section = doc.querySelector('.current');
+      if (!section) section = doc;
+      var all = section.querySelectorAll('li[role="menuitem"]:not(.hidden):not(.non-focus), [role="tab"]:not(.hidden)');
         var cur = doc.querySelector('.focus'); if (!cur && all.length) cur = all[0];
         if (cur && all.length) {
           var idx = -1;
