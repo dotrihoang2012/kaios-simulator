@@ -213,9 +213,11 @@ idx = idx.replace(/\s*<link\s+[^>]*rel=["']localization["'][^>]*>\s*/gi, '');
 // / account-fake — same order they were loaded as external scripts.
 function inlineScript(p) {
   var src = fs.readFileSync(p, 'utf8');
-  // Avoid the </script> sequence inside any shim body from terminating the tag.
-  src = src.replace(/<\/script>/gi, '<\\/script>');
-  return '<script>' + src + '<\\/script>';
+  // Replace </script> sequences with Unicode safe variant; the < expands
+  // hides < from HTML parser, preventing premature script close; only literal
+  // `</script>` (generated below) closes each inline script block.
+  src = src.replace(/<\/script>/gi, '<\\u003c/script>');
+  return '<script>' + src + '</script>';
 }
 const INJECT =
   '<style>' +
@@ -249,7 +251,7 @@ const INJECT =
        't.dispatchEvent(new KeyboardEvent("keyup",{key:k,code:k,bubbles:true,cancelable:true}));' +
        'window.dispatchEvent(new KeyboardEvent("keyup",{key:k,code:k,bubbles:true,cancelable:true}));' +
      '};' +
-   '<\\/script>';
+   '</script>';
 idx = idx.replace(/(<head[^>]*>)/i, '$1' + INJECT);
 fs.writeFileSync(idxPath, idx);
 
