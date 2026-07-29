@@ -239,9 +239,14 @@ const INJECT =
   inlineScript(path.join(shimDir, 'datetime-ui.js')) +
   inlineScript(path.join(shimDir, 'activity-ui.js')) +
   inlineScript(path.join(shimDir, 'account-fake-ui.js')) +
-   // Key-forwarding bridge: the parent simulator iframe calls
-   // contentWindow.__stInjectKey(k) to inject KeyboardEvent inside the
-   // iframe's own realm. Parent-realm events are rejected by Chrome.
+   // Key-forwarding bridge — __stInjectKey (see parent stKey).
+   // Pre-load modules/settings.js as a global script. In the original Gaia
+   // build this file is wrapped in define() by the build system, but here
+   // it arrives as a plain script (const Settings = {…}).  main.js line 243
+   // define("modules/settings", function(){}) would otherwise prevent Alameda
+   // from ever fetching the file → Settings stays undefined → click handlers
+   // that call Settings.setCurrentPanel throw silently.
+   '<script src="js/modules/settings.js"></script>' +
    '<script>' +
      'window.__stInjectKey=function(k){' +
        'var t=document.querySelector(".focus")||document.activeElement||document.body;' +
@@ -251,7 +256,7 @@ const INJECT =
          'if(a){' +
            'a.click();' +
          '}' +
-         'try{t.click()}catch(e){}' +
+         'try{t.click();}catch(e){}' +
        '}' +
        'var ev=new KeyboardEvent("keydown",{key:k,code:k,bubbles:true,cancelable:true});' +
        't.dispatchEvent(ev);' +
