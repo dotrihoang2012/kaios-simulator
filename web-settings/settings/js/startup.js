@@ -133,7 +133,7 @@
         }
         ApiManager.setL10n();
 
-        l10n.once(function l10nDone() {
+        (l10n || {once: function(cb) { cb(); }}).once(function l10nDone() {
           const codeNode = document.querySelector('.current');
           const dataL10ns = codeNode.querySelectorAll('[data-l10n-id]');
           for (let i = 0; i < dataL10ns.length; i++) {

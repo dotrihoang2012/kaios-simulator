@@ -117,6 +117,22 @@ console.log('· patch settings.js — pending-nav queue for early clicks');
   fs.writeFileSync(sf, s);
 }
 
+// ── patch startup.js: guard against missing l10n global ─────────────────
+// The l10n shim sets document.l10n & navigator.mozL10n but startup.js:136
+// references bare `l10n`. If window10n doesn't exist for any reason the
+// l10n...once() callback (which calls this.loadAlameda()) never fires and
+// Settings.init() is never called → everything breaks.
+console.log('· patch startup.js — l10n guard');
+{
+  const sf = path.join(OUT, 'settings/js/startup.js');
+  let s = fs.readFileSync(sf, 'utf8');
+  s = s.replace(
+    'l10n.once(function l10nDone() {',
+    '(l10n || {once: function(cb) { cb(); }}).once(function l10nDone() {'
+  );
+  fs.writeFileSync(sf, s);
+}
+
 // ── overwrite the two files the Electron server substitutes ───────────
 console.log('· web AppOrigin + settings_observer override');
 fs.writeFileSync(
