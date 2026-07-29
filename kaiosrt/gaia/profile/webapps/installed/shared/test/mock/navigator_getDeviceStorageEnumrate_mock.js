@@ -1,0 +1,1 @@
+const MockGetDeviceStorageEnumerate=function(){return{enumerate(){return{[Symbol.asyncIterator](){return{i:0,next(){return this.i<3?(this.i++,Promise.resolve({value:"xxx.txt",done:!1})):Promise.resolve({done:!0})}}}}}}};window.MockGetDeviceStorageEnumerate=MockGetDeviceStorageEnumerate;

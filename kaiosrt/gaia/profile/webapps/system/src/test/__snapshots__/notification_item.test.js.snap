@@ -1,0 +1,137 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<NotificationItem /> component test <NotificationItem /> dom render test 1`] = `
+<NotificationItem
+  dismissable={true}
+  icon="?icon/"
+  id="label#id"
+  sizeText="sizeText"
+  text="text"
+  title="title"
+>
+  <div
+    className="notification list-item navigable"
+    data-dismissable="true"
+    data-manifest-u-r-l="label"
+    data-no-clear="false"
+    data-notification-id="label#id"
+    data-obsolete-a-p-i="false"
+    data-type="desktop-notification"
+    lang=""
+    onBlur={[Function]}
+    onFocus={[Function]}
+    role="link"
+    tabIndex="0"
+  >
+    <i
+      className="icon"
+      data-icon=""
+      role="presentation"
+    />
+    <div
+      className="content"
+    >
+      <div
+        className="primary"
+      >
+        title
+      </div>
+      <div
+        aria-hidden="false"
+        className="secondary"
+      >
+        <span
+          dir="auto"
+        >
+          text
+        </span>
+        <span
+          aria-hidden="false"
+          className="secondary-float"
+          dir="auto"
+        >
+          sizeText
+        </span>
+      </div>
+      <div
+        className="thirdary timestamp"
+        data-timestamp={1608530615437}
+      >
+        dateFormat2
+      </div>
+    </div>
+  </div>
+</NotificationItem>
+`;
+
+exports[`<NotificationItem /> component test <NotificationItem /> dom render test 2`] = `
+<NotificationItem
+  data={
+    Object {
+      "bluetoothSize": "bluetoothSize",
+    }
+  }
+  dismissable={true}
+  icon="blob://"
+  id="label:#id:"
+  progress={true}
+  text="text"
+  title="title"
+  type="type"
+>
+  <div
+    className="notification list-item navigable"
+    data-dismissable="true"
+    data-manifest-u-r-l="label:"
+    data-no-clear="false"
+    data-notification-id="label:#id:"
+    data-obsolete-a-p-i="false"
+    data-type="type"
+    lang=""
+    onBlur={[Function]}
+    onFocus={[Function]}
+    role="listitem"
+    tabIndex="0"
+  >
+    <img
+      className="icon"
+      role="presentation"
+      src="blob://"
+    />
+    <div
+      className="content"
+    >
+      <div
+        className="primary"
+      >
+        title
+      </div>
+      <div
+        aria-hidden="true"
+        className="secondary"
+      >
+        <span
+          dir="auto"
+        >
+          text
+        </span>
+        <span
+          aria-hidden="true"
+          className="secondary-float"
+          dir="auto"
+        >
+          bluetoothSize
+        </span>
+      </div>
+    </div>
+    <div
+      className="progress"
+      style={
+        Object {
+          "backgroundPosition": "99% 50%",
+        }
+      }
+    />
+  </div>
+</NotificationItem>
+`;

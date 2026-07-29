@@ -1,0 +1,25 @@
+<element name="wifi_manage_certificates" extends="section">
+  <template>
+
+    <gaia-header data-href="#wifi_advanced_settings">
+      <h1 slot="text" data-l10n-id="manageCert"></h1>
+    </gaia-header>
+
+    <div>
+      <ul role="menu" class="operate-certificate">
+        <li role="menuitem">
+          <a class="menu-item importCertificate" href="#wifi_select_certificate_file">
+            <span data-l10n-id="importCertificate"></span>
+          </a>
+        </li>
+      </ul>
+      <header>
+        <h2 role="heading" data-l10n-id="certificateList"></h2>
+      </header>
+      <ul role="menu" class="wifi-certificateList"></ul>
+    </div>
+
+    <panel data-path="panels/wifi_manage_certificates/panel"></panel>
+
+  </template>
+</element>

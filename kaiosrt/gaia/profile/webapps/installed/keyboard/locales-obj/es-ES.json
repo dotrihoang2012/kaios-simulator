@@ -1,0 +1,1 @@
+[{"$i":"ok","$v":"Aceptar"},{"$i":"cancel","$v":"Cancelar"},{"$i":"done","$v":"Hecho"},{"$i":"next","$v":[{"t":"idOrVar","v":"n"},"/",{"t":"idOrVar","v":"m"}]},{"$i":"select","$v":"Seleccionar"},{"$i":"enter","$v":"Introducir"},{"$i":"symbols","$v":"Símbolos"},{"$i":"emojiReady","$v":"¡Emoji ya está disponible aquí!"}]

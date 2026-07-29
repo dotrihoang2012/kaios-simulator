@@ -1,0 +1,23 @@
+<element name="input_methods" extends="section">
+  <template>
+
+    <gaia-header data-href="#root">
+      <h1 slot="text" data-l10n-id="input-methods-header"></h1>
+    </gaia-header>
+
+    <div>
+      <ul role="menu" class="input-methods-manager"></ul>
+      <ul role="menu">
+        <li role="menuitem" id="input-languages">
+          <a class="menu-item" href="#">
+            <span data-l10n-id="select-input-languages"></span>
+            <small id="input-languages-desc"></small>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <panel data-path="panels/input_methods/panel"></panel>
+
+  </template>
+</element>

@@ -1,0 +1,32 @@
+<element name="fxa-enter-personal-info" extends="section">
+  <template>
+    <section class="vertical">
+      <ul class="tcl-nav-box">
+        <li class="focusable">
+          <label for="fxa-birth-year-input" data-l10n-id="fxa-birth-year-label"></label>
+          <input id="fxa-birth-year-input" data-l10n-id="fxa-birth-year-label" type="tel" x-inputmode="plain" maxlength="4">
+        </li>
+	      <p data-l10n-id="fxa-gender-label" class="section-sub-title"></p>
+        <li class="focusable list-border">
+          <label class="pack-radio">
+            <input value="Male" name="fxa-gender" type="radio">
+            <span data-l10n-id="fxa-gender-male"></span>
+          </label>
+        </li>
+        <li class="focusable list-border">
+          <label class="pack-radio">
+            <input value="Female" name="fxa-gender" type="radio">
+            <span data-l10n-id="fxa-gender-female"></span>
+          </label>
+        </li>
+        <li class="focusable list-border">
+          <label class="pack-radio">
+            <input value="Confidential" name="fxa-gender" type="radio">
+            <span data-l10n-id="fxa-gender-confidential"></span>
+          </label>
+        </li>
+      </ul>
+    </section>
+    <script src="js/screens/fxam_enter_personal_info.js"></script>
+  </template>
+</element>

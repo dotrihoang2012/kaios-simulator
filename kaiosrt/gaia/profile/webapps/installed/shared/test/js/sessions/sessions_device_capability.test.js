@@ -1,0 +1,1 @@
+describe("session js <device_capability> test",()=>{beforeEach(e=>{require("../../../js/session/device_capability/device_capability"),e()}),test("services-load-complete",async e=>{require("../../mock/daemon_task_scheduler_mock");const{DeviceCapabilityManager:i}=window;await i.get({}),e()})});

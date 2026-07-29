@@ -1,0 +1,194 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<LockscreenView /> component test <LockscreenView /> dom render test 1`] = `
+<LockscreenView>
+  <div
+    id="lockscreen-view"
+    onFocus={[Function]}
+    onKeyDown={[Function]}
+    role="textbox"
+    tabIndex={-1}
+  >
+    <SimcardInfo />
+    <Clock
+      className=""
+    />
+    <LockscreenNotification
+      enabled={false}
+    >
+      <div
+        className=""
+        id="lockscreen-notification"
+      />
+    </LockscreenNotification>
+    <div
+      className=""
+      id="lockscreen-bottom"
+    />
+  </div>
+</LockscreenView>
+`;
+
+exports[`<LockscreenView /> component test render function test 1`] = `
+<LockscreenView>
+  <div
+    id="lockscreen-view"
+    onFocus={[Function]}
+    onKeyDown={[Function]}
+    role="textbox"
+    tabIndex={-1}
+  >
+    <SimcardInfo />
+    <Clock
+      className=""
+    />
+    <LockscreenNotification
+      enabled={false}
+    >
+      <div
+        className=""
+        id="lockscreen-notification"
+      />
+    </LockscreenNotification>
+    <div
+      className=""
+      id="lockscreen-bottom"
+    />
+  </div>
+</LockscreenView>
+`;
+
+exports[`<LockscreenView /> component test render function test 2`] = `
+<LockscreenView>
+  <div
+    id="lockscreen-view"
+    onFocus={[Function]}
+    onKeyDown={[Function]}
+    role="textbox"
+    tabIndex={-1}
+  >
+    <SimcardInfo />
+    <Clock
+      className=""
+    />
+    <LockscreenNotification
+      enabled={true}
+    >
+      <div
+        className=""
+        id="lockscreen-notification"
+      />
+    </LockscreenNotification>
+    <div
+      className=""
+      id="lockscreen-bottom"
+    >
+      <LockmodePocket
+        unlock={[Function]}
+      />
+    </div>
+  </div>
+</LockscreenView>
+`;
+
+exports[`<LockscreenView /> component test render function test 3`] = `
+<LockscreenView>
+  <div
+    id="lockscreen-view"
+    onFocus={[Function]}
+    onKeyDown={[Function]}
+    role="textbox"
+    tabIndex={-1}
+  >
+    <SimcardInfo />
+    <Clock
+      className="in-passcode-mode"
+    />
+    <LockscreenNotification
+      enabled={false}
+    >
+      <div
+        className=""
+        id="lockscreen-notification"
+      />
+    </LockscreenNotification>
+    <div
+      className=""
+      id="lockscreen-bottom"
+    >
+      <Passcode
+        firstLaunch={false}
+        softLeftHandler={[Function]}
+        softRightHandler={[Function]}
+        unlock={[Function]}
+      />
+    </div>
+  </div>
+</LockscreenView>
+`;
+
+exports[`<LockscreenView /> component test render function test 4`] = `
+<LockscreenView>
+  <div
+    id="lockscreen-view"
+    onFocus={[Function]}
+    onKeyDown={[Function]}
+    role="textbox"
+    tabIndex={-1}
+  >
+    <SimcardInfo />
+    <Clock
+      className=""
+    />
+    <LockscreenNotification
+      enabled={false}
+    >
+      <div
+        className=""
+        id="lockscreen-notification"
+      />
+    </LockscreenNotification>
+    <div
+      className=""
+      id="lockscreen-bottom"
+    >
+      <PasscodeRemoteLock
+        softLeftHandler={[Function]}
+        softRightHandler={[MockFunction]}
+        unlock={[Function]}
+      />
+    </div>
+  </div>
+</LockscreenView>
+`;
+
+exports[`<LockscreenView /> component test render function test 5`] = `
+<LockscreenView>
+  <div
+    id="lockscreen-view"
+    onFocus={[Function]}
+    onKeyDown={[Function]}
+    role="textbox"
+    tabIndex={-1}
+  >
+    <LockscreenNotification
+      enabled={false}
+    >
+      <div
+        className=""
+        id="lockscreen-notification"
+      />
+    </LockscreenNotification>
+    <div
+      className=""
+      id="lockscreen-bottom"
+    >
+      <DeviceFinancingLock
+        lockStatus={false}
+        softLeftHandler={[Function]}
+        softRightHandler={[Function]}
+      />
+    </div>
+  </div>
+</LockscreenView>
+`;

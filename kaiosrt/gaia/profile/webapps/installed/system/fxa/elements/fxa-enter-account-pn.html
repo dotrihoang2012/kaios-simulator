@@ -1,0 +1,35 @@
+<element name="fxa-enter-account-pn" extends="section">
+  <template>
+    <section class="vertical">
+      <ul class="tcl-nav-box">
+        <li role="menuitem" class="focusable">
+          <label for="fxa-cc-select" data-l10n-id="fxa-cc-label">Region</label>
+          <p id="fxa-cc-selected" class="fxa-cc-selected"></p>
+          <select id="fxa-cc-select" class="hidden fxa-cc-select region-code" value="+1" keyMatch="code" combineValue=true>
+          </select>
+        </li>
+        <p class="fxa-elements-seperator">
+        </p>
+        <li>
+          <label for="fxa-account-phone-number-input" data-l10n-id="fxa-account-number-label">Account Number</label>
+          <input id="fxa-account-phone-number-input" data-l10n-id="fxa-account-number-label" type="tel" x-inputmode="plain" maxlength="20">
+        </li>
+        <li>
+          <label for="fxa-pw-set-input" data-l10n-id="fxa-password-hint">Password (Must contain letters and numbers)</label>
+          <input id="fxa-pw-input" data-l10n-id="fxa-password-hint" type="password" x-inputmode="plain" maxlength="20">
+        </li>
+        <li>
+          <label for="fxa-confirm-pw-input" data-l10n-id="fxa-confirm-password">Confirm Password</label>
+          <input id="fxa-confirm-pw-input" maxlength="20" data-l10n-id="fxa-password-hint" x-inputmode="plain" type="password">
+        </li>
+        <li>
+          <label class="pack-checkbox" for="fxa-show-pw">
+            <input id="fxa-show-pw" type="checkbox">
+            <span data-l10n-id="fxa-show-password"></span>
+          </label>
+        </li>
+      </ul>
+    </section>
+    <script src="js/screens/fxam_enter_account_pn.js"></script>
+  </template>
+</element>

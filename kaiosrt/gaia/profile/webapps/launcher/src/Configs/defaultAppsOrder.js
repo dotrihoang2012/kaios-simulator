@@ -1,0 +1,27 @@
+/* eslint-disable max-len */
+export default [
+  { name: 'Contact', manifestUrl: window.AppOrigin.getManifestURL('contact') },
+  { name: 'Call Log', manifestUrl: window.AppOrigin.getManifestURL('communications') },
+  { name: 'Browser', manifestUrl: 'homescreen.browser' },
+  { name: 'KaiNews', manifestUrl: window.AppOrigin.getManifestURL('kaios-news') },
+  { name: 'KaiWeather', manifestUrl: window.AppOrigin.getManifestURL('kaios-weather') },
+  { name: 'Message', manifestUrl: window.AppOrigin.getManifestURL('sms') },
+  { name: 'Camera', manifestUrl: window.AppOrigin.getManifestURL('camera') },
+  { name: 'Gallery', manifestUrl: window.AppOrigin.getManifestURL('gallery') },
+  { name: 'Games', origin: 'homescreen.games.folder' },
+  { name: 'Utilities', origin: 'homescreen.utilities.folder' },
+  { name: 'Clock', manifestUrl: window.AppOrigin.getManifestURL('clock') },
+  { name: 'Search', manifestUrl: 'homescreen.search' },
+  { name: 'Music', manifestUrl: window.AppOrigin.getManifestURL('music') },
+  { name: 'Settings', manifestUrl: window.AppOrigin.getManifestURL('settings') },
+  { name: 'KaiPay', manifestUrl: window.AppOrigin.getManifestURL('kaios-pay') },
+  { name: 'Calendar', manifestUrl: window.AppOrigin.getManifestURL('calendar') },
+  { name: 'Astrolo', manifestUrl: window.AppOrigin.getManifestURL('astrolo') },
+  { name: 'Email', manifestUrl: window.AppOrigin.getManifestURL('email') },
+  { name: 'video', manifestUrl: window.AppOrigin.getManifestURL('video') },
+  { name: 'Notes', manifestUrl: window.AppOrigin.getManifestURL('notes') },
+  { name: 'FM', manifestUrl: window.AppOrigin.getManifestURL('fm') },
+  { name: 'Filemanager', manifestUrl: window.AppOrigin.getManifestURL('filemanager') },
+  { name: 'CIAutoTest', manifestUrl: window.AppOrigin.getManifestURL('ciautotest') },
+];
+/* eslint-enable max-len */

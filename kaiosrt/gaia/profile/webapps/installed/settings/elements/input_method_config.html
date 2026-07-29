@@ -1,0 +1,39 @@
+<element name="input_method_config" extends="section">
+  <template>
+
+    <gaia-header data-href="#input_methods">
+      <h1 slot="text" class="ime-config-title"></h1>
+    </gaia-header>
+
+    <div>
+      <ul role="menu">
+        <li role="menuitem" class="use-predictive">
+          <span data-l10n-id="use-predictive"></span>
+          <div class="button icon icon-dialog">
+            <select id='t9Enabled' data-value-type="boolean">
+              <option data-l10n-id="on" value="true">On</option>
+              <option data-l10n-id="off" value="false">Off</option>
+            </select>
+          </div>
+        </li>
+        <li role="menuitem" class="word-suggestion hidden">
+          <span data-l10n-id="next-word-suggestion"></span>
+          <div class="button icon icon-dialog">
+            <select id='wordSuggestion' data-value-type="boolean">
+              <option data-l10n-id="on" value="true">On</option>
+              <option data-l10n-id="off" value="false">Off</option>
+            </select>
+          </div>
+        </li>
+        <li role="menuitem" class="user-dictionary hidden">
+          <a class="menu-item">
+            <span data-l10n-id="user-dictionary"></span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <panel data-path="panels/input_method_config/panel"></panel>
+
+  </template>
+</element>

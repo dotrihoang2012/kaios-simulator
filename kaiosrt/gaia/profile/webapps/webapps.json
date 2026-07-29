@@ -1,0 +1,27 @@
+[
+  {
+    "install_time": 1625734775589,
+    "manifest_url": "http://keyboard.localhost:8081/manifest.webmanifest",
+    "name": "keyboard"
+  },
+  {
+    "install_time": 1625734775589,
+    "manifest_url": "http://launcher.localhost:8081/manifest.webmanifest",
+    "name": "launcher"
+  },
+  {
+    "install_time": 1625734775589,
+    "manifest_url": "http://settings.localhost:8081/manifest.webmanifest",
+    "name": "settings"
+  },
+  {
+    "install_time": 1625734775589,
+    "manifest_url": "http://shared.localhost:8081/manifest.webmanifest",
+    "name": "shared"
+  },
+  {
+    "install_time": 1625734775589,
+    "manifest_url": "http://system.localhost:8081/manifest.webmanifest",
+    "name": "system"
+  }
+]

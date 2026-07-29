@@ -1,0 +1,7 @@
+/*csslint empty-rules: false*/
+/* See bug 1053721 */
+:root {
+  --statusbar-height: 2.6rem;
+  --urlbar-height: 3.6rem;
+  --titlebar-height: 1.8rem;
+}

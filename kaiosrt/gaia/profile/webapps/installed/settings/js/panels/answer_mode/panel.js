@@ -1,0 +1,1 @@
+define(["require","modules/settings_panel"],function(e){const n=e("modules/settings_panel");return function(){function e(){ToastHelper.showToast("changessaved")}const o="phone.answer.flipopen.enabled";return n({onBeforeShow:function(){SettingsDBCache.observe(o,!0,e,!0)},onBeforeHide:function(){SettingsDBCache.unobserve(o,e)}})}});

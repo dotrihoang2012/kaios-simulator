@@ -1,0 +1,190 @@
+#icc-input-msg {
+  margin-left: -0.2rem;
+  padding: 1rem 0 0.5rem 0;
+}
+
+.stk-dialog {
+  background: #f4f4f4;
+  color: #000;
+  -moz-box-sizing: border-box;
+  height: auto;
+  gaia-header {
+    --header-background: var(--color-gs20);
+    h1 {
+      font-style: unset !important;
+      font-size: 1.7rem !important;
+      text-align: center !important;
+      color: var(--color-gs90) !important;
+    }
+  }
+  section {
+    width: 100%;
+    p {
+      margin: 0;
+      max-height: 60vh;
+      width: calc(100% - 2rem);
+      word-wrap: break-word;
+      height: auto;
+      overflow-y: auto;
+      padding: 1rem;
+      color: var(--color-gs90);
+    }
+
+    .form {
+      padding: 0 1.5rem;
+      width: calc(100% - 3rem);
+      margin: 0;
+      position: inherit;
+      p {
+        overflow-y: auto;
+        padding: 0;
+        max-height: 48vh;
+        width: 100%;
+        word-wrap: break-word;
+      }
+      span.icons {
+        padding: 0;
+      }
+      input {
+        font-size: 1.7rem;
+        display: block;
+        width: 100%;
+        height: 3.6rem;
+        padding: 0 1rem;
+        box-sizing: border-box;
+        margin: 0.5rem 0;
+      }
+    }
+
+    &[data-icons] > form > p.stk-no-text {
+      height: 0;
+      margin: 0;
+      padding: 0;
+    }
+
+    &[data-icons] > form > input {
+      margin: 0 0 2rem;
+    }
+
+    &[data-icons=true] > form > input {
+      margin: 0 0 2rem;
+    }
+
+    span.icons {
+      padding: 0;
+    }
+
+    &[data-icons=true] span.icons {
+      padding-bottom: 1.4rem;
+      canvas {
+        margin-right: 1.5rem;
+      }
+      canvas:last-of-type {
+        margin-right: 0;
+      }
+    }
+  }
+
+  p {
+    color: var(--color-gs70);
+    white-space: pre-line;
+    font-size: 1.7rem;
+  }
+}
+
+section[data-icons='true'] {
+  span.icons {
+    display: block;
+    width: calc(100% - 6rem);
+    padding: 2rem 3rem 0;
+  }
+  .form {
+    span.icons {
+      padding: 2rem 1.5rem 0;
+    }
+  }
+}
+
+#icc-input .yesnodisabled  {
+  width: calc((100% - 2rem) / 2);
+  margin-left: 1rem;
+}
+
+#icc-input .yesnoenabled {
+  display: none;
+}
+
+.yesnomode menu button {
+  width: calc((100% - 2rem) / 3);
+  margin-left: 1rem;
+}
+#icc-input.yesnomode .yesnoenabled {
+  display: inline-block;
+}
+
+#icc-input.yesnomode button,
+#icc-input.yesnomode menu span {
+  width: calc((100% - 3rem) / 3);
+}
+#icc-input.yesnomode menu .yesnoenabled {
+  margin-left: 1rem;
+}
+#icc-input.yesnomode menu .yesnoenabled button {
+  width: 100%;
+}
+
+#icc-input.yesnomode .yesnodisabled {
+  display: none;
+}
+
+#icc-input .yesnodisabled button[disabled] {
+  background: none repeat scroll 0 0 rgb(95, 95, 95);
+  color: rgb(77, 77, 77);
+  text-shadow: none;
+  border-color: rgb(77, 77, 77);
+  pointer-events: none;
+}
+
+#icc-input-box.full {
+  animation: full-dance .5s;
+  animation-iteration-count: 2;
+}
+
+@keyframes full-dance {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(10px); }
+  50% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+  100% { transform: translateX(0); }
+}
+/* large Text Support */
+@media (prefers-text-size: large) {
+  .stk-dialog p {
+    font-size: 2.2rem;
+  }
+}
+
+
+@media screen and (orientation: landscape) {
+    .stk-dialog {
+      min-height: 12rem;
+      gaia-header {
+        h1 {
+          font-size: 1.5rem !important;
+        }
+      }
+      p {
+        font-size: 1.5rem !important;
+      }
+      section {
+        .form {
+          p {
+            margin: -1rem 1.5rem 1.4rem;
+          }
+        }
+        p {
+          margin-top: -1rem;
+        }
+      }
+    }
+}

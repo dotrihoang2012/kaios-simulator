@@ -1,0 +1,82 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<DeviceFinancingLock /> component test DeviceFinancingLock dom render test 1`] = `
+<DeviceFinancingLock
+  lockStatus="overdue-modem-lock"
+  softLeftHandler={[Function]}
+  softRightHandler={[Function]}
+>
+  <div
+    className="device-financing-view fullview"
+    onKeyDown={[Function]}
+    role="presentation"
+    tabIndex={-1}
+  >
+    <div
+      className="icon"
+      data-icon="alert-32px"
+    />
+    <div
+      className="primary"
+    >
+      df-overdue-modem-lock-content-1
+    </div>
+    <div
+      className="secondary"
+    >
+      df-overdue-modem-lock-content-2
+    </div>
+  </div>
+</DeviceFinancingLock>
+`;
+
+exports[`<DeviceFinancingLock /> component test DeviceFinancingLock dom render test 2`] = `
+<DeviceFinancingLock
+  lockStatus="inactivation-lock"
+  softLeftHandler={[Function]}
+  softRightHandler={[Function]}
+>
+  <div
+    className="device-financing-view"
+    onKeyDown={[Function]}
+    role="presentation"
+    tabIndex={-1}
+  >
+    <div
+      className="primary"
+    >
+      df-inactivation-lock
+    </div>
+  </div>
+</DeviceFinancingLock>
+`;
+
+exports[`<DeviceFinancingLock /> component test DeviceFinancingLock dom render test 3`] = `
+<DeviceFinancingLock
+  lockStatus="overdue-level3-lock"
+  softLeftHandler={[Function]}
+  softRightHandler={[Function]}
+>
+  <div
+    className="device-financing-view fullview"
+    onKeyDown={[Function]}
+    role="presentation"
+    tabIndex={-1}
+  >
+    <div
+      className="icon"
+      data-icon="alert-32px"
+    />
+    <div
+      className="primary"
+    >
+      df-overdue-lock-content-1
+    </div>
+    <div
+      className="secondary"
+    >
+      df-overdue-lock-content-2
+    </div>
+  </div>
+</DeviceFinancingLock>
+`;

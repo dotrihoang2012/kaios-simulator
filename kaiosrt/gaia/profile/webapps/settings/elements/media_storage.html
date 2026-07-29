@@ -1,0 +1,67 @@
+<element name="media_storage" extends="section">
+  <template>
+
+    <gaia-header data-href="#root">
+      <h1 slot="text" data-l10n-id="mediaStorage-header"></h1>
+    </gaia-header>
+
+    <div>
+      <ul>
+        <li class="non-focus">
+          <div id="space-stacked-bar" class="space-stackedbar">
+          </div>
+        </li>
+        <li id="media-music" class="color-music">
+          <span class="stackedbar-color-label"></span>
+          <a>
+            <span data-l10n-id="music-space"></span>
+            <span class="size"></span>
+          </a>
+        </li>
+        <li id="media-pictures" class="color-pictures">
+          <span class="stackedbar-color-label"></span>
+          <a>
+            <span data-l10n-id="pictures-space"></span>
+            <span class="size"></span>
+          </a>
+        </li>
+        <li id="media-videos" class="color-videos">
+          <span class="stackedbar-color-label"></span>
+          <a>
+            <span data-l10n-id="videos-space"></span>
+            <span class="size"></span>
+          </a>
+        </li>
+        <li id="media-other" class="color-other">
+          <span class="stackedbar-color-label"></span>
+          <a>
+            <span data-l10n-id="other-space"></span>
+            <span class="size"></span>
+          </a>
+        </li>
+        <li id="media-free" class="color-free">
+          <span class="stackedbar-color-label"></span>
+          <a>
+            <span data-l10n-id="free-space"></span>
+            <span class="size"></span>
+          </a>
+        </li>
+        <li id="media-total" class="total-space">
+          <span></span>
+          <a>
+            <span data-l10n-id="total-space"></span>
+            <span class="size"></span>
+          </a>
+        </li>
+        <li id="media-format" class="button hidden">
+          <button data-l10n-id="format-sdcard-title">
+            Format SD card
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <panel data-path="panels/media_storage/panel"></panel>
+
+  </template>
+</element>

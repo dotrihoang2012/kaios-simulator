@@ -1,0 +1,1 @@
+const MockMobileConnections=[{voice:{network:{mcc:"232",mnc:"mnc",shortName:"kaios"},cell:{gsmCellId:33,gsmLocationAreaCode:19},connected:!0,state:"registered"},iccId:"iccId",getDeviceIdentities:jest.fn()},{voice:{network:{},cell:{},connected:!1,state:"searching"},iccId:"iccId",getDeviceIdentities:jest.fn()}];exports.MockMobileConnections=MockMobileConnections;

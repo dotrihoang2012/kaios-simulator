@@ -1,0 +1,58 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Passcode /> component test Passcode dom render test 1`] = `
+<Passcode
+  softLeftHandler={[MockFunction]}
+  softRightHandler={[MockFunction]}
+  unlock={[MockFunction]}
+>
+  <div
+    className=""
+    id="passcode-view"
+    onKeyDown={[Function]}
+    tabIndex="-1"
+  >
+    <div
+      className="secondary info-text"
+    >
+      lockscreenEnterLockCode
+    </div>
+    <div
+      className="codes"
+    >
+      <div
+        className="code"
+        key="0"
+      >
+        <div
+          className="dot"
+        />
+      </div>
+      <div
+        className="code"
+        key="1"
+      >
+        <div
+          className="dot"
+        />
+      </div>
+      <div
+        className="code"
+        key="2"
+      >
+        <div
+          className="dot"
+        />
+      </div>
+      <div
+        className="code"
+        key="3"
+      >
+        <div
+          className="dot"
+        />
+      </div>
+    </div>
+  </div>
+</Passcode>
+`;

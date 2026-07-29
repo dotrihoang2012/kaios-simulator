@@ -1,0 +1,109 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<FMNotification /> component test _handle_iac-FMRadioComms event test 1`] = `
+<FMNotification>
+  <div
+    className="notification list-item navigable"
+    data-dissmisable="false"
+    data-no-clear="false"
+    data-notification-id="fm"
+    data-obsolete-a-p-i="false"
+    data-type="desktop-notification"
+    lang=""
+    role="link"
+    tabIndex="0"
+  >
+    <img
+      className="icon"
+      role="presentation"
+      src="http://system.localhost/style/icons/fm.png"
+    />
+    <div
+      className="content"
+    >
+      <div
+        className="primary"
+        dir="auto"
+      >
+        name
+      </div>
+      <div
+        className="secondary"
+        dir="auto"
+      >
+        111MHZ
+      </div>
+    </div>
+  </div>
+</FMNotification>
+`;
+
+exports[`<FMNotification /> component test _handle_iac-FMRadioComms event test when PREVENTING_SHOWN is false 1`] = `
+<FMNotification>
+  <div
+    className="notification list-item navigable"
+    data-dissmisable="false"
+    data-no-clear="false"
+    data-notification-id="fm"
+    data-obsolete-a-p-i="false"
+    data-type="desktop-notification"
+    lang=""
+    role="link"
+    tabIndex="0"
+  >
+    <img
+      className="icon"
+      role="presentation"
+      src="http://system.localhost/style/icons/fm.png"
+    />
+    <div
+      className="content"
+    >
+      <div
+        className="primary"
+        dir="auto"
+      >
+        111
+      </div>
+      <div
+        className="secondary"
+        dir="auto"
+      />
+    </div>
+  </div>
+</FMNotification>
+`;
+
+exports[`<FMNotification /> component test FMNotification dom render test 1`] = `
+<FMNotification>
+  <div
+    className="notification list-item navigable"
+    data-dissmisable="false"
+    data-no-clear="false"
+    data-notification-id="fm"
+    data-obsolete-a-p-i="false"
+    data-type="desktop-notification"
+    lang=""
+    role="link"
+    tabIndex="0"
+  >
+    <img
+      className="icon"
+      role="presentation"
+      src="http://system.localhost/style/icons/fm.png"
+    />
+    <div
+      className="content"
+    >
+      <div
+        className="primary"
+        dir="auto"
+      />
+      <div
+        className="secondary"
+        dir="auto"
+      />
+    </div>
+  </div>
+</FMNotification>
+`;

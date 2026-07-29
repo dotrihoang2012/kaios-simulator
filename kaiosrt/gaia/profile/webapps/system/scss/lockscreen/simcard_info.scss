@@ -1,0 +1,164 @@
+#simcard-info {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 10vh;
+  white-space: nowrap;
+
+  .airplane-mode-info {
+    display: none;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.6rem;
+  }
+
+  &[data-is-airplane-mode=true]:not([data-is-voWifi-mode=true]) {
+    .airplane-mode-info {
+      display: block;
+    }
+
+    .info-row {
+      display: none;
+    }
+  }
+
+  &[data-is-airplane-mode=true] {
+    .info-row[data-is-voWifi-mode=false] {
+      display: none;
+    }
+  }
+
+  .info-row {
+    display: flex;
+    align-self: flex-start;
+    height: 50%;
+    margin-left: 2rem;
+    margin-right: 2rem;
+
+    .icon-wrapper {
+      position: relative;
+      width: 1.6rem;
+      height: 1.6rem;
+      margin-inline-end: 0.5rem;
+      color: var(--color-gs00);
+      line-height: 1;
+
+      .icon {
+        position: absolute;
+        font-size: 1.6rem;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        &.inactive::before {
+          color: rgba(white, 0.3);
+        }
+
+        &.bg {
+          opacity: 0.4;
+        }
+      }
+
+      &[data-is-searching=true] {
+        .icon.level::before {
+          background: url('../../style/statusbar/images/signal-searching.png') no-repeat 50%;
+          content: '';
+          width: 100%;
+          height: 100%;
+        }
+
+        .icon.bg {
+          opacity: 0;
+        }
+      }
+    }
+
+    .carrier-name {
+      color: var(--color-gs20);
+      display: flex;
+      line-height: 1;
+      font-size: 1.4rem !important;
+
+      .text {
+        margin: auto;
+        font-weight: bold;
+      }
+    }
+  }
+
+  & .level::after {
+    content: attr(data-index);
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
+
+html[dir="rtl"] #simcard-info .icon {
+  &.level::before,
+  &.bg::before {
+    transform: rotateY(180deg);
+  }
+}
+
+@media only screen and (orientation: landscape) {
+  #simcard-info {
+    display: block;
+    flex-direction: row;
+    align-items: center;
+    width: 30rem;
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    margin: 0 auto;
+    text-align: center;
+    animation: showSIMinfo 80ms ease-in-out forwards;
+    &.hide {
+      animation: hideSIMinfo 50ms ease-in-out forwards;
+    }
+
+    .info-row {
+      display: inline-block;
+      height: 100%;
+      margin: 0 auto;
+
+      &:first-child {
+        margin-right: 1rem;
+      }
+
+      .icon-wrapper,
+      .carrier-name {
+        float: left;
+        vertical-align: middle;
+      }
+    }
+  }
+
+  @keyframes showSIMinfo {
+    from {
+      height: 0;
+      opacity: 0;
+    }
+    to {
+      height: 2.2rem;
+      opacity: 1;
+    }
+  }
+
+  @keyframes hideSIMinfo {
+    from {
+      height: 2.2rem;
+      opacity: 1;
+    }
+    to {
+      height: 0;
+      opacity: 0;
+    }
+  }
+}

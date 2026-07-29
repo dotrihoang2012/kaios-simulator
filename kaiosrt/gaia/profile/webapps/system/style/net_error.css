@@ -1,0 +1,74 @@
+html {
+  font-size: 10px;
+  background-color: white;
+}
+
+#net-error {
+  margin: 0 1rem 0;
+}
+
+#net-error.hidden {
+  display: none;
+}
+
+#net-error form[role="dialog"] {
+  color: var(--color-gs90);
+}
+
+#net-error form[role="dialog"] > section {
+  text-align: center;
+}
+
+#failed-logo {
+  display: inline-block;
+  width: 100%;
+  height: 8.4rem;
+  background-image: url(net_error/default_error.png);
+  background-position: bottom center;
+  background-repeat: no-repeat;
+  background-size: 6.4rem 6.4rem;
+}
+
+#failed-logo.offline {
+  background-image: url(net_error/no_connectivity.png);
+}
+
+#failed-logo.no-logo {
+  height: 0;
+}
+
+#net-error h2 {
+  margin: 0rem;
+}
+
+#net-error p {
+  text-align: center;
+  margin: 0 0 2.4rem;
+}
+
+#net-error button {
+  margin: 1rem 0 0;
+  height: 3.6rem;
+  border-radius: 1.8rem;
+  padding: 0 1rem;
+}
+
+#net-error button.hidden {
+  display: none;
+}
+
+@media screen and (orientation: landscape) {
+  #net-error button {
+    font-size: 17px;
+  }
+
+  #failed-logo {
+    width: 5.4rem;
+    height: 5.4rem;
+  }
+
+  #net-error p {
+    text-align: center;
+  }
+
+}

@@ -1,0 +1,1 @@
+window.DeviceCapabilityManager={get:a=>new Promise((e,i)=>{e(a)})};

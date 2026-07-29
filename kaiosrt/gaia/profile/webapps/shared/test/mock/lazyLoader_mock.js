@@ -1,0 +1,1 @@
+const LazyLoader=function(){function o(){this._loaded={},this._isLoading={}}return o.prototype={getJSON:jest.fn(),load:jest.fn(),loadPromise:()=>Promise.resolve(null)},new o}();window.LazyLoader=LazyLoader;

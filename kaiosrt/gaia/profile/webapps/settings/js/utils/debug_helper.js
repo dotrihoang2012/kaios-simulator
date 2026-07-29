@@ -1,0 +1,1 @@
+const DebugHelper=function(){let n=!1;function t(e){document.location.hostname.replace(/\..*$/u,"")}return{init:function(){SettingsDBCache.observe("debug.gaia.enabled",!1,e=>{t(n=e)})},log:t,debug:function(e){n&&t()}}}();window.DebugHelper=DebugHelper;

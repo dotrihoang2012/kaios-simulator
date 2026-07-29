@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`helper js <custom_dialog> test window.CustomDialog.show() execution result test CustomDialog.show should return screen 1`] = `
+<form
+  class="visible"
+  data-type="confirm"
+  id="dialog-screen"
+  role="dialog"
+>
+  <section>
+    <h1
+      id="dialog-title"
+    >
+      <img
+        class="custom-dialog-title-icon"
+        src="icon.png"
+      />
+      <span
+        data-l10n-id="titleId"
+      />
+    </h1>
+    <p
+      data-l10n-id="msg"
+      id="dialog-message"
+    />
+    <input
+      id="custom-input"
+      type="true"
+    />
+  </section>
+</form>
+`;

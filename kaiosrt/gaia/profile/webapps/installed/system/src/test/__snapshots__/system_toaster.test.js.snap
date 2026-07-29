@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<SystemToaster /> component test SystemToaster dom render test 1`] = `
+<SystemToaster>
+  <div
+    className=""
+    id="system-toaster"
+  />
+</SystemToaster>
+`;
+
+exports[`<SystemToaster /> component test show function test 1`] = `
+<SystemToaster>
+  <div
+    className="warning"
+    id="system-toaster"
+  >
+    <div
+      className="container"
+    >
+      <div
+        className="icon"
+      >
+        <div
+          className="background"
+        />
+        <img
+          src="icon_test"
+        />
+      </div>
+      <div
+        className="content"
+      >
+        <i
+          className="icon-font"
+          data-icon="gaiaIcon_test"
+          role="presentation"
+        />
+        <div
+          className="title primary"
+        >
+          titleL10n_test
+        </div>
+        <div
+          className="secondary"
+        >
+          <div
+            aria-hidden="true"
+            data-l10n-id="textL10n_test"
+          >
+            text_test
+          </div>
+          <div
+            aria-label="ariaLabel_test"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</SystemToaster>
+`;

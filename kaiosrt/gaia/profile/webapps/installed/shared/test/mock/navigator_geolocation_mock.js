@@ -1,0 +1,1 @@
+const fakeCoords={latitude:37.38859,longitude:-122.061704,accuracy:5},fakePosition={timestamp:1404756850457,coords:fakeCoords};window.navigator.geolocation={watchPosition:jest.fn((o,t)=>{o(fakePosition)}),clearWatch:jest.fn(),getCurrentPosition:jest.fn((o,t)=>{o(fakePosition)})};

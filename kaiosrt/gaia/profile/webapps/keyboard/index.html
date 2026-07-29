@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1">
+  <meta charset="utf-8">
+  <title>Keyboard</title>
+  <script defer="" type="text/javascript" src="js/keypad_symbols.js"></script>
+  <script defer="" type="text/javascript" src="js/imeconnect_sdk.js"></script>
+  <script defer="" type="text/javascript" src="js/keypad_t9.js"></script>
+  <script defer="" type="text/javascript" src="js/keypad_emoji.js"></script>
+  <script defer="" type="text/javascript" src="js/keypad_maps.js"></script>
+  <script defer="" type="text/javascript" src="js/keypad.js"></script>
+
+  <script defer="" src="http://shared.localhost:8081/js/utils/common/lazy_loader.js"></script>
+  <script defer="" src="http://shared.localhost:8081/js/session/task_scheduler.js"></script>
+  <script defer="" src="http://shared.localhost:8081/js/session/lib_session.js"></script>
+  <script defer="" src="http://shared.localhost:8081/js/session/settings/settings_observer.js"></script>
+  <script defer="" src="http://shared.localhost:8081/js/session/device_capability/device_capability.js"></script>
+  <script defer="" src="http://shared.localhost:8081/js/helper/keypad/keypad_helper.js"></script>
+  <script defer="" src="http://shared.localhost:8081/js/utils/l10n/l10n.js"></script>
+  <script defer="" type="text/javascript" src="js/keyboard_app.js"></script>
+  <!-- Localization -->
+  <meta name="defaultLanguage" content="en-US">
+  <meta name="availableLanguages" content="af-ZA:202106081659, ar-SA:202106081659, bn-IN:202106081659, de-DE:202106081659, en-GB:202106081659, en-US:202106081659, es-US:202106081659, en-NG:202106081659, es-ES:202106081659, fa-IR:202106081659, fr-CA:202106081659, fr-FR:202106081659, hi-HI:202106081659, hu-HU:202106081659, id-ID:202106081659, it-IT:202106081659, ms-MY:202106081659, ne-IN:202106081659, nl-NL:202106081659, pl-PL:202106081659, pt-BR:202106081659, pt-PT:202106081659, ro-RO:202106081659, ru-RU:202106081659, sw-ZA:202106081659, ta-IN:202106081659, th-TH:202106081659, tr-TR:202106081659, ur-PK:202106081659, vi-VN:202106081659, zh-CN:202106081659, zu-ZA:202106081659">
+  <link href="/locales-obj/{locale}.json" rel="localization">
+  <link rel="stylesheet" type="text/css" href="http://shared.localhost:8081/style/gaia_theme/gaia-theme.css">
+  <link rel="stylesheet" type="text/css" href="http://shared.localhost:8081/style/gaia_icons/gaia-icons.css">
+  <link rel="stylesheet" type="text/css" href="style/keyboard.css">
+<meta name="appVersion" content="2.2"></head>
+
+<!-- The keyboard itself should be "ltr", to override the attribute set at documentElement by l10n.js -->
+<body dir="ltr">
+  <div id="symbols">
+    <div id="symbols-background"></div>
+    <div id="symbols-content">
+      <div id="recent-emoji"></div>
+      <div id="symbols-container"></div>
+    </div>
+  </div>
+  <div id="soft-keys">
+    <span class="soft-key left"></span>
+    <span class="soft-key"></span>
+    <span class="soft-key right"></span>
+  </div>
+  <div id="candidates">
+    <div id="candidates-container">
+      <div id="candidates-scrollable"></div>
+    </div>
+    <div id="candidates-input-number" class="hide"></div>
+    <div id="candidates-page-indicator">
+      <div id="left-indicator"></div>
+      <div id="right-indicator"></div>
+    </div>
+  </div>
+
+
+
+
+</body>
+</html>

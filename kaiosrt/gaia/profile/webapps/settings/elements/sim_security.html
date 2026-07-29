@@ -1,0 +1,59 @@
+<element name="sim_security" extends="section">
+  <template>
+
+    <gaia-header data-href="#simcard_manager">
+      <h1 slot="text" data-l10n-id="simSecurity-header"></h1>
+    </gaia-header>
+
+    <div>
+      <ul role="menu">
+        <li role="menuitem" id="sim-pin-item">
+          <span></span>
+          <span class="icon icon-dialog button">
+            <select id="sim-pin-select" data-track-class="simPin" data-value-type="string">
+              <option data-l10n-id="on" value="true">On</option>
+              <option data-l10n-id="off" value="false" selected>Off</option>
+            </select>
+          </span>
+          <span id="sim-pin-unknown" data-l10n-id="simpin-status-unknown" class="hidden"></span>
+        </li>
+        <li role="menuitem" id="sim-pin-change" class="hidden">
+          <a data-type="changeSimPin" class="menu-item">
+            <span></span>
+          </a>
+        </li>
+      </ul>
+      <ul role="menu" id="sim2-container" class="hidden">
+        <li role="menuitem" id="sim2-pin-item">
+          <span data-l10n-args='{"index": "2"}' data-l10n-id="simPinWithIndex"></span>
+          <span class="icon icon-dialog button">
+          <select id="sim2-pin-select" data-track-class="simPin" data-value-type="boolean">
+            <option data-l10n-id="on" value="true">On</option>
+            <option data-l10n-id="off" value="false" selected>Off</option>
+          </select>
+        </span>
+          <span id="sim2-pin-unknown" data-l10n-id="simpin-status-unknown" class="hidden"></span>
+        </li>
+        <li role="menuitem" id="sim2-pin-change" class="hidden">
+          <a class="menu-item">
+            <span data-l10n-args='{"index": "2"}' data-l10n-id="changeSimPinWithIndex"></span>
+          </a>
+        </li>
+      </ul>
+
+      <header>
+        <h2 role="heading" data-l10n-id="whatIsSimPin"></h2>
+      </header>
+      <ul role="menu">
+        <li role="menuitem" class="more-description-container">
+          <a href="#simpin_description">
+            <p data-l10n-id="simPinIntro1" class="more-description-msg1"></p>
+            <p data-l10n-id="more" class="more-description"></p>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <panel data-path="panels/sim_security/panel"></panel>
+
+  </template>
+</element>

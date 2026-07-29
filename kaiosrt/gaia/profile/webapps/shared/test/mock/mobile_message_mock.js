@@ -1,0 +1,1 @@
+const MockMobileMessage={getSmscAddress:function(e){return{set onsuccess(e){e.call(this)},set onerror(e){e.call(this)},get result(){return"res,ult"}}}};exports.MockMobileMessage=MockMobileMessage;

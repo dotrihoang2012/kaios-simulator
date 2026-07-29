@@ -1,0 +1,82 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<PasscodeRemoteLock /> component test PasscodeRemoteLock dom render test 1`] = `
+<PasscodeRemoteLock
+  softLeftHandler={[MockFunction]}
+  softRightHandler={[MockFunction]}
+  unlock={[MockFunction]}
+>
+  <div
+    className=""
+    id="remote-passcode-view"
+    onKeyDown={[Function]}
+    tabIndex="-1"
+  >
+    <p
+      className="header"
+    >
+      device-locked
+    </p>
+    <p
+      className="remote-message"
+    />
+    <div
+      className="secondary info-text"
+    >
+      enterPIN
+    </div>
+    <div
+      className="codes"
+    >
+      <div
+        className="code"
+        key="0"
+      >
+        <div
+          className="dot"
+        />
+      </div>
+      <div
+        className="code"
+        key="1"
+      >
+        <div
+          className="dot"
+        />
+      </div>
+      <div
+        className="code"
+        key="2"
+      >
+        <div
+          className="dot"
+        />
+      </div>
+      <div
+        className="code"
+        key="3"
+      >
+        <div
+          className="dot"
+        />
+      </div>
+      <div
+        className="code"
+        key="4"
+      >
+        <div
+          className="dot"
+        />
+      </div>
+      <div
+        className="code"
+        key="5"
+      >
+        <div
+          className="dot"
+        />
+      </div>
+    </div>
+  </div>
+</PasscodeRemoteLock>
+`;

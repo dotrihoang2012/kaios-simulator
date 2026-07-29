@@ -71,6 +71,52 @@ for (const rel of [
   fs.copyFileSync(s, d);
 }
 
+// ── patch settings.js — guard SettingsService init() delay ──────────────
+// Settings.init() runs async via Alameda boot. If the user presses Enter
+// before it completes, setCurrentPanel crashes on:
+//   this.SettingsService.navigate(...)  // SettingsService = undefined
+// The patch adds a _pendingNav queue so early clicks are deferred and
+// automatically replayed when init() finishes.
+console.log('· patch settings.js — pending-nav queue for early clicks');
+{
+  const sf = path.join(OUT, 'settings/js/modules/settings.js');
+  let s = fs.readFileSync(sf, 'utf8');
+
+  // Add _pendingNav field after isBackHref
+  s = s.replace(
+    'isBackHref: false,',
+    'isBackHref: false,\n  _pendingNav: null,'
+  );
+
+  // Guard the navigate call + queue pending
+  s = s.replace(
+    'this.currentPanel = hash;\n    this.SettingsService.navigate(panelID, config);',
+    'this.currentPanel = hash;\n' +
+    '    if (this.SettingsService) {\n' +
+    '      this.SettingsService.navigate(panelID, config);\n' +
+    '    } else {\n' +
+    '      this._pendingNav = { id: panelID, config: config };\n' +
+    '    }'
+  );
+
+  // Add pending-nav replay after SettingsService is assigned in init()
+  s = s.replace(
+    'this.SettingsService = options.SettingsService;\n    this.ScreenLayout = options.ScreenLayout;',
+    'this.SettingsService = options.SettingsService;\n' +
+    '    this.ScreenLayout = options.ScreenLayout;\n\n' +
+    '    // Replay pending navigation from before init.\n' +
+    '    if (this._pendingNav) {\n' +
+    '      var p = this._pendingNav;\n' +
+    '      this._pendingNav = null;\n' +
+    '      this.currentPanel = null;\n' +
+    '      this.SettingsService.navigate(p.id, p.config);\n' +
+    '      this.currentPanel = \'#\' + p.id;\n' +
+    '    }'
+  );
+
+  fs.writeFileSync(sf, s);
+}
+
 // ── overwrite the two files the Electron server substitutes ───────────
 console.log('· web AppOrigin + settings_observer override');
 fs.writeFileSync(

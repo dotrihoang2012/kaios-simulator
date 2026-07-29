@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Prompt /> component test <Prompt /> dom render test 1`] = `
+<Prompt>
+  <div
+    id="prompt"
+  />
+</Prompt>
+`;
+
+exports[`<Prompt /> component test show function test 1`] = `
+<Prompt>
+  <div
+    id="prompt"
+  >
+    <div
+      className="container"
+      data-app-name="test_appName"
+    >
+      <div
+        className="icon"
+      >
+        <div
+          className="background"
+        />
+        <img
+          src="icon1.png"
+        />
+      </div>
+      <div
+        className="content"
+      >
+        <div
+          className="primary"
+        >
+          test_title
+        </div>
+      </div>
+    </div>
+  </div>
+</Prompt>
+`;

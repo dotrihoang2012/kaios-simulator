@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<SimDialogManager /> component test <SimDialogManager /> dom render test 1`] = `
+<SimDialogManager>
+  <div
+    data-z-index-level="dialog-overlay"
+    id="sim-lock-container"
+  >
+    <SimDialog
+      nckSkipButton={false}
+      onClose={[Function]}
+      showAttentionInNck={false}
+      slot="slot11"
+    />
+  </div>
+</SimDialogManager>
+`;

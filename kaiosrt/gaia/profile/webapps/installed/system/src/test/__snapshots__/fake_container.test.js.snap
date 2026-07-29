@@ -1,0 +1,121 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<FakeContainer /> component test invoke close when transition is closed/opening/closing 1`] = `
+<FakeContainer
+  closeAnimation="immediate"
+  openAnimation="immediate"
+>
+  <div
+    data-transition-state="closed"
+  >
+    <a
+      id="children"
+    />
+  </div>
+</FakeContainer>
+`;
+
+exports[`<FakeContainer /> component test invoke open when transition is opened/opening/closing 1`] = `
+<FakeContainer
+  closeAnimation="immediate"
+  openAnimation="immediate"
+>
+  <div
+    data-transition-state="opened"
+  >
+    <a
+      id="children"
+    />
+  </div>
+</FakeContainer>
+`;
+
+exports[`<FakeContainer /> component test onAnimationEnd(closing -> closed) function test 1`] = `
+<FakeContainer
+  closeAnimation="immediate"
+  openAnimation="immediate"
+>
+  <div
+    data-transition-state="closed"
+  >
+    <a
+      id="children"
+    />
+  </div>
+</FakeContainer>
+`;
+
+exports[`<FakeContainer /> component test onAnimationEnd(opening -> opened) function test 1`] = `
+<FakeContainer
+  closeAnimation="immediate"
+  openAnimation="immediate"
+>
+  <div
+    data-transition-state="opened"
+  >
+    <a
+      id="children"
+    />
+  </div>
+</FakeContainer>
+`;
+
+exports[`<FakeContainer /> component test transition closed -> opened test 1`] = `
+<FakeContainer
+  closeAnimation="immediate"
+  openAnimation="immediate"
+>
+  <div
+    data-transition-state="opened"
+  >
+    <a
+      id="children"
+    />
+  </div>
+</FakeContainer>
+`;
+
+exports[`<FakeContainer /> component test transition closed -> opening test 1`] = `
+<FakeContainer
+  closeAnimation="immediate"
+  openAnimation="immediate"
+>
+  <div
+    data-transition-state="opening"
+  >
+    <a
+      id="children"
+    />
+  </div>
+</FakeContainer>
+`;
+
+exports[`<FakeContainer /> component test transition opened -> closed test 1`] = `
+<FakeContainer
+  closeAnimation="immediate"
+  openAnimation="immediate"
+>
+  <div
+    data-transition-state="closed"
+  >
+    <a
+      id="children"
+    />
+  </div>
+</FakeContainer>
+`;
+
+exports[`<FakeContainer /> component test transition opened -> closing test 1`] = `
+<FakeContainer
+  closeAnimation="immediate"
+  openAnimation="immediate"
+>
+  <div
+    data-transition-state="closing"
+  >
+    <a
+      id="children"
+    />
+  </div>
+</FakeContainer>
+`;

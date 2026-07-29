@@ -1,0 +1,1 @@
+function insertDomToBody(t,e){t.getElementsByTagName("body")[0].appendChild(e)}function dispatchEvent(t,e){e=new CustomEvent(t,e);window.dispatchEvent(e)}require("jest"),exports.insertDomToBody=insertDomToBody,exports.dispatchEvent=dispatchEvent;

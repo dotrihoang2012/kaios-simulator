@@ -1,0 +1,18 @@
+<element name="wifi_select_certificate_file" extends="section">
+  <template>
+
+    <gaia-header data-href="#wifi_manage_certificates">
+      <h1 slot="text" data-l10n-id="selectCertificateFile"></h1>
+    </gaia-header>
+
+    <div>
+      <ul role="menu" class="wifi-certificate-files-List"></ul>
+      <li class="no-certificate-files hidden">
+        <span data-l10n-id="no-cert-files" />
+      </li>
+    </div>
+
+    <panel data-path="panels/wifi_select_certificate_file/panel"></panel>
+
+  </template>
+</element>

@@ -1,0 +1,1 @@
+define([],function(){function t(t,e,n){this.itemId=t,this.itemCategory=e,this.itemApn=n}const e={PRESET:"preset",CUSTOM:"custom",EU:"eu"};t.prototype={get id(){return this.itemId},get category(){return this.itemCategory},get apn(){return this.itemApn}};const n=function(e,n,i){return new t(e,n,i)};return n.APN_CATEGORY=e,n});

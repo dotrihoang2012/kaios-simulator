@@ -1,0 +1,136 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<NotificationDialogView /> component test <NotificationDialogView /> dom render test 1`] = `
+<NotificationDialogView>
+  <div
+    className=""
+    id="notification-dialog-container"
+    onKeyDown={[Function]}
+    role="presentation"
+    tabIndex={-1}
+  >
+    <NoticeDialog
+      app={
+        Object {
+          "icon": "",
+          "title": "",
+        }
+      }
+      notice={
+        Object {
+          "icon": "",
+          "image": "",
+          "text": "",
+          "title": "",
+        }
+      }
+    >
+      <div
+        aria-labelledby="dialog-header"
+        id="notice-dialog"
+        role="heading"
+      >
+        <DialogImage
+          url=""
+        >
+          <div
+            id="notice-dialog-image"
+          >
+            <div
+              className="dialog-image"
+              style={
+                Object {
+                  "backgroundImage": "url()",
+                }
+              }
+            />
+          </div>
+        </DialogImage>
+        <DialogHeader
+          icon=""
+          id="dialog-header"
+          title=""
+        >
+          <div
+            id="notice-dialog-header"
+          >
+            <BaseIcon
+              icon=""
+              size={2.4}
+            >
+              <i
+                style={
+                  Object {
+                    "backgroundImage": "url()",
+                    "backgroundRepeat": "no-repeat",
+                    "backgroundSize": "2.4rem 2.4rem",
+                    "display": "inline-block",
+                    "flexShrink": 0,
+                    "height": "2.4rem",
+                    "margin": undefined,
+                    "width": "2.4rem",
+                  }
+                }
+              />
+            </BaseIcon>
+            <h2
+              className="title p-sec"
+            />
+          </div>
+        </DialogHeader>
+        <DialogBody
+          icon=""
+          text=""
+          title=""
+        >
+          <div
+            style={
+              Object {
+                "backgroundColor": "var(--color-gs00, #fff)",
+                "display": "flex",
+              }
+            }
+            tabIndex={-1}
+          >
+            <NoticeBody
+              text=""
+              title=""
+            >
+              <div
+                id="notice-body"
+              >
+                <h3
+                  className="title p-pri"
+                />
+                <p
+                  className="content p-sec"
+                />
+              </div>
+            </NoticeBody>
+            <BaseIcon
+              icon=""
+              margin="1rem .5rem"
+              size={0}
+            >
+              <i
+                style={
+                  Object {
+                    "backgroundImage": "url()",
+                    "backgroundRepeat": "no-repeat",
+                    "backgroundSize": "0rem 0rem",
+                    "display": "inline-block",
+                    "flexShrink": 0,
+                    "height": "0rem",
+                    "margin": "1rem .5rem",
+                    "width": "0rem",
+                  }
+                }
+              />
+            </BaseIcon>
+          </div>
+        </DialogBody>
+      </div>
+    </NoticeDialog>
+  </div>
+</NotificationDialogView>
+`;

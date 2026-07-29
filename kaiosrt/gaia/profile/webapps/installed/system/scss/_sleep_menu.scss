@@ -1,0 +1,38 @@
+.option-menu-container.option-menu-container.option-menu-container--sleep-menu {
+  text-align: center;
+
+  .header {
+    display: none;
+  }
+
+  .option-menu {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    justify-content: center;
+  }
+
+  .content {
+    color: var(--color-gs00);
+    background-color: unset;
+  }
+
+  .menu-item {
+    width: 22rem;
+    min-height: 3.6rem;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 10rem;
+    font-weight: 600;
+
+    & + .menu-item {
+      margin-top: 1rem;
+    }
+
+    .content {
+      flex-grow: 1;
+    }
+  }
+}

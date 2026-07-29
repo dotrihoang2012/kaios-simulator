@@ -1,0 +1,1 @@
+window.navigator.battery={level:.1,addEventListener:jest.fn(),removeEventListener:jest.fn(),temperature:"",present:"",health:""};

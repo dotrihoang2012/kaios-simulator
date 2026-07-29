@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<OfflineDialog /> component test component functions of needed dom test show function expectations test 1`] = `
+<OfflineDialog>
+  <div
+    id="offline-dialog"
+    role="region"
+  >
+    <div
+      className="fullscreen offline-dialog-container"
+      onBlur={[Function]}
+      onKeyDown={[Function]}
+      role="dialog"
+      tabIndex="-1"
+    >
+      <div
+        id="offline-readout"
+      >
+        offline-dialog-content use-wifi
+      </div>
+      <img
+        src="http://system.localhost/style/icons/loader.png"
+      />
+      <div
+        className="header icon"
+        data-icon="browser-offline"
+      />
+      <div
+        className="content"
+      >
+        offline-dialog-content
+      </div>
+      <div
+        className="option-menu"
+      >
+        <div
+          className="button p-ul wifi"
+          data-l10n-id="use-wifi"
+        />
+      </div>
+    </div>
+  </div>
+</OfflineDialog>
+`;

@@ -1,0 +1,28 @@
+<element name="call_iccs" extends="section">
+  <template>
+
+    <gaia-header action="back" data-href="#root">
+      <h1 slot="text" data-l10n-id="selectASIMCard"></h1>
+    </gaia-header>
+
+    <div>
+      <ul>
+        <li id="call-sim1-item" aria-disabled="true" class="none-select">
+          <a class="menu-item">
+            <span data-l10n-id="sim1">SIM 1</span>
+            <small></small>
+          </a>
+        </li>
+        <li id="call-sim2-item" aria-disabled="true" class="none-select">
+          <a class="menu-item">
+            <span data-l10n-id="sim2">SIM 2</span>
+            <small></small>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <panel data-path="panels/call_iccs/panel"></panel>
+
+  </template>
+</element>

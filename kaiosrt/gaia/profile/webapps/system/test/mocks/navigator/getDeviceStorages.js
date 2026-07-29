@@ -1,0 +1,3 @@
+global.navigator.getDeviceStorages = () => {
+  return []
+};

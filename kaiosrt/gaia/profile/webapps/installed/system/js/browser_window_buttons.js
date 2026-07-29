@@ -1,0 +1,18 @@
+!function(e){"use strict";let t=0;function s(e){this.app=e,this.requestTipsShow=!0,this.instanceID=t++,this.hideTipsHandler=null,this.hideButtonsHandler=null,this.containerElement=e.element,this.render()}(s.prototype=Object.create(e.BaseUI.prototype)).CLASS_NAME="BrowserWindowButtons",s.prototype.DEBUG=!1,s.prototype.view=function(){return`<div class='browser-window-buttons hidden' id='${this.CLASS_NAME+this.instanceID}'>
+              <div class='button bounceInRight tips' data-l10n-id='tips'>
+              </div>
+              <div class="softkey">
+                <div class='button home'>
+                  <div class='icon' data-icon='browser-home'></div>
+                </div>
+                <div class='button menu'>
+                  <div class='icon' data-icon='menu'></div>
+                </div>
+                <div class='button back'>
+                  <div class='icon' data-icon='cancel'></div>
+                </div>
+                <div class='button sound'>
+                  <div class='icon' data-icon='sound-max'></div>
+                </div>
+              </div>
+            </div>`},s.prototype.render=function(){this.publish("willrender"),this.app.element.insertAdjacentHTML("beforeend",this.view()),this._fetchElements(),this._registerEvents(),this.publish("rendered")},s.prototype.show=function({showTips:e,mode:t}){const s=this.app.browser.focusElement;if(document.activeElement===s||s.contains(document.activeElement)){const i=document.getElementById("softkeyPanel");i&&i.classList.add("hidden"),this.showTips(e),this.element.classList.remove("hidden"),this.hideButtonsHandler&&(window.clearTimeout(this.hideButtonsHandler),this.hideButtonsHandler=null),document.mozFullScreen||"popup-window"===t?(this.element.classList.add("fullscreen"),document.mozFullScreen&&(this.hideButtonsHandler=window.setTimeout(()=>{this.element.classList.add("hidden"),this.hideButtonsHandler=null},5e3))):this.element.classList.remove("fullscreen")}},s.prototype.hide=function(){this.element.classList.add("hidden")},s.prototype.showTips=function(e){(this.requestTipsShow=e)?(this.tipsButton.classList.remove("hidden"),this.hideTipsHandler&&(window.clearTimeout(this.hideTipsHandler),this.hideTipsHandler=null),this.hideTipsHandler=window.setTimeout(()=>{this.showTips(!1),this.hideTipsHandler=null},1e4)):this.tipsButton.classList.add("hidden")},s.prototype._fetchElements=function(){if(this.element=this.containerElement.querySelector(".browser-window-buttons"),this.tipsButton=this.element.querySelector(".tips"),this.softKeyWrapper=this.element.querySelector(".softkey"),Service.query("hasVolumeKey")){const e=this.element.querySelector(".sound");e.classList.add("hidden")}},s.prototype._registerEvents=function(){this.app.element.addEventListener("mousemove",this)},s.prototype._unregisterEvents=function(){this.app.element.removeEventListener("mousemove",this)},s.prototype.handleEvent=function(e){"mousemove"!==e.type||this.element.classList.contains("hidden")||this.handleCursorPositionChange(e.screenX,e.screenY)},s.prototype.handleCursorPositionChange=function(e,t){this.calculateHoverArea(),t>=this.softKeyArea[1][0]?this.softKeyWrapper.classList.add("slideDown"):this.requestTipsShow&&e>=this.tipsArea[0][0]&&t>=this.tipsArea[1][0]&&t<=this.tipsArea[1][1]?(this.softKeyWrapper.classList.remove("slideDown"),this.showTips(!1)):this.softKeyWrapper.classList.remove("slideDown")},s.prototype.calculateHoverArea=function(){var e,t,s,i;this.softKeyArea&&this.tipsArea||({width:e,height:t}=window.screen,s=this.softKeyWrapper.getBoundingClientRect(),i=this.tipsButton.getBoundingClientRect(),this.softKeyArea=[[0,e],[s.top,t]],this.tipsArea=[[i.left,e],[i.top,i.top+i.height]])},e.BrowserWindowButtons=s}(window);

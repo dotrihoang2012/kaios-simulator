@@ -1,0 +1,124 @@
+.appWindow > .browser-window-buttons {
+  position: absolute;
+  width: 100%;
+  height: calc(100% - var(--statusbar-height));
+  top: auto;
+  bottom: 0;
+  text-align: center;
+  pointer-events: none;
+}
+
+.popupWindow.appWindow > .browser-window-buttons {
+  top: var(--header-height) !important;
+  height: calc(100% - var(--statusbar-height) - var(--header-height)) !important;
+}
+
+.fullscreen-app .popupWindow.appWindow > .browser-window-buttons {
+  top: var(--header-height) !important;
+  height: calc(100% - var(--header-height)) !important;
+}
+
+.appWindow > .browser-window-buttons .button {
+  box-shadow: 0 0.2rem 0.4rem 0 rgba(0, 0, 0, 0.5);
+  background-color: var(--color-gs00);
+  color: var(--color-gs100);
+  font-size: 2.4rem;
+  border-radius: 1.2rem;
+  height: 2.4rem;
+}
+
+.appWindow > .browser-window-buttons .button .icon {
+  position: relative;
+  margin-top: -0.5rem;
+}
+
+.appWindow > .browser-window-buttons .button.tips {
+  position: absolute;
+  background-image: url('images/hotkey-tips.png');
+  background-repeat: no-repeat;
+  right: 1rem;
+  bottom: 4.4rem;
+  color: var(--color-gs90);
+  padding: 0 2.4rem 0 0.8rem;
+  background-position: center right;
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 2.4rem;
+}
+
+.appWindow > .browser-window-buttons .softkey {
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 1rem 1rem;
+  box-sizing: border-box;
+  transition: transform 0.3s ease-in-out;
+  transform: translateY(0);
+}
+
+.appWindow > .browser-window-buttons .softkey.slideDown {
+  transform: translateY(100%);
+}
+
+.appWindow > .browser-window-buttons .button.back {
+  display: none;
+}
+
+.appWindow > .browser-window-buttons .button.menu {
+  display: inline;
+}
+
+.appWindow > .browser-window-buttons .button.sound {
+  display: none;
+}
+
+.appWindow > .browser-window-buttons.fullscreen .button.home,
+.appWindow > .browser-window-buttons.fullscreen .button.menu,
+.appWindow > .browser-window-buttons.fullscreen .button.tips {
+  display: none;
+}
+
+.appWindow > .browser-window-buttons.fullscreen .button.sound,
+.appWindow > .browser-window-buttons.fullscreen .button.back {
+  display: inline;
+}
+
+
+@keyframes bounceInRight {
+  from,
+  60%,
+  75%,
+  90%,
+  to {
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+
+  from {
+    opacity: 0;
+    transform: translate3d(100vw, 0, 0);
+  }
+
+  60% {
+    opacity: 1;
+    transform: translate3d(-0.7rem, 0, 0);
+  }
+
+  75% {
+    transform: translate3d(0.4rem, 0, 0);
+  }
+
+  90% {
+    transform: translate3d(-0.2rem, 0, 0);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.bounceInRight {
+  animation: bounceInRight 0.8s;
+}
+

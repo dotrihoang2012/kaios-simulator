@@ -1,0 +1,38 @@
+<element name="accessibility_readout_mode" extends="section">
+  <template>
+
+    <gaia-header data-href="#accessibility">
+      <h1 slot="text" data-l10n-id="readoutmode">Readout Mode</h1>
+    </gaia-header>
+    <div class="panel">
+      <ul role="menu">
+        <li role="menuitem">
+          <span data-l10n-id="readoutmode"></span>
+          <div class="button icon icon-dialog">
+            <select data-name="accessibility.screenreader" data-value-type="boolean">
+              <option data-l10n-id="on" value="true"></option>
+              <option data-l10n-id="off" value="false" selected ="selected"></option>
+            </select>
+          </div>
+        </li>
+        <li role="menuitem" class="description none-select text-paragraph">
+          <span data-l10n-id="accessibility-readout-mode-description"></span>
+        </li>
+        <li id="rate-item" role="menuitem" data-show-name="accessibility.screenreader" >
+          <span data-l10n-id="screen-reader-speech-rate"></span>
+          <div class="button icon icon-dialog">
+            <select id="speech-rate-select">
+              <option value="-0.5">50%</option>
+              <option value="-0.25">75%</option>
+              <option value="0">100%</option>
+              <option value="0.5">150%</option>
+              <option value="1">200%</option>
+            </select>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <panel data-path="panels/accessibility_readout_mode/panel"></panel>
+
+  </template>
+</element>

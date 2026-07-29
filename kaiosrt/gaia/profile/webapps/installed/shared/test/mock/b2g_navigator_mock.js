@@ -1,0 +1,1 @@
+function mockB2gNavigator(o,a,g){o.navigator.b2g[a]=g}exports.mockB2gNavigator=mockB2gNavigator;

@@ -1,0 +1,43 @@
+@import 'components/_toaster';
+#prompt-root {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  .icon-font {
+    width: 3.2rem;
+    height: 3.2rem;
+    z-index: 1;
+    color: var(--color-gs00);
+    font-size: 3.2rem;
+  }
+
+  div.primary {
+    max-height: 1.8rem * 2 * 1.36;
+    overflow: hidden;
+  }
+}
+
+@media (prefers-text-size: large) {
+  #notification-toaster-root {
+    div.primary {
+      max-height: 2.3rem * 2 * 1.36;
+      overflow: hidden;
+    }
+  }
+}
+
+#prompt {
+  @extend %component-toaster;
+  $app-themes: (
+    'MyMoBill': var(--color-purple)
+  );
+
+  @each $app, $app-theme in $app-themes {
+    [data-app-name="#{$app}"] {
+      --icon-background-color: $app-theme;
+    }
+  }
+}

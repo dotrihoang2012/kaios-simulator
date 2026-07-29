@@ -1,0 +1,62 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<NotificationToaster /> component test <NotificationToaster /> dom render test 1`] = `
+<NotificationToaster>
+  <div
+    id="notification-toaster"
+  />
+</NotificationToaster>
+`;
+
+exports[`<NotificationToaster /> component test render & componentDidUpdate function test 1`] = `
+<NotificationToaster>
+  <div
+    id="notification-toaster"
+  >
+    <div
+      className="container"
+      data-no-clear="false"
+      data-notification-id="11#id:wificall"
+      data-predefined-dir="rtl"
+      key="11#id:wificall"
+    >
+      <div
+        className="icon"
+      >
+        <div
+          className="background"
+          style={
+            Object {
+              "backgroundColor": "#d90036",
+            }
+          }
+        />
+        <i
+          className="icon-font"
+          data-icon="icon.png"
+          role="presentation"
+        />
+      </div>
+      <div
+        className="content"
+      >
+        <div
+          className="primary"
+        >
+          notice-call-title
+        </div>
+        <div
+          className="secondary"
+        >
+          <span>
+            notice-call-content
+          </span>
+          <span
+            className="secondary-float"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</NotificationToaster>
+`;

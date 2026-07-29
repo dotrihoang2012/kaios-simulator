@@ -15,6 +15,7 @@ const Settings = { // eslint-disable-line
   initialPanelForTablet: '#wifi',
   currentPanel: null,
   isBackHref: false,
+  _pendingNav: null,
 
   getCurrentPanel: function getCurrentPanel() {
     return this.currentPanel;
@@ -40,7 +41,11 @@ const Settings = { // eslint-disable-line
       panelID = panelID.substring(1);
     }
     this.currentPanel = hash;
-    this.SettingsService.navigate(panelID, config);
+    if (this.SettingsService) {
+      this.SettingsService.navigate(panelID, config);
+    } else {
+      this._pendingNav = { id: panelID, config: config };
+    }
   },
 
   init: function init(options) {
@@ -52,6 +57,15 @@ const Settings = { // eslint-disable-line
 
     this.SettingsService = options.SettingsService;
     this.ScreenLayout = options.ScreenLayout;
+
+    // Replay pending navigation from before init.
+    if (this._pendingNav) {
+      var p = this._pendingNav;
+      this._pendingNav = null;
+      this.currentPanel = null;
+      this.SettingsService.navigate(p.id, p.config);
+      this.currentPanel = '#' + p.id;
+    }
 
     /*
      * XXX: We need to set to currentPanel here although SettingsService already

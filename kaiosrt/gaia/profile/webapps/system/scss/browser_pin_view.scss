@@ -1,0 +1,121 @@
+#browser-pin-container {
+  position: absolute;
+  top: var(--statusbar-height);
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0 , 0, 0, 0.9);
+
+  .content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--color-gs00);
+
+    header {
+      padding: 0 1rem;
+      text-align: center;
+      
+      .title {
+        margin-top: 0.5rem;
+        color: var(--color-gs90);
+      }
+
+      .subtitle {
+        margin-top: 1rem;
+        color: var(--color-gs90);
+        font-weight: 600;
+      }
+    }
+
+    .grid-wrapper {
+      display: grid;
+      grid-template-columns: repeat(3, 33.33%);
+      margin: 1rem 1rem 2.4rem;
+
+      .browser-pin-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.8rem 0.7rem 0.8rem 1rem;
+        border-radius: 4.8rem;
+
+        &:focus {
+          background-color: var(--color-purple);
+
+          div:first-child {
+            color: var(--color-gs00);
+
+            &.not-found, &.default {
+              background-image: url(../browser/style/img/ic_default_selected.png);
+            }
+          }
+
+          i {
+            background-color: var(--color-gs00);
+          }
+        }
+
+        &[data-type="fixed"]:focus {
+          background-color: rgba(128, 0, 255, 0.3);
+
+          div:first-child {
+            color: var(--color-gs00);
+          }
+        }
+
+        &[data-type="fixed"] {
+          div:first-child {
+            color: var(--color-gs100);
+          }
+
+          i {
+            opacity: 0.3;
+          }
+        }
+
+        div:first-child {
+          display: inline-block;
+          width: 3.2rem;
+          height: 3.2rem;
+          line-height: 3.2rem;
+          font-size: 3.2rem;
+          color: var(--color-gs10);
+
+          &.not-found {
+            background: url(../browser/style/img/ic_not_found.png) center/3.2rem no-repeat;
+          }
+
+          &.default {
+            background: url(../browser/style/img/ic_default.png) center/3.2rem no-repeat;
+          }
+
+          img {
+            width: 100%;
+            height: 100%;
+          }
+        }
+
+        i {
+          display: inline-block;
+          width: 1.8rem;
+          height: 1.8rem;
+          line-height: 1.8rem;
+          font-size: 1.3rem;
+          font-weight: 600;
+          font-style: normal;
+          text-align: center;
+          border-radius: 50%;
+          color: var(--color-gs90);
+          background-color: var(--color-gs10);
+        }
+      }
+    }
+  }
+}
+
+html[dir="rtl"] #browser-pin-container .content .grid-wrapper .browser-pin-item {
+  padding-left: 0.7rem;
+  padding-right: 1rem;
+}

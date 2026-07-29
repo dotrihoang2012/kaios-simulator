@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<LockmodePocket /> component test LockmodePocket dom render test 1`] = `
+<LockmodePocket
+  unlock={[MockFunction]}
+>
+  <div
+    className="pocketmode-view"
+    onKeyDown={[Function]}
+    onKeyUp={[Function]}
+    role="presentation"
+    tabIndex={-1}
+  >
+    <i
+      className="icon"
+      data-icon="lock"
+    />
+    <span>
+      unlock
+    </span>
+  </div>
+</LockmodePocket>
+`;

@@ -1,0 +1,64 @@
+#auto-update-root {
+  bottom: 0;
+  height: calc(100% - var(--statusbar-height));
+}
+#auto-update-view {
+  background: var(--color-gs00);
+  height: 100%;
+  .brick {
+    width: 100%;
+    height: 7rem;
+    background: #512599;
+    padding: 1.7rem 0.8rem 0px 6.2rem;
+    box-sizing: border-box;
+    .name {
+      font-size: 1.9rem;
+      font-weight: bold;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+    .progress-bar {
+      margin-top: 0.3rem;
+      width: 15.8rem;
+      height: 0.4rem;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 100px;
+      position: relative;
+      overflow: hidden;
+      .indicator {
+        height: 100%;
+        background-color: var(--color-gs00);
+        box-sizing: content-box;
+        width: 100%;
+        position: absolute;
+        left: -100%;
+        animation: update-progress-bar-infinite 1.52s infinite;
+      }
+    }
+  }
+  .content {
+    padding: 4rem 1.5rem 0;
+    color: var(--color-gs90);
+    text-align: center;
+    font-size: 1.7rem;
+    .title {
+      font-weight: 600;
+    }
+  }
+}
+
+@keyframes update-progress-bar-infinite {
+  0% {
+    left: -100%;
+    animation-timing-function: cubic-bezier(0.3, 0, 0.4, 1);
+  }
+  50% {
+    left: 0%;
+    animation-timing-function: cubic-bezier(0.6, 0, 0.3, 1);
+  }
+  100% {
+    left: 100%;
+  }
+}

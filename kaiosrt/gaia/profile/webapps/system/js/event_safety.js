@@ -1,0 +1,1 @@
+"use strict";function eventSafety(t,n,i,e){var r;function a(e){e&&"transitionend"===e.type&&e.target!==t||(clearTimeout(r),t.removeEventListener(n,a),i.apply(this,arguments))}t.addEventListener(n,a),r=setTimeout(a,e)}

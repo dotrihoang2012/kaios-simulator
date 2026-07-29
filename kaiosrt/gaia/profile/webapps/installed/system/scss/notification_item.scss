@@ -1,0 +1,119 @@
+.list-item {
+  --progress-active-color: var(--highlight-color);
+  --progress-inactive-color: rgba(#fff, 0.3);
+
+  .timestamp:first-letter {
+    text-transform: capitalize;
+  }
+
+  &:focus {
+    --progress-active-color: var(--color-gs00);
+
+    background-color: var(--color-purple);
+    .secondary,
+    .timestamp {
+      color: var(--color-gs00);
+    }
+  }
+  .icon {
+    width: 3.2rem;
+    height: 3.2rem;
+    font-size: 3.2rem;
+    line-height: 1;
+    text-align: center;
+  }
+  .icon[data-icon="call-wifi-32px"] {
+    color: #d90036 !important;
+  }
+  .icon[data-icon="full-battery"] {
+    font-size: 3.2rem;
+  }
+  .content {
+    max-width: 100%;
+
+    > *:not(:empty):not(:first-child) {
+      margin-top: 0.2rem;
+    }
+  }
+  .primary {
+    color: var(--color-gs00);
+    text-overflow : ellipsis;
+    white-space : nowrap;
+  }
+  .secondary {
+    color: var(--color-gs45);
+    overflow: hidden;
+    white-space: nowrap;
+    display: flex;
+    justify-content: space-between;
+    line-height: unset;
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      &:first-child {
+        flex-shrink: 0;
+        max-width: 100%;
+      }
+      &:nth-child(2) {
+        flex-shrink: 1;
+        padding-left: 0.5rem;
+      }
+    }
+  }
+  @media (prefers-text-size: large) {
+    .secondary {
+      & {
+        font-size: 1.4rem;
+      }
+    }
+  }
+  .secondary[aria-hidden="false"] {
+    span {
+      &:first-child {
+        flex-shrink: 1;
+      }
+      &:nth-child(2) {
+        flex-shrink: 0;
+      }
+    }
+  }
+  .secondary-float {
+    float: right;
+  }
+  .timestamp {
+    white-space: nowrap;
+    line-height: unset;
+    color: var(--color-gs45);
+  }
+  .progress {
+    grid-column: 1 / -1;
+    height: 0.6rem;
+    border-radius: 1rem;
+    background-repeat: no-repeat;
+    background-position: calc(100% - var(--progress-percentage)) 50%;
+    background-size: 200% 100%;
+    background-image:
+      linear-gradient(90deg,
+        var(--progress-active-color) 50%,
+        transparent 0,
+        transparent calc(50% + 0.3rem),
+        var(--progress-inactive-color) 0
+      );
+  }
+}
+
+html[dir="rtl"] .list-item .secondary span {
+  &:nth-child(2) {
+    padding-left: 0 !important;
+    padding-right: 0.5rem;
+  }
+}
+
+html[dir="rtl"] .list-item .number {
+  direction: ltr;
+  text-align: right;
+}
+
+html[dir="rtl"] .progress {
+  transform: rotateY(180deg);
+}

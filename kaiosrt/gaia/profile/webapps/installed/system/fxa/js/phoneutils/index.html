@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Phone Number Util</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+    </style>
+    
+</head>
+
+<body>
+
+    
+    <script type="text/javascript" src="mcc_iso3166_table.js"></script>
+    <script type="text/javascript" src="PhoneNumber.js"></script>
+    
+    <script type="text/javascript" src="PhoneNumberNormalizer.js"></script>
+    <script type="text/javascript" src="PhoneNumberUtils.js"></script>
+  
+    <script defer="true" type="text/javascript" src="test.js"></script>
+
+
+    <h1>KaiOS Phonenumber Utils</h1>
+    Please input MCC
+    <input id="mcc" type="text" tabindex="1">
+    <br>
+    Please input international number
+    <input id="inter_number" type="text" tabindex="2">
+    <br>
+    <h2>
+    Use PhoneNumberUtils.parseWithMCC(number, mcc),
+    it returns a promise with a PhoneNumber object.
+    </h2>
+    <h2>
+    Call PhoneNumber.nationalNumber() to get national number
+</h2>
+<h2>
+    PhoneNumber.countryName() to get country name
+</h2>
+    <input type="button" id="getnuber" value="Get Number"/>
+
+    <br>
+    <hr>
+    <a id="">
+    <pre id="output"> </pre>
+
+</body>
+
+</html>

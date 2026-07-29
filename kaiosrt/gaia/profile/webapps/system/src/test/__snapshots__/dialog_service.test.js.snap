@@ -1,0 +1,90 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<DialogService /> component test <DialogService /> component test for child ReactDialog <DialogService /> dom render test 1`] = `
+<DialogService>
+  <div
+    className=""
+    data-z-index-level="dialog-service"
+    id="system-dialog"
+  >
+    <Dialog
+      additionalContent={null}
+      buttons={Array []}
+      cancel=""
+      checkboxCheckedByDefault={false}
+      checkboxMessage=""
+      content=""
+      header=""
+      hideCancel={false}
+      hideOkWhenNoInputValue={false}
+      id="reactid"
+      initialValue=""
+      inputMode=""
+      inputType="text"
+      key="reactid"
+      maxLength={100}
+      noClose={false}
+      noFocus={false}
+      ok=""
+      onBack={null}
+      onBlur={[Function]}
+      onCancel={null}
+      onHide={[Function]}
+      onOk={null}
+      placeholder=""
+      progressMax=""
+      progressValue=""
+      showCheckbox={false}
+      translated={false}
+      type="confirm"
+    >
+      <div
+        id="react_dialog"
+      />
+    </Dialog>
+  </div>
+</DialogService>
+`;
+
+exports[`<DialogService /> component test <DialogService /> component test for child VoiceInputDialog <DialogService /> dom render test 1`] = `
+<DialogService>
+  <div
+    className=""
+    data-z-index-level="dialog-service"
+    id="system-dialog"
+  >
+    <Dialog
+      additionalContent={null}
+      buttons={Array []}
+      cancel=""
+      checkboxCheckedByDefault={false}
+      checkboxMessage=""
+      content=""
+      header=""
+      hideCancel={false}
+      hideOkWhenNoInputValue={false}
+      id="voiceinput"
+      initialValue=""
+      inputMode=""
+      inputType="text"
+      key="voiceinput"
+      maxLength={100}
+      noClose={false}
+      noFocus={false}
+      ok=""
+      onBack={null}
+      onBlur={[Function]}
+      onCancel={null}
+      onHide={[Function]}
+      onOk={null}
+      placeholder=""
+      progressMax=""
+      progressValue=""
+      showCheckbox={false}
+      style="voiceinput"
+      translated={false}
+      type="confirm"
+    />
+  </div>
+</DialogService>
+`;

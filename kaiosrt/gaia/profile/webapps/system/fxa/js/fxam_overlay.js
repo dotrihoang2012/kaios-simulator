@@ -1,0 +1,1 @@
+"use strict";var FxaModuleOverlay={init:function(){this.initialized||(HtmlHelper.importElements(this,"fxa-overlay","fxa-overlay-msg"),this.initialized=!0)},show:function(i){this.init(),this.fxaOverlayMsg.setAttribute("data-l10n-id",i),this.fxaOverlay.classList.add("show")},hide:function(){this.init(),this.fxaOverlay.classList.remove("show")}};

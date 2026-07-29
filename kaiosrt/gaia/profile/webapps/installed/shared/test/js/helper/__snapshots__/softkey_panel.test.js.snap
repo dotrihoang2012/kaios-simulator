@@ -1,0 +1,143 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`helper js <softkey_panel> test SoftkeyPanel constructor should create SoftkeyPanel 1`] = `
+Object {
+  Symbol(jest-snapshot-serializer-raw): <form
+    class="skbar none-paddings"
+    data-type="action"
+    data-z-index-level="softkeyPanel"
+    id="softkeyPanel"
+  >
+    <div>
+      <button
+        class="sk-button"
+        data-l10n-id="cancel"
+        id="software-keys-left"
+      >
+        cancel
+      </button>
+    </div>
+    <div>
+      <button
+        class="sk-button"
+        disabled="disabled"
+        id="software-keys-center"
+      />
+    </div>
+    <div>
+      <button
+        class="sk-button"
+        data-l10n-id="pair"
+        id="software-keys-right"
+      >
+        pair
+      </button>
+    </div>
+  </form>,
+}
+`;
+
+exports[`helper js <softkey_panel> test SoftkeyPanel constructor should create SoftkeyPanel 2`] = `
+Object {
+  Symbol(jest-snapshot-serializer-raw): <button
+    class="sk-button"
+    data-l10n-id="cancel"
+    id="software-keys-left"
+  >
+    cancel
+  </button>,
+}
+`;
+
+exports[`helper js <softkey_panel> test SoftkeyPanel constructor should create SoftkeyPanel 3`] = `
+Object {
+  Symbol(jest-snapshot-serializer-raw): <button
+    class="sk-button"
+    disabled="disabled"
+    id="software-keys-center"
+  />,
+}
+`;
+
+exports[`helper js <softkey_panel> test SoftkeyPanel constructor should create SoftkeyPanel 4`] = `
+Object {
+  Symbol(jest-snapshot-serializer-raw): <button
+    class="sk-button"
+    data-l10n-id="pair"
+    id="software-keys-right"
+  >
+    pair
+  </button>,
+}
+`;
+
+exports[`helper js <softkey_panel> test confirmSoftkey.initSoftKeyPanel should create SoftkeyPanel 1`] = `
+Object {
+  Symbol(jest-snapshot-serializer-raw): <form
+    class="skbar none-paddings"
+    data-type="action"
+    data-z-index-level="softkeyPanel"
+    id="softkeyPanel"
+  >
+    <div>
+      <button
+        class="sk-button"
+        data-l10n-id="test"
+        id="software-keys-left"
+      >
+        test
+      </button>
+    </div>
+    <div>
+      <button
+        class="sk-button"
+        disabled="disabled"
+        id="software-keys-center"
+      />
+    </div>
+    <div>
+      <button
+        class="sk-button"
+        data-l10n-id="close"
+        id="software-keys-right"
+      >
+        close
+      </button>
+    </div>
+  </form>,
+}
+`;
+
+exports[`helper js <softkey_panel> test confirmSoftkey.initSoftKeyPanel should create SoftkeyPanel 2`] = `
+Object {
+  Symbol(jest-snapshot-serializer-raw): <button
+    class="sk-button"
+    data-l10n-id="test"
+    id="software-keys-left"
+  >
+    test
+  </button>,
+}
+`;
+
+exports[`helper js <softkey_panel> test confirmSoftkey.initSoftKeyPanel should create SoftkeyPanel 3`] = `
+Object {
+  Symbol(jest-snapshot-serializer-raw): <button
+    class="sk-button"
+    disabled="disabled"
+    id="software-keys-center"
+  />,
+}
+`;
+
+exports[`helper js <softkey_panel> test confirmSoftkey.initSoftKeyPanel should create SoftkeyPanel 4`] = `
+Object {
+  Symbol(jest-snapshot-serializer-raw): <button
+    class="sk-button"
+    data-l10n-id="close"
+    id="software-keys-right"
+  >
+    close
+  </button>,
+}
+`;

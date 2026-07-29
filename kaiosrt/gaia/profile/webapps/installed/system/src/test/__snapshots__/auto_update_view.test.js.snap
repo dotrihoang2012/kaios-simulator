@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<AutoUpdateView /> component test AutoUpdateView initial dom render test 1`] = `
+<AutoUpdateView>
+  <div
+    className="hidden"
+    id="auto-update-view"
+    onKeyDown={[Function]}
+    tabIndex="-1"
+  />
+</AutoUpdateView>
+`;
+
+exports[`<AutoUpdateView /> component test hide function test 1`] = `
+<AutoUpdateView>
+  <div
+    className="hidden"
+    id="auto-update-view"
+    onKeyDown={[Function]}
+    tabIndex="-1"
+  />
+</AutoUpdateView>
+`;
+
+exports[`<AutoUpdateView /> component test show function test 1`] = `
+<AutoUpdateView>
+  <div
+    className=""
+    id="auto-update-view"
+    onKeyDown={[Function]}
+    tabIndex="-1"
+  >
+    <div
+      className="main-wrapper"
+    >
+      <div
+        className="brick"
+      >
+        <div
+          className="name"
+          data-l10n-id="multiple-system-apps"
+        />
+      </div>
+      <div
+        className="content"
+      >
+        <div
+          className="title"
+          data-l10n-id="update-success"
+        />
+      </div>
+    </div>
+  </div>
+</AutoUpdateView>
+`;

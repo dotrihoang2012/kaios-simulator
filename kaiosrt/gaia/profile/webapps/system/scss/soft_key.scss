@@ -1,0 +1,36 @@
+#soft-key-root {
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  position: absolute;
+  .skbar {
+    --softkeybar-background-color: var(--color-gs100, #000);
+
+    [data-icon="ok"] {
+      --softkey-color--icon: var(--color-gs20, #cccccc);
+    }
+
+    .sk-button:not([data-icon]) {
+      --softkey-color: var(--color-gs00, #fff);
+    }
+
+    &.light {
+      --softkeybar-background-color: var(--color-gs20, #ccc);
+
+      [data-icon="ok"] {
+        --softkey-color--icon: var(--color-gs70, #6a6a6a);
+      }
+
+      .sk-button:not([data-icon]) {
+        --softkey-color: var(--color-gs90, #323232);
+      }
+    }
+  }
+}
+
+#screen.keypad-enabled {
+  .skbar {
+    bottom: 20rem;
+  }
+}

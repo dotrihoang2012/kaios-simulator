@@ -1,0 +1,35 @@
+<element name="sim_dialog" extends="section">
+  <template>
+
+    <gaia-header>
+      <h1 slot="text"></h1>
+    </gaia-header>
+
+    <div>
+      <ul role="menu">
+        <li role="menuitem" id="input1-container">
+          <div>
+            <span id="input1-title"></span>
+            <input id="input1-input" x-inputmode="digit" size="8" maxlength="8" type="password">
+            <span id="input1-error" class="hidden p-sec error-color"></span>
+          </div>
+        </li>
+        <li role="menuitem" id="input2-container" class="hidden">
+          <div>
+            <span id="input2-title" data-l10n-id="newSimPinMsg"></span>
+            <input id="input2-input" x-inputmode="digit" size="8" maxlength="8" type="password">
+          </div>
+        </li>
+        <li role="menuitem" id="input3-container" class="hidden">
+          <div>
+            <span id="input3-title"></span>
+            <input id="input3-input" x-inputmode="digit" size="8" maxlength="8" type="password">
+            <span id="input3-error" class="hidden p-sec error-color"></span>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <panel data-path="panels/sim_dialog/panel"></panel>
+
+  </template>
+</element>

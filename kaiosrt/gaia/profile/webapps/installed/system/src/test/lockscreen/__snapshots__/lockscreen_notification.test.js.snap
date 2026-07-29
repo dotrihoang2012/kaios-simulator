@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<LockscreenNotification /> component test LockscreenNotification dom render test 1`] = `
+<LockscreenNotification
+  enabled={false}
+>
+  <div
+    className=""
+    id="lockscreen-notification"
+  />
+</LockscreenNotification>
+`;
+
+exports[`<LockscreenNotification /> component test componentDidMount function test 1`] = `
+<LockscreenNotification
+  enabled={false}
+>
+  <div
+    className=""
+    id="lockscreen-notification"
+  >
+    <div
+      className="icon-panel"
+      key="key2"
+    >
+      <div
+        className="count"
+      >
+        2
+      </div>
+      <img
+        className="icon"
+        role="presentation"
+        src="icon2"
+      />
+    </div>
+    <div
+      className="icon-panel"
+      key="key1"
+    >
+      <div
+        className="count"
+      >
+        1
+      </div>
+      <img
+        className="icon"
+        role="presentation"
+        src="icon"
+      />
+    </div>
+  </div>
+</LockscreenNotification>
+`;

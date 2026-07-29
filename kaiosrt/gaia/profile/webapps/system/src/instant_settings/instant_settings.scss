@@ -1,0 +1,322 @@
+$_scale-factor: 4; // bigger number => less GPU used
+
+@mixin fill($dir: 'full', $type: absolute) {
+  position: $type;
+  @if $dir != 'bottom' { top: 0; }
+  @if $dir != 'right' { left: 0; }
+  @if $dir != 'left' { right: 0; }
+  @if $dir != 'top' { bottom: 0; }
+}
+
+@mixin land-style {
+  @media only screen and (orientation: landscape) {
+    @content;
+  }
+}
+
+.instant-settings-root {
+  position: relative;
+  pointer-events: none;
+}
+
+.instantSettings {
+  --instant-settings-padding-top: 5.5rem;
+  $grid-size: 6.2rem;
+
+  @include fill('full', fixed);
+
+  padding-top: calc(var(--statusbar-height) + var(--instant-settings-padding-top));
+  border-bottom: var(--softkeybar-height) solid #000;
+  background: linear-gradient(rgba(#000, 0.7), #000), var(--wallpaper-url);
+  background-color: black;
+  box-sizing: border-box;
+
+  @include land-style {
+    --instant-settings-padding-top: 4.9rem;
+  };
+
+  * {
+    &,
+    &::before,
+    &::after {
+      box-sizing: inherit;
+    }
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 6.8rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    text-align: center;
+
+    @include land-style {
+      height: 4.8rem;
+    }
+  }
+
+  &__info {
+    position: fixed;
+    top: var(--statusbar-height);
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 5.5rem;
+    line-height: 1;
+    padding: 1rem;
+    text-align: center;
+    opacity: 0;
+
+    .instantSettings__tile:focus > & {
+      opacity: 1;
+    }
+  }
+
+  &__title {
+    line-height: 1.1;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--color-gs00);
+  }
+
+  &__subtitle {
+    line-height: 1.3;
+    font-size: 1.3rem;
+    color: var(--color-gs00);
+  }
+
+  &__wall {
+    display: grid;
+    grid-template: repeat(var(--grid-row), $grid-size) / repeat(var(--grid-col), $grid-size);
+    grid-row-gap: calc((100vw - 4rem - #{$grid-size} * var(--grid-col)) / (var(--grid-col) - 1)); // should be same with grid-col-gap
+    justify-content: space-between;
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  &__tile {
+    position: relative;
+    padding: unset;
+    border: none;
+    background: unset;
+
+    &[data-name="volume"] {
+      grid-column: 1 / -1;
+
+      @include land-style {
+        display: flex;
+        grid-column: unset;
+        grid-row: 1 / -1;
+        order: -1;
+
+        .instantSettings__icon {
+          margin-top: auto;
+          margin-bottom: auto;
+        }
+      }
+    }
+
+    // masker
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50% - 50% / $_scale-factor;
+      left: 50% - 50% / $_scale-factor;
+      width: 100% / $_scale-factor;
+      height: 100% / $_scale-factor;
+      background-color: var(--highlight-color);
+      border-radius: 2rem / $_scale-factor;
+      pointer-events: none;
+      transform: scale(0.8 * $_scale-factor);
+      opacity: 0;
+      transition-duration: 0.2s;
+      transition-timing-function: cubic-bezier(0, 0, 0, 1);
+      transition-property: transform, opacity;
+    }
+
+    &:not(.jio):focus::after {
+      opacity: 1;
+      transform: scale($_scale-factor);
+    }
+  }
+
+  &__tile.jio[data-name='volume']:focus{
+    background-color: var(--color-purple);
+    border-radius: 2rem;
+  }
+
+  &__icon {
+    position: relative;
+    width: $grid-size;
+    height: $grid-size;
+    border-radius: 2rem / $_scale-factor;
+    font-size: 4.4rem;
+    color: rgba(#fff, 0.5);
+
+    .instantSettings__tile:not(.is-active) &[data-inactived-icon]::before {
+      content: attr(data-inactived-icon);
+    }
+    .instantSettings__tile:focus &>img:not(.highlight) {
+      display: none;
+    }
+    .instantSettings__tile:not(:focus) &>img.highlight {
+      display: none;
+    }
+
+    img {
+      margin: auto;
+      display: flex;
+      width: 4.4rem;
+      height: 100%;
+    }
+
+    // icon
+    &::before {
+      @include fill;
+
+      display: flex;
+      width: 5.6rem;
+      height: 5.6rem;
+      margin: auto;
+      justify-content: center;
+      align-items: center;
+      border-radius: inherit;
+      z-index: 2;
+      text-shadow: 0 0.1rem 0.5rem rgba(#000, 0.5);
+      transition-duration: 0.2s;
+      transition-timing-function: cubic-bezier(0, 0, 0, 1);
+      transition-property: color;
+    }
+
+    .instantSettings__tile.is-active &::before {
+      color: var(--highlight-color);
+    }
+
+    .instantSettings__tile:focus & {
+      background-color: var(--color-purple);
+      border-radius: 2rem
+    }
+
+    .instantSettings__tile.is-disabled & {
+      color: rgba(#fff, 0.25);
+    }
+
+    .instantSettings__tile.is-disabled:focus & {
+      opacity: 0.5;
+    }
+
+    .instantSettings__tile.is-active:focus &::before,
+    .instantSettings__tile.is-shortcut &::before {
+      color: var(--color-gs00);
+    }
+  }
+
+  $volume-ball-size-l: 2rem;
+  $volume-ball-size-m: 1.2rem;
+
+  &__volumeBar {
+    --volume-percent: 0%;
+
+    position: absolute;
+    top: 0;
+    right: 1.4rem;
+    bottom: 0;
+    z-index: 1;
+    width: 13rem;
+    height: 2rem;
+    margin: auto;
+    border-right: $volume-ball-size-l solid transparent;
+
+    &__ball {
+      position: absolute;
+      left: 0;
+      width: $volume-ball-size-l;
+      height: $volume-ball-size-l;
+      border-radius: 50%;
+      background-color: #fff;
+      transform-origin: 0% 50%;
+    }
+
+    &__stick {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: -$volume-ball-size-l;
+      bottom: 0;
+      height: 0.2rem;
+      margin: auto;
+      border-radius: 1rem;
+      background-size: 200% 100%;
+      background-position: 100% 50%;
+      background-image: linear-gradient(90deg, #fff 50%, rgba(#fff, 0.4) 0);
+    }
+
+    @include land-style {
+      @include fill();
+
+      display: flex;
+      width: unset;
+      height: unset;
+      border: unset;
+      padding: 0.8rem;
+      flex-direction: column;
+      text-align: center;
+      color: var(--color-gs00);
+
+      &::before,
+      &::after {
+        content: 'arrow-up';
+        font-family: 'gaia-icons';
+        font-size: 3.2rem;
+        text-shadow: 0 0.1rem 0.3rem rgba(#000, 0.5);
+      }
+
+      &::after {
+        content: 'arrow-down';
+        margin-top: auto;
+
+      }
+
+      &[data-percent="100"]::before,
+      .instantSettings__icon[data-icon="mute-32px"] + &::after {
+        opacity: 0.3;
+      }
+
+      > * {
+        display: none;
+      }
+    }
+
+    @media only screen and (orientation: portrait) {
+      .instantSettings__icon[data-icon="mute-32px"] + &,
+      .instantSettings__icon[data-icon="vibrate-32px"] + & {
+        opacity: 0.3;
+
+        .instantSettings__volumeBar__ball {
+          transform: scale($volume-ball-size-m / $volume-ball-size-l);
+        }
+      }
+    }
+  }
+}
+
+html[dir="rtl"] {
+  .instantSettings {
+    &__icon {
+      &[data-icon="mute-32px"]::before,
+      &[data-icon="sound-max"]::before {
+        transform: rotateY(180deg);
+      }
+    }
+    &__volumeBar {
+      transform: rotateY(180deg);
+      left: 1.4rem;
+      right: unset;
+    }
+  }
+}

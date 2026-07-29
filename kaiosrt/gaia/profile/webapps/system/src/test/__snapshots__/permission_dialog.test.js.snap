@@ -1,0 +1,101 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<PermissionDialog /> component test <PermissionDialog /> dom render test 1`] = `
+<PermissionDialog
+  app={
+    Object {
+      "_setVisibleForScreenReader": [MockFunction],
+    }
+  }
+>
+  <ReactDialog
+    header="title-web"
+    noClose={true}
+    noFocus={true}
+    translated={true}
+  >
+    <div
+      id="react-dialog"
+    >
+      <div
+        className="container content  simple-style"
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        tabIndex="-1"
+      >
+        <div
+          className="permission-more-info "
+        >
+          <div
+            className="message primary"
+          >
+            perm--webRequest
+          </div>
+        </div>
+        <div
+          className="permission-more-info-box primary hidden"
+        >
+          perm--more-info
+        </div>
+      </div>
+    </div>
+  </ReactDialog>
+</PermissionDialog>
+`;
+
+exports[`<PermissionDialog /> component test show function test 1`] = `
+<PermissionDialog
+  app={
+    Object {
+      "_setVisibleForScreenReader": [MockFunction] {
+        "calls": Array [
+          Array [
+            false,
+          ],
+        ],
+        "results": Array [
+          Object {
+            "isThrow": false,
+            "value": undefined,
+          },
+        ],
+      },
+    }
+  }
+>
+  <ReactDialog
+    header="title-app"
+    noClose={true}
+    noFocus={true}
+    translated={true}
+  >
+    <div
+      id="react-dialog"
+    >
+      <div
+        className="container content testapp simple-style"
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        tabIndex="-1"
+      >
+        <div
+          className="permission-more-info "
+        >
+          <div
+            className="message primary"
+          >
+            perm-media-capture-appRequest
+          </div>
+        </div>
+        <div
+          className="permission-more-info-box primary hidden"
+        >
+          perm-media-capture-more-info
+        </div>
+      </div>
+    </div>
+  </ReactDialog>
+</PermissionDialog>
+`;

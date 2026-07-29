@@ -1,0 +1,43 @@
+<element name="fxa-enter-otp" extends="section">
+  <template>
+    <section class="vertical">
+      <p id="otp-sms-sent-message" class="fxa-intro">
+      </p>
+      <p id="otp-count-down-end-msg" class="fxa-intro" data-l10n-id="count-down-end-msg" hidden>
+      </p>
+      <div id="otp-count-down">
+        <ul class="tcl-nav-box focusable">
+          <div id="fxa-otp-container" class="codes">
+            <div class="code">
+              <div class="dot"></div>
+            </div>
+            <div class="code">
+              <div class="dot"></div>
+            </div>
+            <div class="code">
+              <div class="dot"></div>
+            </div>
+            <div class="code">
+              <div class="dot"></div>
+            </div>
+          </div>
+        </ul>
+        <div class="fxa-time-remaining-container">
+          <div class="fxa-time-remaining-message p-sec" data-l10n-id="fxa-time-remaining"></div>
+          <div id="fxa-otp-time-remaining" class="fxa-time-remaining p-sec">2:00</div>
+        </div>
+      </div>
+      <div id="otp-count-down-end" class="count-down-end" hidden>
+      </div>
+      <div id="otp-verified-block" hidden>
+        <p class="kaios-logo"></p>
+        <p class="account-created" data-l10n-id="fxa-signup-success-title">
+        </p>
+        <p id="otp-verified" class="account-created-description" data-l10n-id="">
+      </div>
+      </p>
+    </section>
+    <script src="js/screens/fxam_enter_otp.js"></script>
+  </template>
+</element>
+

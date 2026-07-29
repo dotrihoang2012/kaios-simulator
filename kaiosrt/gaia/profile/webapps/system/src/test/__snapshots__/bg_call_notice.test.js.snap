@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<BgCallNotice /> component test BgCallNotice initial dom render test 1`] = `
+<BgCallNotice>
+  <div
+    id="bg-call-notice"
+  />
+</BgCallNotice>
+`;
+
+exports[`<BgCallNotice /> component test Dom render test when state change show function test with title 1`] = `
+<BgCallNotice>
+  <div
+    id="bg-call-notice"
+  >
+    <div
+      className="container"
+    >
+      <div
+        className="content"
+      >
+        <div
+          className="title primary"
+        >
+          title
+        </div>
+        <div
+          className="secondary"
+        >
+          <div
+            aria-hidden="false"
+            data-l10n-id=""
+          />
+          <div
+            aria-label=""
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</BgCallNotice>
+`;
+
+exports[`<BgCallNotice /> component test Dom render test when state change show function test with titleL10n 1`] = `
+<BgCallNotice>
+  <div
+    id="bg-call-notice"
+  >
+    <div
+      className="container"
+    >
+      <div
+        className="content"
+      >
+        <div
+          className="title primary"
+        >
+          titleL10n
+        </div>
+        <div
+          className="secondary"
+        >
+          <div
+            aria-hidden="false"
+            data-l10n-id=""
+          />
+          <div
+            aria-label=""
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</BgCallNotice>
+`;

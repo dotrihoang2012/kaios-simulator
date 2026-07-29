@@ -1,0 +1,1 @@
+function FileReader(){}FileReader.prototype={readAsArrayBuffer:e=>e,readAsText:e=>e,set onloadend(e){e.call(this)},set onload(e){e({target:{result:"onload|test"}})},get result(){return new ArrayBuffer(16)}},exports.mockFileReader=FileReader;

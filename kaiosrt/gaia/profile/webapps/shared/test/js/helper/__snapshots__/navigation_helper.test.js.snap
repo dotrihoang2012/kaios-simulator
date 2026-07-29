@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`helper js <navigation_helper> test NavigationHelper.resetMenu return value test NavigationHelper.resetMenu should return focusElement when child = 1 1`] = `
+Object {
+  Symbol(jest-snapshot-serializer-raw): <button
+    class="menu-button focus"
+    data-nav-id="mainmenu0"
+    id="button"
+    style="--nav-left: mainmenu0; --nav-right: mainmenu0; --nav-up: mainmenu0; --nav-down: mainmenu0;"
+    tabindex="1"
+  >
+    
+        
+      
+  </button>,
+}
+`;
+
+exports[`helper js <navigation_helper> test NavigationHelper.resetMenu return value test NavigationHelper.resetMenu should return focusElement when child > 1 1`] = `
+Object {
+  Symbol(jest-snapshot-serializer-raw): <button
+    class="menu-button focus"
+    data-nav-id="mainmenu0"
+    id="submenu_button1"
+    style="--nav-left: mainmenu0; --nav-right: mainmenu0; --nav-up: mainmenu2; --nav-down: mainmenu1;"
+    tabindex="1"
+  >
+    
+          
+  </button>,
+}
+`;

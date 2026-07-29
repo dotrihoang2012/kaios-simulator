@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+  <head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1">
+    <meta charset="utf-8">
+    <meta name="theme-color" content="rgb(255, 255, 255)">
+    <title>Settings</title>
+
+    <script src="http://shared.localhost:8081/js/utils/common/app_origin.js"></script>
+    <script src="js/utils/debug_helper.js"></script>
+    <script src="js/utils/constants.js"></script>
+    <script src="js/file_loader.js"></script>
+    <script src="js/utils/activity_handler.js"></script>
+
+    <!-- Components -->
+    <link rel="stylesheet" type="text/css" href="http://shared.localhost:8081/style/gaia_icons/gaia-icons.css">
+    <link rel="stylesheet" type="text/css" href="http://shared.localhost:8081/style/gaia_theme/gaia-font.css">
+    <link rel="stylesheet" type="text/css" href="http://shared.localhost:8081/style/gaia_theme/gaia-theme.css">
+    <link rel="stylesheet" type="text/css" href="style/icons.css">
+
+    <!-- Specific style -->
+    <link rel="stylesheet" type="text/css" href="style/lists.css">
+    <link rel="stylesheet" type="text/css" href="style/settings.css">
+    <link rel="stylesheet" type="text/css" href="http://shared.localhost:8081/style/commons/navigation.css">
+    <link rel="stylesheet" type="text/css" href="http://shared.localhost:8081/style/commons/softkey.css">
+    <link rel="stylesheet" type="text/css" href="http://shared.localhost:8081/elements/gaia_tabs/gaia_tabs.css">
+    <link rel="stylesheet" type="text/css" href="http://shared.localhost:8081/style/commons/buttons.css">
+    <link rel="stylesheet" type="text/css" href="http://shared.localhost:8081/style/commons/switches.css">
+    <link rel="stylesheet" type="text/css" href="style/buttons.css">
+
+    <!-- Localization -->
+    <meta name="defaultLanguage" content="en-US">
+    <meta name="availableLanguages" content="af-ZA:202106081659, ar-SA:202106081659, bn-IN:202106081659, de-DE:202106081659, en-GB:202106081659, en-US:202106081659, es-US:202106081659, en-NG:202106081659, es-ES:202106081659, fa-IR:202106081659, fr-CA:202106081659, fr-FR:202106081659, hi-HI:202106081659, hu-HU:202106081659, id-ID:202106081659, it-IT:202106081659, ms-MY:202106081659, ne-IN:202106081659, nl-NL:202106081659, pl-PL:202106081659, pt-BR:202106081659, pt-PT:202106081659, ro-RO:202106081659, ru-RU:202106081659, sw-ZA:202106081659, ta-IN:202106081659, th-TH:202106081659, tr-TR:202106081659, ur-PK:202106081659, vi-VN:202106081659, zh-CN:202106081659, zu-ZA:202106081659">
+
+    <link href="/locales-obj/{locale}.json" rel="localization">
+    
+    
+    
+    
+    
+    <link rel="localization-html" href="/shared/locales/kaios_license/kaios_license.{locale}.html">
+
+    <!-- Lazy loader -->
+    <script src="http://shared.localhost:8081/js/utils/common/lazy_loader.js"></script>
+    <script src="js/utils/service_manager.js"></script>
+
+    <script defer="" src="http://shared.localhost:8081/elements/gaia_tabs/gaia_tabs.js"></script>
+
+  <meta name="appVersion" content="2.2"></head>
+  <body class="skin-organic uninit theme-settings">
+    <div class="statusbar-placeholder"></div>
+    <!--
+      - Lazy-Loading: to avoid parsing all settings panels before necessary, the
+      - HTML markup is included in a comment node and applied with `.innerHTML'
+      - when the sub-panel is loaded.
+      -
+      - When a panel includes <script> nodes, these scripts might require all
+      - sub-panels to be loaded to work properly. We rely on the panel ID to get
+      - its dependencies, e.g. the #wifi panel depends on all panels matching
+      - the « section[id^="wifi-"] » selector.
+      -
+      - Long story short: BE VERY CAREFUL WHEN CHANGING A SECTION ID!
+      -->
+    <!-- Main List -->
+    <section role="region" id="root">
+      <gaia-header>
+        <h1 slot="text" data-l10n-id="settings">Settings</h1>
+      </gaia-header>
+
+      <gaia-tabs id="root-tab" class="h3" underline="child" selected="0" position="top">
+        <div slot="tab"><span data-l10n-id="networkAndConnectivity">Network &amp; Connectivity</span></div>
+        <div slot="tab"><span data-l10n-id="personalization">Personalization</span></div>
+        <div slot="tab"><span data-l10n-id="privacyAndSecurity">Privacy &amp; Security</span></div>
+        <div slot="tab"><span data-l10n-id="storage">Storage</span></div>
+        <div slot="tab"><span data-l10n-id="device">Device</span></div>
+        <div slot="tab"><span data-l10n-id="accounts">Account</span></div>
+      </gaia-tabs>
+
+      <div class="root">
+        <div class="content">
+          <header class="hidden">
+            <h2 id="id-network" role="heading" data-l10n-id="networkAndConnectivity">Network &amp; Connectivity</h2>
+          </header>
+          <ul role="menu">
+            <li aria-labelledby="id-network airplane_mode_switch" role="menuitem" id="airplane_mode_switch">
+              <span data-l10n-id="airplaneMode">Airplane mode</span>
+              <span class="button icon icon-dialog">
+                <select id="airplane-mode-select" data-value-type="boolean" data-name="airplaneMode.enabled" class="hidden">
+                  <option value="true" data-l10n-id="on">On</option>
+                  <option value="false" data-l10n-id="off">Off</option>
+                </select>
+              </span>
+            </li>
+            <li role="menuitem" id="data-connectivity" aria-disabled="true" class="none-select">
+              <a id="menuItem-mobileNetworkAndData" class="menu-item" href="#carrier">
+                <span data-l10n-id="cellularAndData">Mobile network &amp; data</span>
+              </a>
+            </li>
+            <li role="menuitem" id="connectivity-wifi" class="hidden">
+              <a id="menuItem-wifi" class="menu-item" href="#wifi">
+                <span data-l10n-id="wifi">Wi-Fi</span>
+                <small id="wifi-desc" class="menu-item-desc"></small>
+              </a>
+            </li>
+            <li role="menuitem" id="connectivity-bluetooth" class="hidden">
+              <a class="menuItem-bluetooth menu-item" href="#bluetooth">
+                <span data-l10n-id="bluetooth">Bluetooth</span>
+                <small id="bluetooth-desc" class="menu-item-desc"></small>
+              </a>
+            </li>
+            <li role="menuitem" id="nfc-settings" class="hidden">
+              <span data-l10n-id="nfc">NFC</span>
+              <span class="button icon icon-dialog">
+                <select id="nfc-select" name="nfc.enabled" data-value-type="boolean">
+                  <option value="true" data-l10n-id="on">On</option>
+                  <option value="false" data-l10n-id="off">Off</option>
+                </select>
+              </span>
+            </li>
+            <li role="menuitem" id="geolocation-settings" class="hidden">
+              <a id="menuItem-geolocation" class="menu-item" href="#geolocation">
+                <span data-l10n-id="geolocation">Geolocation</span>
+                <small id="geolocation-desc" class="menu-item-desc"></small>
+              </a>
+            </li>
+            <li role="menuitem" id="sim-manager-settings" aria-disabled="true" class="none-select">
+              <a id="menuItem-simManager" class="menu-item" href="#simcard_manager">
+                <span data-l10n-id="simManager">SIM manager</span>
+                <small id="simmanager-desc" class="menu-item-desc"></small>
+              </a>
+            </li>
+            <li role="menuitem" id="call-settings" aria-disabled="true" class="none-select">
+              <a id="menuItem-callSettings" class="menu-item" href="#call">
+                <span data-l10n-id="callSettings">Calling</span>
+                <small id="call-desc" class="menu-item-desc"></small>
+              </a>
+            </li>
+            <li role="menuitem" id="volte-settings" aria-disabled="true" class="none-select hidden">
+              <a class="menu-item" href="#volte_vowif">
+                <span id="volte-vowifi-header" data-l10n-id="volte-header">VoLTE / VoWiFi</span>
+              </a>
+            </li>
+            <li role="menuitem" id="internet-sharing" aria-disabled="true" class="none-select hidden">
+              <a id="menuItem-internetSharing" class="menu-item" href="#hotspot">
+                <span data-l10n-id="internetSharing">Internet sharing</span>
+                <small id="internetSharing-desc" class="menu-item-desc"></small>
+              </a>
+            </li>
+            <li role="menuitem" id="wireless-emergency-alert" class="">
+              <a class="menu-item" href="#emergency_alert">
+                <span data-l10n-id="emergencyAlert">Wireless emergency alerts</span>
+              </a>
+            </li>
+            <li role="menuitem" id="cell-broadcast-entry" aria-disabled="true" class="none-select">
+              <a class="menu-item" href="#cell_broadcast_message"></a>
+              <span data-l10n-id="cellBroadcastMessage">Cell broadcast message</span>
+              <small id="cell-broadcast-desc" class="menu-item-desc"></small>
+            </li>
+          </ul>
+        </div>
+
+        <div class="content hidden">
+          <header class="hidden">
+            <h2 id="id-personalization" role="heading" data-l10n-id="personalization">Personalization</h2>
+          </header>
+          <ul role="menu">
+            <li role="menuitem">
+              <a aria-labelledby="id-personalization menuItem-sound" id="menuItem-sound" class="menu-item" href="#sound" data-l10n-id="sound">Sound</a>
+            </li>
+            <li role="menuitem">
+              <a id="menuItem-display" class="menu-item" href="#display" data-l10n-id="display">Display</a>
+            </li>
+            <li role="menuitem">
+              <a id="menuItem-search" class="menu-item" href="#search" data-l10n-id="search">Search</a>
+            </li>
+            <li role="menuitem">
+              <a id="menuItem-notifications" class="menu-item" href="#notifications" data-l10n-id="notifications">Notices</a>
+            </li>
+            <li role="menuitem">
+              <a id="menuItem-dateAndTime" class="menu-item" href="#date_time">
+                <span data-l10n-id="dateAndTime">Date &amp; time</span>
+                <small id="time-desc" class="menu-item-desc"></small>
+              </a>
+            </li>
+            <li role="menuitem">
+              <a class="menuItem-languageAndRegion menu-item" href="#languages">
+                <span data-l10n-id="language">Language</span>
+                <small class="language-desc menu-item-desc"></small>
+              </a>
+            </li>
+            <li role="menuitem">
+              <a id="menuItem-input-methods" class="menu-item" href="#input_methods">
+                <span data-l10n-id="input-methods">Input methods</span>
+                <small id="input-methods-desc" class="menu-item-desc"></small>
+              </a>
+            </li>
+            <li role="menuitem" id="answer-mode-settings" class="hidden">
+              <a class="menu-item" href="#answer_mode">
+                <span data-l10n-id="answerMode">Answer Mode</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="content hidden">
+          <header class="hidden">
+            <h2 id="id-privacy" role="heading" data-l10n-id="privacyAndSecurity">Privacy &amp; Security</h2>
+          </header>
+          <ul role="menu">
+            <li role="menuitem">
+              <a aria-labelledby="id-privacy menuItem-screenLock" id="menuItem-screenLock" class="menu-item" href="#screen_lock">
+                <span data-l10n-id="screenLock">Screen lock</span>
+              </a>
+            </li>
+            <li role="menuitem">
+              <a id="menuItem-appPermissions" class="menu-item" href="#app_permissions">
+                <span data-l10n-id="appPermissions">App permissions</span>
+              </a>
+            </li>
+            <li role="menuitem">
+              <a id="menuItem-doNotTrack" class="menu-item" href="#do_not_track">
+                <span data-l10n-id="doNotTrack">Do not track</span>
+                <small id="doNotTrack-desc" class="menu-item-desc"></small>
+              </a>
+            </li>
+            <li role="menuitem">
+              <a class="menu-item" href="#about_kaios">
+                <span data-l10n-id="aboutKaios">About KaiOS</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="content hidden">
+          <header class="hidden">
+            <h2 id="id-storage" role="heading" data-l10n-id="storage">Storage</h2>
+          </header>
+          <ul role="menu">
+            <li aria-labelledby="id-storage menu-clean-up" id="menu-clean-up" class="clean-up button" role="menuitem">
+              <button data-l10n-id="clean-up-storage">Clean Up Storage</button>
+            </li>
+            <li role="menuitem">
+              <a id="menu-usb-storage" class="menu-item" href="#usb_storage">
+                <span class="menu-item" data-l10n-id="enableUSBStorage1">USB storage</span>
+                <small class="menu-item-desc"></small>
+              </a>
+            </li>
+            <li role="menuitem" id="location-item" aria-disabled="true" class="none-select ">
+              <span class="menu-item" data-l10n-id="default-media-location">Default media location</span>
+              <small id="default-media-location-desc"></small>
+              <span class="button icon icon-dialog">
+                <select data-name="device.storage.writable.name" class="no-open" data-track-class="default_media_location">
+                  <option data-l10n-id="short-storage-name-internal" value="sdcard">Internal</option>
+                  <option data-l10n-id="short-storage-name-external-0" value="sdcard1">SD Card</option>
+                </select>
+              </span>
+            </li>
+          </ul>
+          <header>
+            <h2 id="header-internal-size" data-l10n-id="short-storage-name-internal">Internal</h2>
+          </header>
+          <ul role="menu">
+            <li role="menuitem" id="storage-media-internal">
+              <a class="menu-item">
+                <div>
+                  <aside class="storage-status"></aside>
+                  <span data-l10n-id="mediaStorage">Media</span>
+                </div>
+                <small id="media-internal-desc" class="menu-item-desc"></small>
+              </a>
+            </li>
+            <li role="menuitem" id="storage-application">
+              <a class="menu-item" href="#application_storage">
+                <div>
+                  <aside class="storage-status"></aside>
+                  <span data-l10n-id="appStorage">Application data</span>
+                </div>
+                <small id="application-storage-desc" class="menu-item-desc"></small>
+              </a>
+            </li>
+            <li role="menuitem" class="none-select">
+              <span data-l10n-id="short-storage-name-system">System</span>
+              <small id="system-storage-desc" class="menu-item-desc"></small>
+            </li>
+          </ul>
+          <header id="media-sdcard-header" class="hidden">
+            <h2 id="header-sdcard-size" data-l10n-id="short-storage-name-external-0">SD Card</h2>
+          </header>
+          <ul>
+            <li role="menuitem" id="storage-media-sdcard" class="hidden">
+              <a class="menu-item">
+                <div>
+                  <aside class="storage-status"></aside>
+                  <span data-l10n-id="mediaStorage">Media</span>
+                </div>
+                <small id="media-sdcard-desc" class="menu-item-desc"></small>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="content hidden">
+          <header class="hidden">
+            <h2 id="id-device" role="heading" data-l10n-id="device">Device</h2>
+          </header>
+          <ul role="menu">
+            <li role="menuitem">
+              <a aria-labelledby="id-device menuItem-deviceInfo" id="menuItem-deviceInfo" class="menu-item" href="#about">
+                <span data-l10n-id="deviceInfo">Device information</span>
+              </a>
+            </li>
+            <li role="menuitem">
+              <a id="menuItem-downloads" class="menu-item" href="#downloads">
+                <span data-l10n-id="downloads">Download manager</span>
+              </a>
+            </li>
+            <li role="menuitem">
+              <a class="menuItem-battery menu-item" href="#battery">
+                <span data-l10n-id="battery">Battery</span>
+                <small id="main-battery-desc" class="menu-item-desc"></small>
+              </a>
+            </li>
+            <li role="menuitem">
+              <a id="menuItem-accessibility" class="menu-item" href="#accessibility">
+                <span data-l10n-id="accessibility">Accessibility</span>
+              </a>
+            </li>
+            <li role="menuitem" id="developer-settings" class="hidden">
+              <a class="menu-item" href="#developer">
+                <span data-l10n-id="developer">Developer</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="content hidden">
+          <header class="kai-account hidden">
+            <h2 id="id-operator" data-l10n-id="accounts">Account</h2>
+          </header>
+          <ul class="kai-account">
+            <li id="kai-account-item">
+              <a aria-labelledby="id-operator " class="menu-item">
+                <span data-l10n-id="kaios-account">KaiOS account</span>
+                <small class="menu-item-desc"></small>
+              </a>
+            </li>
+          </ul>
+          <header class="kai-account">
+            <h2 data-l10n-id="antitheft-services">Services</h2>
+          </header>
+          <ul class="kai-account">
+            <li role="menuitem" id="anti-theft-item" aria-disabled="true" class="none-select">
+              <span data-l10n-id="antitheft">Anti-theft</span>
+              <span class="button icon icon-dialog">
+                <select id="anti-theft-select" class="no-open" data-value-type="boolean">
+                  <option value="true" data-l10n-id="on">On</option>
+                  <option value="false" data-l10n-id="off">Off</option>
+                </select>
+              </span>
+            </li>
+            <li id="anti-theft-note1" role="menuitem" class="description none-select hidden">
+              <span data-l10n-id="antitheft-note1">The anti-theft function allows you to lock and erase your phone remotely if your phone is lost stolen.</span>
+            </li>
+            <li id="anti-theft-note2" role="menuitem" class="description none-select hidden">
+              <span data-l10n-id="antitheft-note2">Go to the following website to access</span>
+              <span data-l10n-id="antitheft-note3">this feature:</span>
+              <span data-l10n-id="antitheft-note4">https://services.kaiostech.com/antitheft</span>
+            </li>
+          </ul>
+          <header>
+            <h2 data-l10n-id="other-accounts">Other Accounts</h2>
+          </header>
+          <ul id="other-accounts">
+            <li id="add-account-button" class="button" role="menuitem">
+              <button data-l10n-id="add-account">Add Account</button>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+      <panel data-path="panels/root/panel"></panel>
+    </section>
+
+    <div id="app-confirmation-dialog" data-z-index-level="app-confirmation-dialog"></div>
+    <form id="fakeSoftKeyPanel" class="skbar none-paddings visible" data-z-index-level="softkeyPanel" data-type="actions">
+      <div>
+        <button id="software-keys-left" class="sk-button"></button>
+      </div>
+      <div>
+        <button id="software-keys-center" class="sk-button" data-l10n-id="soft-key-select">SELECT</button>
+      </div>
+      <div>
+        <button id="software-keys-right" class="sk-button"></button>
+      </div>
+    </form>
+    <script src="js/utils/device_feature.js"></script>
+    <script src="js/utils/settings_db_cache.js"></script>
+    <script src="js/utils/settings_cache.js"></script>
+    <script src="js/utils/customization_utils.js"></script>
+    <script src="js/startup.js"></script>
+  </body>
+
+</html>

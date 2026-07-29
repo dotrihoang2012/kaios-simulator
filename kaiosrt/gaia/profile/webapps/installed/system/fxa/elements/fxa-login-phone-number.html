@@ -1,0 +1,32 @@
+<element name="fxa-login-phone-number" extends="section">
+  <template>
+    <section class="vertical">
+      <ul class="tcl-nav-box">
+        <p class="fxa-intro show-email-forgot" data-l10n-id="enter-account-number" hidden>
+        </p>
+        <p class="fxa-elements-seperator show-email-forgot" hidden></p>
+        <li role="menuitem" class="focusable">
+          <label for="fxa-cc-select" data-l10n-id="fxa-cc-label">Region</label>
+          <p id="fxa-cc-selected" class="fxa-cc-selected"></p>
+          <select id="fxa-cc-select" class="hidden fxa-cc-select region-code" value="+1" keyMatch="code" combineValue=true>
+          </select>
+        </li>
+        <li>
+          <label for="fxa-phone-number-input" data-l10n-id="fxa-phone-number-label">Phone Number</label>
+          <input id="fxa-phone-number-input" data-l10n-id="fxa-phone-number-label" type="tel"  x-inputmode="plain" maxlength="20">
+        </li>
+        <li class="hide-email-forgot">
+          <label for="fxa-pw-set-input" data-l10n-id="fxa-password">Password</label>
+          <input id="fxa-pw-input" data-l10n-id="fxa-password" type="password" x-inputmode="plain" maxlength="20">
+        </li>
+        <li class="hide-email-forgot">
+          <label class="pack-checkbox" for="fxa-show-pw">
+            <input id="fxa-show-pw" type="checkbox">
+            <span data-l10n-id="fxa-show-password"></span>
+          </label>
+        </li>
+      </ul>
+    </section>
+    <script src="js/screens/fxam_login_phone_number.js"></script>
+  </template>
+</element>

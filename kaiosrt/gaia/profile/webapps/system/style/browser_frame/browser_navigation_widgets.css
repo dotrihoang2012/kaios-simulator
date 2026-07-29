@@ -1,0 +1,60 @@
+.appWindow.browser > .scroll-direction-indicator {
+  position: absolute;
+  width: 100%;
+  height: calc(100% - var(--statusbar-height) - var(--titlebar-height));
+  top: calc(var(--statusbar-height) + var(--titlebar-height));
+  text-align: center;
+  pointer-events: none;
+}
+
+.appWindow.popupWindow > .scroll-direction-indicator {
+  height: calc(100% - var(--header-height) - var(--statusbar-height));
+  top: var(--header-height);
+}
+
+.fullscreen-app > .appWindow.popupWindow > .scroll-direction-indicator {
+  height: calc(100% - var(--header-height));
+  top: var(--header-height);
+}
+
+.scroll-direction-indicator.hidden {
+  display: none;
+}
+
+.scroll-direction-icon {
+  position: absolute;
+  background-repeat: no-repeat;
+  background-color: rgba(0, 0, 0, 0.5);
+  background-position: center;
+}
+
+.scroll-direction-icon.top {
+  top: 0;
+  width: 100%;
+  height: 1rem;
+  background-image: url('images/arrow_up.png');
+}
+
+.scroll-direction-icon.left {
+  top: 1rem;
+  left: 0;
+  width: 1rem;
+  height: calc(100% - 2rem);
+  background-image: url('images/arrow_left.png');
+}
+
+.scroll-direction-icon.right {
+  width: 1rem;
+  height: calc(100% - 2rem);
+  top: 1rem;
+  right: 0;
+  background-image: url('images/arrow_right.png');
+}
+
+.scroll-direction-icon.bottom {
+  bottom: 0;
+  width: 100%;
+  height: 1rem;
+  background-image: url('images/arrow_down.png');
+}
+

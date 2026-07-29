@@ -1,0 +1,277 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[` 1`] = `
+<InstantSettings>
+  <section
+    aria-labelledby="instantSettings-title"
+    className="instantSettings"
+    onBlur={[Function]}
+    onFocus={[Function]}
+    onKeyDown={[Function]}
+    role="heading"
+    tabIndex="-1"
+  >
+    <div
+      className="readout-only"
+      id="instantSettings-title"
+    >
+      instant-settings
+    </div>
+    <main
+      className="instantSettings__wall"
+    >
+      <div
+        aria-label="flashlight off"
+        className="instantSettings__tile jio"
+        data-name="flashlight"
+        key="flashlight"
+        role="button"
+        tabIndex="-1"
+      >
+        <div
+          className="instantSettings__icon"
+          data-icon="flashlight-on"
+          data-inactived-icon="flashlight-off"
+        />
+        <div
+          className="instantSettings__info"
+        >
+          <div
+            className="instantSettings__title"
+          >
+            flashlight
+          </div>
+          <div
+            className="instantSettings__subtitle"
+          >
+            off
+          </div>
+        </div>
+      </div>
+      <div
+        aria-label="brightness percentage-number"
+        className="instantSettings__tile jio is-shortcut"
+        data-name="brightness"
+        key="brightness"
+        role="button"
+        tabIndex="-1"
+      >
+        <div
+          className="instantSettings__icon"
+          data-icon="brightness"
+        />
+        <div
+          className="instantSettings__info"
+        >
+          <div
+            className="instantSettings__title"
+          >
+            brightness
+          </div>
+          <div
+            className="instantSettings__subtitle"
+          >
+            percentage-number
+          </div>
+        </div>
+      </div>
+      <div
+        aria-label="airplane-mode "
+        className="instantSettings__tile jio is-disabled"
+        data-name="airplane-mode"
+        key="airplane-mode"
+        role="button"
+        tabIndex="-1"
+      >
+        <div
+          className="instantSettings__icon"
+          data-icon="airplane-mode"
+          data-inactived-icon="airplane-mode-off"
+        />
+        <div
+          className="instantSettings__info"
+        >
+          <div
+            className="instantSettings__title"
+          >
+            airplane-mode
+          </div>
+          <div
+            className="instantSettings__subtitle"
+          />
+        </div>
+      </div>
+      <div
+        aria-label="wlan off"
+        className="instantSettings__tile jio"
+        data-name="wifi"
+        key="wifi"
+        role="button"
+        tabIndex="-1"
+      >
+        <div
+          className="instantSettings__icon"
+          data-icon="wifi-32px"
+          data-inactived-icon="wifi-off-32px"
+        />
+        <div
+          className="instantSettings__info"
+        >
+          <div
+            className="instantSettings__title"
+          >
+            wlan
+          </div>
+          <div
+            className="instantSettings__subtitle"
+          >
+            off
+          </div>
+        </div>
+      </div>
+      <div
+        aria-label="cellular-data disabled"
+        className="instantSettings__tile jio is-disabled"
+        data-name="network"
+        key="network"
+        role="button"
+        tabIndex="-1"
+      >
+        <div
+          className="instantSettings__icon"
+          data-icon="network-activity"
+          data-inactived-icon="network-activity-off"
+        />
+        <div
+          className="instantSettings__info"
+        >
+          <div
+            className="instantSettings__title"
+          >
+            cellular-data
+          </div>
+          <div
+            className="instantSettings__subtitle"
+          >
+            disabled
+          </div>
+        </div>
+      </div>
+      <div
+        aria-label="bluetooth off"
+        className="instantSettings__tile jio"
+        data-name="bluetooth"
+        key="bluetooth"
+        role="button"
+        tabIndex="-1"
+      >
+        <div
+          className="instantSettings__icon"
+          data-icon="bluetooth-32px"
+          data-inactived-icon="bluetooth-off-32px"
+        />
+        <div
+          className="instantSettings__info"
+        >
+          <div
+            className="instantSettings__title"
+          >
+            bluetooth
+          </div>
+          <div
+            className="instantSettings__subtitle"
+          >
+            off
+          </div>
+        </div>
+      </div>
+      <div
+        aria-label="volume -/-"
+        className="instantSettings__tile jio is-shortcut"
+        data-name="volume"
+        key="volume"
+        role="button"
+        tabIndex="-1"
+      >
+        <div
+          className="instantSettings__icon"
+          data-icon="sound-max"
+        />
+        <VolumeBar
+          config={
+            Object {
+              "click": [Function],
+              "icon": Object {
+                "init": "sound-max",
+              },
+              "icons": Object {
+                "init": "sound-max",
+                "mute": "mute-32px",
+                "vibrate": "vibrate-32px",
+              },
+              "isShortcut": true,
+              "jio_icon": Object {
+                "init": "volume",
+              },
+              "jio_icons": Object {
+                "init": "volume",
+                "mute": "mute",
+                "vibrate": "vibrate",
+              },
+              "maxValue": 15,
+              "name": "volume",
+              "order": Object {
+                "landscape": 6,
+                "portrait": 6,
+              },
+              "softkey": Object {
+                "center": "",
+              },
+              "subtitle": "-/-",
+              "subtitleTranslated": true,
+              "title": "volume",
+              "value": 0,
+            }
+          }
+        >
+          <div
+            className="instantSettings__volumeBar"
+            data-percent={0}
+          >
+            <div
+              className="instantSettings__volumeBar__ball"
+              style={
+                Object {
+                  "left": "0%",
+                }
+              }
+            />
+            <div
+              className="instantSettings__volumeBar__stick"
+              style={
+                Object {
+                  "backgroundPosition": "100% 50%",
+                }
+              }
+            />
+          </div>
+        </VolumeBar>
+        <div
+          className="instantSettings__info"
+        >
+          <div
+            className="instantSettings__title"
+          >
+            volume
+          </div>
+          <div
+            className="instantSettings__subtitle"
+          >
+            -/-
+          </div>
+        </div>
+      </div>
+    </main>
+  </section>
+</InstantSettings>
+`;

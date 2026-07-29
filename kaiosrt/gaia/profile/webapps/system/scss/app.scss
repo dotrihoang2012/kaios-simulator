@@ -1,0 +1,30 @@
+/* In order not let virtual cursor click on react root element we need this. */
+/* If someday all elements under #screen is rendered by react we don't need it anymore. */
+
+#soft-key-root, #notification-root, #notification-toaster-root, #notification-dialog-root, #dialog-root, .option-menu-root, #sim-dialog-root, .react-root {
+  pointer-events: none;
+}
+
+#notification-dialog-root, #dialog-root, #sim-dialog-root, .react-root {
+  position: absolute;
+  bottom: var(--softkeybar-height);
+  left: 0;
+  width: 100%;
+  height: calc(100% - var(--softkeybar-height));
+}
+
+#payment-root {
+  bottom: 0 !important;
+  height: 100% !important;
+}
+
+#softkeyPanel {
+  pointer-events: none;
+}
+
+:focus {
+  outline: none;
+}
+
+@import '_sleep_menu';
+@import '_cleanup_menu';

@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`notification_dialog_animation.js test Dom render test 1`] = `
+<_class2
+  app="app"
+  className="container"
+  notice="notice"
+>
+  <testComponent
+    app="app"
+    className="up-to-bottom container"
+    notice="notice"
+  >
+    <div
+      id="testComponent"
+    />
+  </testComponent>
+</_class2>
+`;
+
+exports[`notification_dialog_animation.js test close function test 1`] = `
+<_class2
+  app="app"
+  className="container"
+  notice="notice"
+>
+  <testComponent
+    app="app"
+    className="up-to-bottom container"
+    notice="notice"
+  >
+    <div
+      id="testComponent"
+    />
+  </testComponent>
+</_class2>
+`;
+
+exports[`notification_dialog_animation.js test open function test 1`] = `
+<_class2
+  app="app"
+  className="container"
+  notice="notice"
+>
+  <testComponent
+    app="app"
+    className="bottom-to-up container"
+    notice="notice"
+  >
+    <div
+      id="testComponent"
+    />
+  </testComponent>
+</_class2>
+`;

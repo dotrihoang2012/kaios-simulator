@@ -1,0 +1,39 @@
+<element name="carrier_operator_settings" extends="section">
+  <template>
+
+    <gaia-header>
+      <h1 slot="text" data-l10n-id="operator-autoSelect"></h1>
+    </gaia-header>
+
+    <div>
+      <ul role="menu">
+        <li role="menuitem" class="automatic-on">
+          <label class="pack-radio-large my_radio">
+            <input name="network-selection-mode" value="true" type="radio">
+            <span data-l10n-id="on">On</span>
+          </label>
+        </li>
+
+        <li role="menuitem" class="automatic-off">
+          <label class="pack-radio-large my_radio">
+            <input name="network-selection-mode" value="false" type="radio">
+            <span data-l10n-id="off">Off</span>
+          </label>
+        </li>
+      </ul>
+
+      <header id="availableOperatorsHeader">
+        <h2 role="heading" data-l10n-id="availableOperators">Network Operators in the Area</h2>
+      </header>
+      <ul role="menu" id="availableOperators" data-state="off">
+        <li role="menuitem" id="operators-info" class="description explanation non-focus" data-state="off" data-l10n-id="operator-turnAutoSelectOff">
+        </li>
+        <li role="menuitem" id="scan-progress" class="non-focus" data-state="on">
+          <progress id="searching-progress" class="pack-activity" value="0" max="100"></progress>
+         </li>
+      </ul>
+    </div>
+
+    <panel data-path="panels/carrier_operator_settings/panel"></panel>
+  </template>
+</element>

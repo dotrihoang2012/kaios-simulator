@@ -1,0 +1,71 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<SimcardInfo /> component test SimcardInfo dom render test 1`] = `
+<SimcardInfo>
+  <div
+    data-is-voWifi-mode={false}
+    id="simcard-info"
+  >
+    <div
+      className="info-row"
+      data-is-voWifi-mode={false}
+      key="0"
+    >
+      <div
+        className="icon-wrapper"
+      >
+        <div
+          className="icon inactive"
+          data-icon="sim-1"
+        >
+          <div
+            className="icon"
+            data-icon="signal-0"
+          />
+        </div>
+      </div>
+      <div
+        className="carrier-name secondary"
+      >
+        <span
+          className="text"
+        >
+          noSimCard
+        </span>
+      </div>
+    </div>
+    <div
+      className="info-row"
+      key="1"
+    >
+      <div
+        className="icon-wrapper"
+      >
+        <div
+          className="icon inactive"
+          data-icon="sim-2"
+        >
+          <div
+            className="icon"
+            data-icon="signal-0"
+          />
+        </div>
+      </div>
+      <div
+        className="carrier-name secondary"
+      >
+        <span
+          className="text"
+        >
+          noSimCard
+        </span>
+      </div>
+    </div>
+    <div
+      className="airplane-mode-info"
+    >
+      airplane-mode
+    </div>
+  </div>
+</SimcardInfo>
+`;

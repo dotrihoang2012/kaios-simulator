@@ -1,0 +1,26 @@
+<element name="kaios_account" extends="section">
+  <template>
+    <gaia-header data-href="#root">
+    </gaia-header>
+
+    <div>
+      <ul role="menu">
+        <p class="kaios-logo"></p>
+        <p class="kaios-logo-account" data-l10n-id="accounts">
+          Account
+        </p>
+        <li id="create_account" class="button button-below-button" role="menuitem">
+          <button data-l10n-id="create-account">Create Account</button>
+        </li>
+        <li id="login-phone" class="button button-below-button" role="menuitem">
+          <button data-l10n-id="sign-in-phone">Sign In With Phone</button>
+        </li>
+        <li id="login-email" class="button button-below-button" role="menuitem">
+          <button data-l10n-id="sign-in-email">Sign In With Email</button>
+        </li>
+      </ul>
+    </div>
+
+    <panel data-path="panels/kaios_account/panel"></panel>
+  </template>
+</element>

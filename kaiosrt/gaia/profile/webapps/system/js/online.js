@@ -1,0 +1,1 @@
+"use strict";window.isOnline=function(){return navigator.connection&&("cellular"===navigator.connection.type||"wifi"===navigator.connection.type)};

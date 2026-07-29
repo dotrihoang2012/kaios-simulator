@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`soft_key_manager.js test dom render test 1`] = `
+<SoftKeyManager>
+  <form
+    className="skbar none-paddings visible focused "
+    data-type="action"
+    id="softkeyPanel"
+  >
+    <Button
+      content=""
+      pos="left"
+    >
+      <button
+        className="sk-button"
+        data-position="left"
+        id="software-keys-left"
+      />
+    </Button>
+    <Button
+      content=""
+      pos="center"
+    >
+      <button
+        className="sk-button"
+        data-position="center"
+        id="software-keys-center"
+      />
+    </Button>
+    <Button
+      content=""
+      pos="right"
+    >
+      <button
+        className="sk-button"
+        data-position="right"
+        id="software-keys-right"
+      />
+    </Button>
+  </form>
+</SoftKeyManager>
+`;

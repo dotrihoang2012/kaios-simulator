@@ -1,0 +1,67 @@
+@import 'components/_toaster';
+
+#system-toaster-root {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+
+  .container .content {
+    text-align: center;
+    font-variant-numeric: nominal;
+
+    .title {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .secondary {
+      color: var(--color-gs00);
+      font-size: 1.7rem;
+      white-space: unset;
+    }
+  }
+  .warning .primary {
+    font-size: 1.4rem;
+    font-weight: 600;
+    line-height: var(--statusbar-height);
+  }
+}
+
+#system-toaster {
+  @extend %component-toaster;
+  background-color: var(--color-gs90);
+  color: var(--color-gs00);
+}
+
+#system-toaster.warning {
+  background-color: #f61a37;
+  .content {
+    overflow: hidden;
+    height: var(--statusbar-height);
+    display: flex;
+    padding: 0;
+    justify-content: center;
+    i {
+      overflow: hidden;
+      font-size: var(--statusbar-height);
+      line-height: var(--statusbar-height);
+    }
+  }
+  .content .primary div {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 20rem;
+  }
+}
+@media (prefers-text-size: large) {
+  #system-toaster-root .secondary {
+    font-size: 2.2rem !important;
+  }
+  #system-toaster-root .warning .primary {
+    font-size: 1.7rem !important;
+  }
+}

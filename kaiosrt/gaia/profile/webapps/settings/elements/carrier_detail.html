@@ -1,0 +1,27 @@
+<element name="carrier_detail" extends="section">
+  <template>
+
+    <gaia-header data-href="#carrier">
+      <h1 slot="text" data-l10n-id="dataNetwork"></h1>
+    </gaia-header>
+
+    <div>
+      <ul role="menu">
+        <li role="menuitem" id="network-type" class="menu-item none-select">
+          <p data-l10n-id="operator-networkType" class="operator-network-type-title">Network Type</p>
+          <span class="button icon icon-dialog">
+            <select id="preferredNetworkType"></select>
+          </span>
+        </li>
+         <li role="menuitem" id="operator-autoSelect">
+          <a class="menu-item">
+            <span data-l10n-id="operator-autoSelect"></span>
+            <small id="auto-select-desc" class="menu-item-desc"></small>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <panel data-path="panels/carrier_detail/panel"></panel>
+  </template>
+</element>

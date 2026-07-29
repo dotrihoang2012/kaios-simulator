@@ -1,0 +1,82 @@
+.permission-root {
+  pointer-events: none;
+
+  &.permission-root {
+    top: 0;
+  }
+
+  .dialog {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: var(--softkeybar-height);
+    max-height: calc(100vh - var(--softkeybar-height) - var(--statusbar-height) - 2rem);
+    .header {
+      text-align: center;
+      flex-shrink: 0;
+    }
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .content.content {
+    padding: 0;
+
+    > div {
+      padding: 1rem;
+    }
+  }
+
+  .dialog {
+    .permission-more-info-box {
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+      overflow-y: auto;
+    }
+  }
+
+  .info-link {
+    display: block;
+    margin-left: -1rem;
+    margin-right: -1rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    text-decoration: none;
+    color: var(--color-gs70);
+
+    > span[data-icon] {
+      display: flex;
+      flex-direction: row-reverse;
+      align-items: center;
+      margin-top: -0.5rem;
+
+      &::before {
+        font-size: 3.2rem;
+        margin-inline-end: -.5rem;
+      }
+    }
+
+    &:not(:focus) > span[data-cion]::before {
+      color: var(--color-gs45);
+    }
+  }
+
+  .permission-more-info.permission-more-info.permission-more-info {
+    margin-bottom: 0;
+  }
+
+  .permission-device-selector:empty,
+  .permission-devices:empty {
+    display: none;
+  }
+}
+
+#screen.full-screen .permission-root {
+  height: calc(100% - var(--softkeybar-height)) !important;
+}
+

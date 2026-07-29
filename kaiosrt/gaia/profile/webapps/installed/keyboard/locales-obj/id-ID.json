@@ -1,0 +1,1 @@
+[{"$i":"ok","$v":"OK"},{"$i":"cancel","$v":"Batal"},{"$i":"done","$v":"Selesai"},{"$i":"next","$v":[{"t":"idOrVar","v":"n"},"/",{"t":"idOrVar","v":"m"}]},{"$i":"select","$v":"Pilih"},{"$i":"enter","$v":"Masuk"},{"$i":"symbols","$v":"Simbol"},{"$i":"emojiReady","$v":"Emoji tersedia di sini sekarang!"}]

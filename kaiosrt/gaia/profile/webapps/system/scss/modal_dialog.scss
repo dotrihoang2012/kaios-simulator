@@ -1,0 +1,7 @@
+.modal-dialog-root {
+  pointer-events: none;
+  .dialog-container {
+    height: calc(100% - var(--softkeybar-height));
+    z-index: 10000;
+  }
+}

@@ -1,0 +1,21 @@
+<element name="application_storage" extends="section">
+  <template>
+
+   <gaia-header data-href="#root">
+      <h1 slot="text" data-l10n-id="appStorage-header"></h1>
+    </gaia-header>
+    <div id="application-progress">
+      <ul role="menu">
+        <li role="menuitem" class="non-focus"  data-l10n-id="scanning">
+        </li>
+        <li role="menuitem" class="non-focus" data-state="on">
+          <progress id="updating-progress" class="pack-activity" value="0" max="100"></progress>
+        </li>
+      </ul>
+    </div>
+    <div id="application-list">
+    </div>
+    <panel data-path="panels/app_storage/panel"></panel>
+
+  </template>
+</element>

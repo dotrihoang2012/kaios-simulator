@@ -1,0 +1,39 @@
+.dialog-container {
+  .dialog {
+    > .voice-assistant-header {
+      height: 2.6rem;
+      color: var(--color-gs90);
+      background-color: transparent;
+      background-repeat: no-repeat;
+      background-size: 10.6rem 1.6rem;
+      background-position: 1.2rem center;
+    }
+    > .voice-assistant-header.hidden {
+      display: none;
+    }
+    > .text {
+      text-align: center;
+      font-weight: 600;
+    }
+    @media (prefers-text-size: large) {
+      & {
+        .text {
+          font-size: 2.1rem;
+        }
+      }
+    }
+    .microphone {
+      color: #8000ff;
+    }
+    .microphone.provider {
+      color: #6a6a6a;
+    }
+    > .voice-input-image {
+      height: 6.6rem;
+      background-color: var(--color-gs00);
+      background-repeat: no-repeat;
+      background-size: 21.4rem 4rem;
+      background-position: center center;
+    }
+  }
+}

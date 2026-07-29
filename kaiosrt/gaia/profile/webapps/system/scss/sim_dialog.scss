@@ -1,0 +1,11 @@
+.sim-dialog {
+  background-color: white;
+  color: var(--color-gs90);
+  .focus span {
+    color: var(--color-gs00) !important;
+  }
+  input.hide-cursor {
+    color: transparent;
+    text-shadow: 0 0 0 var(--color-gs90);
+  }
+}

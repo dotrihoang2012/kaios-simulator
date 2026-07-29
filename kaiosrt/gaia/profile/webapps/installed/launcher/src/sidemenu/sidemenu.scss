@@ -1,0 +1,228 @@
+@import "../../style/scss/helper/mixins";
+
+$icon-size0: 5.6rem;
+$icon-size1: 5rem;
+
+@mixin item-count($icon-count) {
+  @if $icon-count != 6 {
+    --si-gap: 0.6rem;
+  } @else {
+    --si-gap: 0.4rem;
+  }
+
+  $icon-size2: 4.4rem;
+  $icon-size3: 3.6rem;
+  $icon-size4: $icon-size3;
+
+  --si-size: $icon-size0;
+  --si-size_: 4rem; // inactive
+  --si-offset-x: 0.6rem;
+  --si-opacity: 1;
+  --si-dir: 1;
+  --si-scale: (4rem / $icon-size0); // 4rem: inactive size
+  --si-offset-y: calc((var(--si-size) * var(--si-scale) + var(--si-gap)) * var(--si-gap-count));
+
+  .panel-sidemenu--opened & {
+    $posX0: 1rem;
+    $posX1: 2rem;
+    $posX2: 4rem;
+    $posX3: 7rem;
+    $posX4: 11rem;
+
+    $posY0: 0rem;
+    $posY1: 0.6rem + ($icon-size0 + $icon-size1) / 2;
+    $posY2: $posY1 + 0.2rem + ($icon-size1 + $icon-size2) / 2;
+    $posY3: $posY2 + 0.2rem + ($icon-size2 + $icon-size3) / 2;
+    $posY4: $posY3 + 0.2rem + ($icon-size3 + $icon-size3) / 2;
+
+    &[data-index="0"] {
+      --si-scale: 1;
+      --si-offset-x: $posX0;
+      --si-offset-y: $posY0;
+    }
+
+    &[data-index^="-"] {
+      --si-dir: -1;
+    }
+
+    &[data-index*="1"] {
+      --si-scale: ($icon-size1 / $icon-size0);
+      --si-offset-x: $posX1;
+      --si-offset-y: $posY1;
+    }
+
+    &[data-index*="2"] {
+      --si-scale: ($icon-size2 / $icon-size0);
+      --si-offset-x: $posX2;
+      --si-offset-y: $posY2;
+    }
+
+    &[data-index*="3"] {
+      --si-scale: ($icon-size3 / $icon-size0);
+      --si-offset-x: $posX3;
+      --si-offset-y: $posY3;
+    }
+
+    &[data-index*="5"],
+    &[data-index*="4"] {
+      --si-scale: ($icon-size3 / $icon-size0);
+      --si-offset-x: $posX4;
+      --si-offset-y: $posY4;
+    }
+  }
+
+  @for $i from 1 through $icon-count {
+    // position for inactive status
+    &:nth-of-type(#{$i}) {
+      --si-gap-count: #{$i - ($icon-count + 1) / 2};
+    }
+  }
+}
+
+.app-workspace {
+
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    background-image: linear-gradient(to right, rgba(#000, 0.4), transparent 80%);
+    opacity: 0;
+    display: none;
+  }
+
+  &.panel-sidemenu--opened::before {
+    display: block;
+    animation: fadeIn 0.3s cubic-bezier(0.3, 0, 0.3, 1) forwards;
+  }
+}
+
+.Sidemenu {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  color: var(--color-gs00);
+  direction: ltr;
+
+  .panel-appList--opened &,
+  .panel-cards--opened & {
+    display: none;
+  }
+}
+
+.sidemenuItem {
+  &[data-total="1"] {
+    @include item-count(1);
+  }
+
+  &[data-total="2"] {
+    @include item-count(2);
+  }
+
+  &[data-total="3"] {
+    @include item-count(3);
+  }
+
+  &[data-total="4"] {
+    @include item-count(4);
+  }
+
+  &[data-total="5"] {
+    @include item-count(5);
+  }
+
+  &[data-total="6"] {
+    @include item-count(6);
+  }
+
+  @media only screen and (orientation: landscape) {
+    --si-size_: 3.2rem;
+    --si-gap: 0.4rem;
+    --si-offset-x: 1rem;
+    --si-scale: (3.2rem / $icon-size0); // 3.2rem: inactive size
+
+    .panel-sidemenu--opened & {
+      $posX0: 2rem;
+      $posX1: 3.3rem;
+      $posX2: 6.4rem;
+      $posX3: 10rem;
+
+      &[data-index="0"] {
+        --si-offset-x: $posX0;
+      }
+
+      &[data-index*="1"] {
+        --si-offset-x: $posX1;
+      }
+
+      &[data-index*="2"] {
+        --si-offset-x: $posX2;
+      }
+
+      &[data-index*="4"],
+      &[data-index*="3"] {
+        --si-offset-x: $posX3;
+      }
+    }
+  }
+}
+
+.sidemenuItem__icon {
+  position: absolute;
+  top: calc(50% - var(--si-size) / 2);
+  left: 0;
+  width: var(--si-size);
+  height: var(--si-size);
+  background-size: contain;
+  transition: 0.3s cubic-bezier(0.3, 0, 0.3, 1);
+  transition-property: transform, opacity;
+  opacity: var(--si-opacity);
+  transform-origin: 0% 50%;
+  transform:
+    translateX(var(--si-offset-x))
+    translateY(calc(var(--si-offset-y) * var(--si-dir)))
+    scale(var(--si-scale));
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.5));
+}
+
+.sidemenuItem__name {
+  position: fixed;
+  top: 0;
+  left: 1rem + $icon-size0 + 0.8rem;
+  right: 0;
+  bottom: 0;
+  display: none;
+  margin-top: auto;
+  margin-bottom: auto;
+  opacity: 0;
+  align-items: center;
+  overflow: hidden;
+  line-height: 2.4rem;
+  font-size: 2.2rem;
+  font-weight: 700;
+  text-shadow: 0 0.2rem 0.4rem rgba(#000, 0.5);
+
+  .panel-sidemenu--opened & {
+    display: flex;
+  }
+
+  .panel-sidemenu--opened .sidemenuItem:focus & {
+    opacity: 1;
+  }
+
+  @media only screen and (orientation: landscape) {
+    left: 2rem + $icon-size0 + 0.8rem;
+  }
+}
+
+.sidemenuItem.has-notices {
+  .sidemenuItem__icon {
+    .app__notices {
+      @include appNotices;
+    }
+  }
+}

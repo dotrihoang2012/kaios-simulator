@@ -1,0 +1,21 @@
+<element name="fxa-edit-account-pn" extends="section">
+  <template>
+    <section class="vertical">
+      <ul class="tcl-nav-box">
+        <li role="menuitem" class="focusable">
+          <label for="fxa-cc-select" data-l10n-id="fxa-cc-label">Region</label>
+          <p id="fxa-cc-selected" class="fxa-cc-selected"></p>
+          <select id="fxa-cc-select" class="hidden fxa-cc-select region-code" value="+1" keyMatch="code" combineValue=true>
+          </select>
+        </li>
+        <p class="fxa-elements-seperator">
+        </p>
+        <li>
+          <label for="fxa-account-phone-number-input" data-l10n-id="fxa-phone-number-label">Phone Number</label>
+          <input id="fxa-account-phone-number-input" data-l10n-id="fxa-account-number-label" type="tel" x-inputmode="plain" maxlength="20">
+        </li>
+      </ul>
+    </section>
+    <script src="js/screens/fxam_edit_phone_number.js"></script>
+  </template>
+</element>

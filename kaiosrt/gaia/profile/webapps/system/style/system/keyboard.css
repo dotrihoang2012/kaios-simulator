@@ -1,0 +1,16 @@
+#keyboard-app {
+  pointer-events: none;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+#keyboard-app web-view {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}

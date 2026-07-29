@@ -1,0 +1,114 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<VoiceInputDialog /> component test <VoiceInputDialog /> dom render test 1`] = `
+<div
+  className="dialog-container"
+  onBlur={[Function]}
+  onKeyDown={[Function]}
+  tabIndex="-1"
+>
+  <div
+    className="dialog"
+    role="heading"
+  >
+    <div
+      className="voice-assistant-header h1 hidden"
+      id="dialog-header-0"
+      style={
+        Object {
+          "backgroundImage": "url(./resources/voice_input/ic_provider_assistant.png)",
+        }
+      }
+    />
+    <div
+      className="content p-ul text"
+      tabIndex="-1"
+    >
+      <div
+        role="heading"
+      >
+        <i
+          className="microphone"
+          data-icon="mic"
+        />
+      </div>
+    </div>
+    <div
+      className="voice-input-image"
+      style={
+        Object {
+          "backgroundImage": "url(./resources/voice_input/img_voice_input.png)",
+        }
+      }
+    />
+  </div>
+</div>
+`;
+
+exports[`<VoiceInputDialog /> component test ref callback function test 1`] = `
+<VoiceInputDialog
+  additionalContent={null}
+  buttons={Array []}
+  cancel=""
+  checkboxCheckedByDefault={false}
+  checkboxMessage=""
+  content="test"
+  header=""
+  hideCancel={false}
+  hideOkWhenNoInputValue={false}
+  initialValue=""
+  inputMode=""
+  inputType="text"
+  maxLength={100}
+  noClose={false}
+  noFocus={false}
+  ok=""
+  onBack={null}
+  onBlur={null}
+  onCancel={null}
+  onHide={null}
+  onOk={null}
+  placeholder=""
+  progressMax=""
+  progressValue=""
+  showCheckbox={false}
+  translated={false}
+  type="confirm"
+>
+  <div
+    className="dialog-container"
+    onBlur={[Function]}
+    onKeyDown={[Function]}
+    tabIndex="-1"
+  >
+    <div
+      className="dialog"
+      role="heading"
+    >
+      <div
+        className="voice-assistant-header h1 hidden"
+        id="dialog-header-2"
+        style={
+          Object {
+            "backgroundImage": "url(./resources/voice_input/ic_provider_assistant.png)",
+          }
+        }
+      />
+      <div
+        className="content p-ul text"
+        tabIndex="-1"
+      >
+        test
+      </div>
+      <div
+        className="voice-input-image"
+        style={
+          Object {
+            "backgroundImage": "url(./resources/voice_input/img_voice_input.png)",
+          }
+        }
+      />
+    </div>
+  </div>
+</VoiceInputDialog>
+`;

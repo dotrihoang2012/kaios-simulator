@@ -1,0 +1,423 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[` 1`] = `
+<SimDialog
+  nckSkipButton={true}
+  onClose={[Function]}
+  showAttentionInNck={false}
+  slot={
+    Object {
+      "getCardState": [MockFunction] {
+        "calls": Array [
+          Array [],
+        ],
+        "results": Array [
+          Object {
+            "isThrow": false,
+            "value": "pinRequired",
+          },
+        ],
+      },
+      "unlockCardLock": [MockFunction],
+    }
+  }
+>
+  <div>
+    <Dialog
+      additionalContent={null}
+      buttons={Array []}
+      cancel="emergency-call"
+      checkboxCheckedByDefault={false}
+      checkboxMessage=""
+      content=""
+      header="xckTitle"
+      hideCancel={false}
+      hideOkWhenNoInputValue={false}
+      initialValue=""
+      inputMode=""
+      inputType="text"
+      maxLength={100}
+      noClose={true}
+      noFocus={true}
+      ok=" "
+      onBack={null}
+      onBlur={null}
+      onCancel={null}
+      onFocus={[Function]}
+      onHide={null}
+      onOk={null}
+      placeholder=""
+      progressMax=""
+      progressValue=""
+      showCheckbox={false}
+      translated={true}
+      type="confirm"
+    >
+      <div
+        className="dialog-container"
+        onBlur={[Function]}
+        onKeyDown={[Function]}
+        tabIndex="-1"
+      >
+        <div
+          aria-labelledby="dialog-header-1"
+          className="dialog"
+          role="heading"
+        >
+          <div
+            className="header h1"
+            id="dialog-header-1"
+            key="no-translated-header"
+          >
+            xckTitle
+          </div>
+          <div
+            className="container sim-dialog"
+            onFocus={[Function]}
+            onInput={[Function]}
+            onKeyDown={[Function]}
+            onKeyUp={[Function]}
+            tabIndex="-1"
+          >
+            <div
+              className="input-wrapper "
+              id="pinArea"
+              key="pin"
+              role="listitem"
+            >
+              <div
+                className="secondary label"
+              >
+                simPin
+              </div>
+              <input
+                className="primary focusable"
+                maxLength="8"
+                name="simpin"
+                onFocus={[Function]}
+                size="8"
+                type="password"
+                x-inputmode="digit"
+              />
+              <span />
+            </div>
+            <div
+              className="input-wrapper hidden"
+              id="pukArea"
+              key="puk"
+              role="listitem"
+            >
+              <div
+                className="secondary label"
+              >
+                pukCode
+              </div>
+              <input
+                className="primary focusable"
+                maxLength="8"
+                name="simpuk"
+                onFocus={[Function]}
+                size="8"
+                type="password"
+                x-inputmode="digit"
+              />
+              <span />
+            </div>
+            <div
+              className="input-wrapper hidden"
+              id="xckArea"
+              key="xck"
+              role="listitem"
+            >
+              <div
+                className="secondary label"
+                name="xckDesc"
+              >
+                xckCode
+              </div>
+              <input
+                className="primary focusable"
+                maxLength="16"
+                name="xckpin"
+                onFocus={[Function]}
+                size="16"
+                type="password"
+                x-inputmode="digit"
+              />
+              <span />
+            </div>
+            <div
+              className="input-wrapper hidden"
+              id="newPinArea"
+              key="newPin"
+              role="listitem"
+            >
+              <div
+                className="secondary label"
+              >
+                newSimPinMsg
+              </div>
+              <input
+                className="primary focusable"
+                maxLength="8"
+                name="newSimpin"
+                onFocus={[Function]}
+                size="8"
+                type="password"
+                x-inputmode="digit"
+              />
+            </div>
+            <div
+              className="input-wrapper hidden"
+              id="confirmPinArea"
+              key="confirmPin"
+              role="listitem"
+            >
+              <div
+                className="secondary label"
+              >
+                confirmNewSimPinMsg
+              </div>
+              <input
+                className="primary focusable"
+                maxLength="8"
+                name="confirmNewSimpin"
+                onFocus={[Function]}
+                size="8"
+                type="password"
+                x-inputmode="digit"
+              />
+              <span
+                className="error secondary hidden"
+              >
+                 
+                <span>
+                  newPinErrorMsg
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Dialog>
+  </div>
+</SimDialog>
+`;
+
+exports[`<SimDialog /> component test <SimDialog /> puk lock UI test 1`] = `
+<SimDialog
+  nckSkipButton={true}
+  onClose={[Function]}
+  showAttentionInNck={false}
+  slot={
+    Object {
+      "getCardState": [MockFunction] {
+        "calls": Array [
+          Array [],
+        ],
+        "results": Array [
+          Object {
+            "isThrow": false,
+            "value": "pukRequired",
+          },
+        ],
+      },
+      "unlockCardLock": [MockFunction],
+    }
+  }
+>
+  <div>
+    <Dialog
+      additionalContent={null}
+      buttons={Array []}
+      cancel="emergency-call"
+      checkboxCheckedByDefault={false}
+      checkboxMessage=""
+      content=""
+      header="sim-attention-header"
+      hideCancel={false}
+      hideOkWhenNoInputValue={false}
+      initialValue=""
+      inputMode=""
+      inputType="text"
+      maxLength={100}
+      noClose={true}
+      noFocus={true}
+      ok=" "
+      onBack={null}
+      onBlur={null}
+      onCancel={null}
+      onFocus={[Function]}
+      onHide={null}
+      onOk={null}
+      placeholder=""
+      progressMax=""
+      progressValue=""
+      showCheckbox={false}
+      translated={true}
+      type="confirm"
+    >
+      <div
+        className="dialog-container"
+        onBlur={[Function]}
+        onKeyDown={[Function]}
+        tabIndex="-1"
+      >
+        <div
+          aria-labelledby="dialog-header-1"
+          className="dialog"
+          role="heading"
+        >
+          <div
+            className="header h1"
+            id="dialog-header-1"
+            key="no-translated-header"
+          >
+            sim-attention-header
+          </div>
+          <div
+            className="container sim-dialog"
+            onFocus={[Function]}
+            onInput={[Function]}
+            onKeyDown={[Function]}
+            onKeyUp={[Function]}
+            tabIndex="-1"
+          >
+            <div
+              className="primary content-container focusable"
+              role="menuitem"
+              tabIndex="-1"
+            >
+              <div
+                className=""
+              >
+                sim-attention-head
+              </div>
+              <div>
+                sim-attention-body
+              </div>
+            </div>
+            <div
+              className="input-wrapper hidden"
+              id="pinArea"
+              key="pin"
+              role="listitem"
+            >
+              <div
+                className="secondary label"
+              >
+                simPin
+              </div>
+              <input
+                className="primary focusable"
+                maxLength="8"
+                name="simpin"
+                onFocus={[Function]}
+                size="8"
+                type="password"
+                x-inputmode="digit"
+              />
+              <span />
+            </div>
+            <div
+              className="input-wrapper hidden"
+              id="pukArea"
+              key="puk"
+              role="listitem"
+            >
+              <div
+                className="secondary label"
+              >
+                pukCode
+              </div>
+              <input
+                className="primary focusable"
+                maxLength="8"
+                name="simpuk"
+                onFocus={[Function]}
+                size="8"
+                type="password"
+                x-inputmode="digit"
+              />
+              <span />
+            </div>
+            <div
+              className="input-wrapper hidden"
+              id="xckArea"
+              key="xck"
+              role="listitem"
+            >
+              <div
+                className="secondary label"
+                name="xckDesc"
+              >
+                xckCode
+              </div>
+              <input
+                className="primary focusable"
+                maxLength="16"
+                name="xckpin"
+                onFocus={[Function]}
+                size="16"
+                type="password"
+                x-inputmode="digit"
+              />
+              <span />
+            </div>
+            <div
+              className="input-wrapper hidden"
+              id="newPinArea"
+              key="newPin"
+              role="listitem"
+            >
+              <div
+                className="secondary label"
+              >
+                newSimPinMsg
+              </div>
+              <input
+                className="primary focusable"
+                maxLength="8"
+                name="newSimpin"
+                onFocus={[Function]}
+                size="8"
+                type="password"
+                x-inputmode="digit"
+              />
+            </div>
+            <div
+              className="input-wrapper hidden"
+              id="confirmPinArea"
+              key="confirmPin"
+              role="listitem"
+            >
+              <div
+                className="secondary label"
+              >
+                confirmNewSimPinMsg
+              </div>
+              <input
+                className="primary focusable"
+                maxLength="8"
+                name="confirmNewSimpin"
+                onFocus={[Function]}
+                size="8"
+                type="password"
+                x-inputmode="digit"
+              />
+              <span
+                className="error secondary hidden"
+              >
+                 
+                <span>
+                  newPinErrorMsg
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Dialog>
+  </div>
+</SimDialog>
+`;

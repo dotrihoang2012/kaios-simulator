@@ -1,0 +1,139 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`helper js <softkey_panel_helper> test SoftkeyHelper.init SoftkeyHelper.init should create soft key panel 1`] = `
+Object {
+  Symbol(jest-snapshot-serializer-raw): <form
+    class="skbar none-paddings visible focused"
+    data-type="action"
+    data-z-index-level="softkeyPanel"
+    id="softkeyPanel"
+  >
+    <div>
+      <button
+        class="sk-button"
+        disabled="disabled"
+        id="software-keys-left"
+      />
+    </div>
+    <div>
+      <button
+        class="sk-button"
+        disabled="disabled"
+        id="software-keys-center"
+      />
+    </div>
+    <div>
+      <button
+        class="sk-button"
+        data-l10n-id="ringer-dismiss"
+        id="software-keys-right"
+      >
+        ringer-dismiss
+      </button>
+    </div>
+  </form>,
+}
+`;
+
+exports[`helper js <softkey_panel_helper> test SoftkeyHelper.init SoftkeyHelper.init should create soft key panel 2`] = `
+Object {
+  Symbol(jest-snapshot-serializer-raw): <button
+    class="sk-button"
+    disabled="disabled"
+    id="software-keys-left"
+  />,
+}
+`;
+
+exports[`helper js <softkey_panel_helper> test SoftkeyHelper.init SoftkeyHelper.init should create soft key panel 3`] = `
+Object {
+  Symbol(jest-snapshot-serializer-raw): <button
+    class="sk-button"
+    disabled="disabled"
+    id="software-keys-center"
+  />,
+}
+`;
+
+exports[`helper js <softkey_panel_helper> test SoftkeyHelper.init SoftkeyHelper.init should create soft key panel 4`] = `
+Object {
+  Symbol(jest-snapshot-serializer-raw): <button
+    class="sk-button"
+    data-l10n-id="ringer-dismiss"
+    id="software-keys-right"
+  >
+    ringer-dismiss
+  </button>,
+}
+`;
+
+exports[`helper js <softkey_panel_helper> test SoftkeyHelper.init SoftkeyHelper.updateSoftkey should update Softkey panel 1`] = `
+Object {
+  Symbol(jest-snapshot-serializer-raw): <form
+    class="skbar none-paddings visible focused"
+    data-type="action"
+    data-z-index-level="softkeyPanel"
+    id="softkeyPanel"
+  >
+    <div>
+      <button
+        class="sk-button"
+        disabled="disabled"
+        id="software-keys-left"
+      />
+    </div>
+    <div>
+      <button
+        class="sk-button"
+        data-l10n-id="new-ringer-dismiss1"
+        id="software-keys-center"
+      >
+        new-ringer-dismiss1
+      </button>
+    </div>
+    <div>
+      <button
+        class="sk-button"
+        data-l10n-id="new-ringer-dismiss3"
+        id="software-keys-right"
+      >
+        new-ringer-dismiss3
+      </button>
+    </div>
+  </form>,
+}
+`;
+
+exports[`helper js <softkey_panel_helper> test SoftkeyHelper.init SoftkeyHelper.updateSoftkey should update Softkey panel 2`] = `
+Object {
+  Symbol(jest-snapshot-serializer-raw): <button
+    class="sk-button"
+    disabled="disabled"
+    id="software-keys-left"
+  />,
+}
+`;
+
+exports[`helper js <softkey_panel_helper> test SoftkeyHelper.init SoftkeyHelper.updateSoftkey should update Softkey panel 3`] = `
+Object {
+  Symbol(jest-snapshot-serializer-raw): <button
+    class="sk-button"
+    data-l10n-id="new-ringer-dismiss1"
+    id="software-keys-center"
+  >
+    new-ringer-dismiss1
+  </button>,
+}
+`;
+
+exports[`helper js <softkey_panel_helper> test SoftkeyHelper.init SoftkeyHelper.updateSoftkey should update Softkey panel 4`] = `
+Object {
+  Symbol(jest-snapshot-serializer-raw): <button
+    class="sk-button"
+    data-l10n-id="new-ringer-dismiss3"
+    id="software-keys-right"
+  >
+    new-ringer-dismiss3
+  </button>,
+}
+`;

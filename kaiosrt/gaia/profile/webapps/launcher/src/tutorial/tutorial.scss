@@ -1,0 +1,387 @@
+$fadingDuration: 0.4s;
+$delay: 0.5s;
+$fingerOffset: 2rem;
+
+.Tutorial {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  &:not([data-step='0']) {
+    background: #202124;
+  }
+
+  // The sidemenu is only visible at step 1.
+  &[data-step='2'],
+  &[data-step='3'],
+  &[data-step='4'],
+  &[data-step='5'],
+  &[data-step='6'] {
+    & ~ .Sidemenu {
+      display: none;
+    }
+  }
+
+  &[data-has-viewed='true'] {
+    display: none;
+  }
+}
+
+.Tutorial__step {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity $fadingDuration;
+  transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+
+  // Each step only visible when it is visited.
+  .Tutorial[data-step='1'] &.Tutorial__step--1,
+  .Tutorial[data-step='2'] &.Tutorial__step--2,
+  .Tutorial[data-step='3'] &.Tutorial__step--3,
+  .Tutorial[data-step='4'] &.Tutorial__step--4,
+  .Tutorial[data-step='5'] &.Tutorial__step--5,
+  .Tutorial[data-step='6'] &.Tutorial__step--6 {
+    opacity: 1;
+    transition-delay: $delay;
+
+    .Tutorial__text {
+      opacity: 1;
+      transform: translate(0);
+    }
+  }
+}
+
+.Tutorial__capital {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.Tutorial__text {
+  position: absolute;
+  display: flex;
+  font-size: 1.6rem;
+  color: var(--color-gs00);
+  opacity: 0;
+  transition: opacity $fadingDuration $delay;
+}
+
+.Tutorial__fingertip {
+  position: absolute;
+  width: 15.2rem;
+  height: 18.6rem;
+  opacity: 0;
+  background-image: url('./image/img_finger_tap.png');
+  background-repeat: no-repeat;
+  transition: opacity $fadingDuration $delay, transform $fadingDuration $delay;
+}
+
+.Tutorial__step--1 {
+  background-image: url('./image/tutorial_step1.png');
+  background-position: left 6.9rem top 12.2rem;
+
+  .Tutorial__text {
+    left: 5.5rem;
+    right: 1rem;
+    top: 2.6rem;
+    min-height: 9.6rem;
+    align-items: center;
+    justify-content: left;
+    text-align: left;
+  }
+
+  .Tutorial__fingertip {
+    left: 7rem;
+    top: 16.4rem;
+    transform: translate($fingerOffset, 0) rotate(-15deg);
+    .Tutorial[data-step='1'] & {
+      opacity: 1;
+      transform: translate(0) rotate(-15deg);
+    }
+  }
+}
+
+.Tutorial__step--2 {
+  background-image: url('./image/tutorial_step2.png');
+  background-position: left 50% top 4rem;
+
+  .Tutorial__text {
+    left: 2rem;
+    right: 2rem;
+    top: 6.8rem;
+    min-height: 8.4rem;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .Tutorial__fingertip {
+    left: 7.3rem;
+    top: 15.6rem;
+    transform: translate(0, $fingerOffset);
+    .Tutorial[data-step='2'] & {
+      opacity: 1;
+      transform: translate(0);
+    }
+  }
+}
+
+.Tutorial__step--3 {
+  background-image: url('./image/tutorial_step3.png');
+  background-position: left 2.5rem top 4rem;
+
+  .Tutorial__text {
+    left: 2rem;
+    right: 2rem;
+    top: 6.6rem;
+    width: 20rem;
+    height: 8.4rem;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .Tutorial__fingertip {
+    left: 9.7rem;
+    top: 19.4rem;
+    transform: translate($fingerOffset, 0);
+    .Tutorial[data-step='3'] & {
+      opacity: 1;
+      transform: translate(0);
+    }
+  }
+}
+
+.Tutorial__step--4 {
+  background-image: url('./image/tutorial_step4.png');
+  background-position: left 50% top 2.6rem;
+
+  .Tutorial__text {
+    left: 2rem;
+    right: 2rem;
+    top: 5.2rem;
+    width: 20rem;
+    height: 5rem;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .Tutorial__fingertip {
+    left: 9.5rem;
+    top: 20.7rem;
+    transform: translate(0, $fingerOffset);
+    .Tutorial[data-step='4'] & {
+      opacity: 1;
+      transform: translate(0);
+    }
+  }
+}
+
+.Tutorial__step--5 {
+  background-image: url('./image/tutorial_step5.png');
+  background-position: left 50% top 2.6rem;
+
+  .Tutorial__text {
+    left: 2rem;
+    right: 2rem;
+    top: 5.2rem;
+    width: 20rem;
+    height: 5rem;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .Tutorial__fingertip {
+    left: 9.5rem;
+    top: 20.7rem;
+    transform: translate(0, $fingerOffset);
+    .Tutorial[data-step='5'] & {
+      opacity: 1;
+      transform: translate(0);
+    }
+  }
+}
+
+.Tutorial__step--6 {
+  background-image: url('./image/tutorial_step6.svg');
+  background-position: left 2.8rem top 12.1rem;
+
+  .Tutorial__text {
+    left: 2rem;
+    right: 2rem;
+    top: 2.8rem;
+    width: 20rem;
+    height: 9rem;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+@media only screen and (orientation: landscape) {
+  .Tutorial__fingertip {
+    // Shrink down to x0.9 in landscape mode.
+    background-size: contain;
+    width: 15.2rem * 0.9;
+    height: 18.6rem * 0.9;
+  }
+
+  .Tutorial__step--1 {
+    background-image: url('./image/tutorial_step1_LND.png');
+    background-position: left 11.6rem top 8.6rem;
+
+    .Tutorial__text {
+      left: 5.5rem;
+      right: unset;
+      top: 2.6rem;
+      bottom: unset;
+      width: 25rem;
+      height: 7rem;
+      text-align: left;
+      align-items: center;
+    }
+
+    .Tutorial__fingertip {
+      left: 11.6rem;
+      right: unset;
+      top: 12.2rem;
+      bottom: unset;
+      transform: translate($fingerOffset, 0) rotate(-15deg);
+      .Tutorial[data-step='1'] & {
+        transform: translate(0) rotate(-15deg);
+      }
+    }
+  }
+
+  .Tutorial__step--2 {
+    background-image: url('./image/tutorial_step2_LND.png');
+    background-position: left 1.4rem top 5.6rem;
+
+    .Tutorial__text {
+      left: 13.9rem;
+      right: unset;
+      top: 10.2rem;
+      bottom: unset;
+      width: 16.6rem;
+      height: 10rem;
+      text-align: left;
+      align-items: flex-start;
+    }
+
+    .Tutorial__fingertip {
+      left: 2rem;
+      right: unset;
+      top: 7rem;
+      bottom: unset;
+      transform: translate(0, $fingerOffset) rotate(5deg);
+      .Tutorial[data-step='2'] & {
+        transform: translate(0) rotate(5deg);
+      }
+    }
+  }
+
+  .Tutorial__step--3 {
+    background-image: url('./image/tutorial_step3_LND.png');
+    background-position: left 1.4rem top 6.6rem;
+
+    .Tutorial__text {
+      left: 13.9rem;
+      right: unset;
+      top: 10.2rem;
+      bottom: unset;
+      width: 16.6rem;
+      height: 10rem;
+      text-align: center;
+      align-items: flex-start;
+    }
+
+    .Tutorial__fingertip {
+      left: 7rem;
+      right: unset;
+      top: 10.8rem;
+      bottom: unset;
+      transform: translate($fingerOffset, 0) rotate(5deg);
+      .Tutorial[data-step='3'] & {
+        transform: translate(0) rotate(5deg);
+      }
+    }
+  }
+
+  .Tutorial__step--4 {
+    background-image: url('./image/tutorial_step4_LND.png');
+    background-position: left 1.4rem top 3.7rem;
+
+    .Tutorial__text {
+      left: 13.6rem;
+      right: unset;
+      top: 5.6rem;
+      bottom: unset;
+      width: 17.2rem;
+      height: 7.8rem;
+      text-align: center;
+      align-items: center;
+    }
+
+    .Tutorial__fingertip {
+      left: 4.6rem;
+      right: unset;
+      top: 11.6rem;
+      bottom: unset;
+      transform: translate(0, $fingerOffset);
+      .Tutorial[data-step='4'] & {
+        transform: translate(0);
+      }
+    }
+  }
+
+  .Tutorial__step--5 {
+    background-image: url('./image/tutorial_step5_LND.png');
+    background-position: left 1.4rem top 3.7rem;
+
+    .Tutorial__text {
+      left: 13.6rem;
+      right: unset;
+      top: 5.6rem;
+      bottom: unset;
+      width: 17.2rem;
+      height: 7.8rem;
+      text-align: center;
+      align-items: center;
+    }
+
+    .Tutorial__fingertip {
+      left: 4.6rem;
+      right: unset;
+      top: 11.6rem;
+      bottom: unset;
+      transform: translate(0, $fingerOffset);
+      .Tutorial[data-step='5'] & {
+        transform: translate(0);
+      }
+    }
+  }
+
+  .Tutorial__step--6 {
+    background-image: url('./image/tutorial_step6_LND.svg');
+    background-position: left 1.3rem top 4.5rem;
+
+    .Tutorial__text {
+      left: 16.2rem;
+      right: 1.2rem;
+      top: 3.6rem;
+      width: 14.6rem;
+      height: 17rem;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+  }
+}
