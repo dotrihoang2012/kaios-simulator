@@ -2254,16 +2254,19 @@ function stKey(code) {
         win.eval('(' + function _bridge(k) {
           var t = document.querySelector('.focus') || document.activeElement || document.body;
           if (k === 'Enter') {
-            // Direct panel navigation: read <a> href inside the focused <li>,
-            // call Settings.setCurrentPanel. Gaia click delegation needs
-            // target.nodeName === 'a' but clicking <li> fires as <li> first.
+            // Read <a> href inside focused <li> and call Settings.setCurrentPanel.
+            // Settings is a top-level `const` (not window.Settings) so we use the
+            // global scope. Gaia click delegation only fires on <a> but clicking
+            // <li> sends target=li first → handleLinkClick rejects it.
             var a = t.querySelector('a[href], a.menu-item');
             if (!a && t.tagName === 'A') a = t;
             if (a) {
               var href = a.getAttribute('href');
-              if (href && href !== '#' && window.Settings && window.Settings.setCurrentPanel) {
-                window.Settings.setCurrentPanel(href);
-                return;
+              if (href && href !== '#') {
+                try {
+                  eval('Settings.setCurrentPanel("' + href + '")');
+                  return;
+                } catch (e) {}
               }
               try { a.click(); } catch (e) {}
             }

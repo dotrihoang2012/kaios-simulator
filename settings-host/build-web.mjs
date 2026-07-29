@@ -249,11 +249,11 @@ const INJECT =
          'var a=t.querySelector("a[href],a.menu-item");' +
          'if(!a&&t.tagName==="A")a=t;' +
          'if(a){' +
-           'var href=a.getAttribute("href");' +
-           'if(href&&href!=="#"&&window.Settings&&window.Settings.setCurrentPanel){' +
-             'window.Settings.setCurrentPanel(href);return;' +
+           'var h=a.getAttribute("href");' +
+           'if(h&&h!=="#"){' +
+             'try{eval("Settings.setCurrentPanel(\""+h+"\")")}catch(e){}' +
+             'try{a.click()}catch(e){}' +
            '}' +
-           'try{a.click()}catch(e){}' +
          '}' +
          'try{t.click()}catch(e){}' +
        '}' +
