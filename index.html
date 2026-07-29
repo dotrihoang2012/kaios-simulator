@@ -2234,14 +2234,39 @@ function stKey(code) {
     } catch (e) {}
     return;
   }
-  // Browser build: call the injected __stInjectKey bridge (script injected on
-  // iframe 'load') which creates and dispatches KeyboardEvent inside the
-  // iframe's own realm — Chrome rejects parent-realm events on the iframe.
+  // Browser build: prefer __stInjectKey (baked into settings HTML by build-web.mjs
+  // — creates KeyboardEvent in iframe realm for Gaia navigation_handler.js).
+  // Fall back to direct DOM manipulation when Gaia's NavigationMap hasn't
+  // initialised the nav properties (--nav-up/--nav-down/data-nav-id still null)
+  // or the injected bridge hasn't been deployed yet.
   const domKey = ({ Up: 'ArrowUp', Down: 'ArrowDown', Left: 'ArrowLeft', Right: 'ArrowRight',
     Return: 'Enter', F1: 'SoftLeft', F2: 'SoftRight' })[code] || code;
   try {
     if (wv.contentWindow && wv.contentWindow.__stInjectKey) {
       wv.contentWindow.__stInjectKey(domKey);
+    } else {
+      // Direct fallback — move .focus between li[role="menuitem"] and
+      // dispatch click for Enter. Works even before Gaia NavigationMap inits.
+      var win = wv.contentWindow, doc = wv.contentDocument;
+      if (!doc) return;
+      if (domKey === 'ArrowDown' || domKey === 'ArrowUp') {
+        var all = doc.querySelectorAll('li[role="menuitem"]:not(.hidden), [role="tab"]:not(.hidden)');
+        var cur = doc.querySelector('.focus'); if (!cur && all.length) cur = all[0];
+        if (cur && all.length) {
+          var idx = -1;
+          for (var i = 0; i < all.length; i++) { if (all[i] === cur) { idx = i; break; } }
+          if (idx >= 0) {
+            var next = domKey === 'ArrowDown' ? (idx + 1) % all.length : (idx - 1 + all.length) % all.length;
+            cur.classList.remove('focus');
+            all[next].classList.add('focus');
+            all[next].focus();
+            all[next].scrollIntoView({ block: 'nearest' });
+          }
+        }
+      } else if (domKey === 'Enter') {
+        var focus = doc.querySelector('.focus');
+        if (focus) { try { focus.click(); } catch (e) {} }
+      }
     }
   } catch (e) {}
 }
