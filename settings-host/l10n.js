@@ -90,6 +90,7 @@
     qps: {}, DateTimeFormat: function () { return { localeFormat: function (d) { return String(d); } }; },
   };
   try { navigator.mozL10n = mozL10n; } catch (e) {}
+  window.l10n = mozL10n;  // startup.js references bare l10n (not document.l10n)
   window.NavigatorLanguage = window.NavigatorLanguage || {};
 
   // Try the inlined copy first (settings-host/build-web.mjs bakes the JSON
