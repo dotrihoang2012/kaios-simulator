@@ -677,6 +677,11 @@
     #bw-share-sk span { font-size:1.4rem; color:#323232; padding:0 0.5rem; font-family:'Open Sans',Arial,sans-serif; font-weight:600; }
     #bw-share-sk span:nth-child(2) { text-align:center; font-size:1.6rem; font-weight:700; text-transform:uppercase; }
     #bw-share-sk span:last-child { text-align:right; }
+    /* ── REAL Settings app (Gaia in a webview, settings-host on :9080) ── */
+    #st-wrap { display:none; position:absolute; top:var(--statusbar-height); left:0; right:0; bottom:0; z-index:44; background:#fff; }
+    #st-wrap.visible { display:block; }
+    #st-wrap webview { width:100%; height:100%; border:none; }
+
     /* Media volume overlay */
     /* Media volume overlay — exact same structure as #vol-toast */
     #bw-vol-ov { display:none; position:absolute; inset:0; z-index:100001; flex-direction:column; align-items:center; background:rgba(0,0,0,0.85); pointer-events:none; }
@@ -940,21 +945,25 @@
     /* ── System generic dialog — bottom sheet that slides UP; scrim fades in (matches system app) ── */
     #sys-dialog { position:absolute; inset:0; z-index:10000; visibility:hidden; }
     #sys-dialog.visible { visibility:visible; }
-    #sys-dialog-scrim { position:absolute; inset:0; background:rgba(0,0,0,0.85); transform:translateY(100%); transition:transform 0.26s ease-in-out; }
+    /* Scrim + panel are ONE sliding unit (like gaia-confirm's :host), so the dim
+       background and the panel move together at the same speed. The scrim covers
+       everything above the softkey bar and holds the panel pinned to its bottom. */
+    #sys-dialog-scrim { position:absolute; top:0; left:0; right:0; bottom:var(--softkeybar-height); background:rgba(0,0,0,0.8); display:flex; flex-direction:column; justify-content:flex-end; overflow:hidden; transform:translateY(100%); transition:transform 0.3s ease-in-out; }
     #sys-dialog.visible #sys-dialog-scrim { transform:translateY(0); }
     #sys-dialog.visible.closing #sys-dialog-scrim { transform:translateY(100%); }
-    #sys-dialog-panel { position:absolute; left:0; right:0; bottom:var(--softkeybar-height); max-height:calc(100% - var(--softkeybar-height) - var(--statusbar-height) - 2rem); overflow-y:auto; scrollbar-width:none; display:flex; flex-direction:column; transform:translateY(100%); transition:transform 0.26s ease-in-out; }
+    #sys-dialog-panel { width:100%; max-height:100%; overflow-y:auto; scrollbar-width:none; display:flex; flex-direction:column; }
     #sys-dialog-panel::-webkit-scrollbar { width:0; display:none; }
-    #sys-dialog.visible #sys-dialog-panel { transform:translateY(0); }
-    #sys-dialog.visible.closing #sys-dialog-panel { transform:translateY(100%); }
-    #sys-dialog-hdr { padding:0.6rem 1rem; text-align:center; background:#cccccc; color:#242424; font-size:1.5rem; flex-shrink:0; }
-    #sys-dialog-content { padding:1rem; background:#fff; color:#242424; font-size:1.6rem; line-height:1.4; white-space:pre-line; word-break:break-word; }
-    #sys-dialog-content .sys-dialog-sub { margin:0.6rem 0 0; color:#242424; font-size:1.6rem; }
+    #sys-dialog-hdr { padding:0.5rem 1rem; text-align:center; background:#cccccc; color:#323232; font-size:1.7rem; font-weight:600; word-wrap:break-word; flex-shrink:0; }
+    #sys-dialog-content { padding:1rem; background:#e6e6e6; color:#323232; font-size:1.6rem; line-height:2.4rem; white-space:pre-line; word-break:break-word; }
+    #sys-dialog-content .sys-dialog-sub { margin:0.6rem 0 0; color:#323232; font-size:1.6rem; }
     #sys-dialog-content input { display:block; width:100%; height:3.6rem; line-height:3.4rem; padding:0 0.8rem; margin-top:0.4rem; box-sizing:border-box; border:1px solid #ccc; border-radius:2px; font-size:1.6rem; color:#242424; background:#fff; outline:none; }
     #sys-dialog-content progress { display:block; width:100%; height:0.6rem; margin-top:0.7rem; border:none; border-radius:0.5rem; background:#a0a0a0; }
     #sys-dialog-content progress::-webkit-progress-bar { background:#a0a0a0; border-radius:0.5rem; }
     #sys-dialog-content progress::-webkit-progress-value { background:#8000ff; border-radius:0.5rem; }
     #sys-dialog-sk { position:absolute; left:0; right:0; bottom:0; height:var(--softkeybar-height); background:#e6e6e6; display:grid; grid-template-columns:1fr auto 1fr; align-items:center; padding:0 0.8rem; }
+    /* Softkey bar never slides — it appears instantly on open and vanishes the
+       moment the dialog starts closing (matching the real Settings behaviour). */
+    #sys-dialog.closing #sys-dialog-sk { display:none; }
     #sys-dialog-sk span:first-child { text-align:left; font-size:1.4rem; font-weight:600; color:#323232; cursor:pointer; }
     #sys-dialog-sk span:nth-child(2) { text-align:center; font-size:1.6rem; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#323232; cursor:pointer; }
     #sys-dialog-sk span:last-child { text-align:right; font-size:1.4rem; font-weight:600; color:#323232; cursor:pointer; }
@@ -1709,10 +1718,11 @@ JAN 1</div>
 
     <!-- System generic dialog (bottom sheet, slides up) -->
     <div id="sys-dialog">
-      <div id="sys-dialog-scrim"></div>
-      <div id="sys-dialog-panel">
-        <div id="sys-dialog-hdr"></div>
-        <div id="sys-dialog-content"></div>
+      <div id="sys-dialog-scrim">
+        <div id="sys-dialog-panel">
+          <div id="sys-dialog-hdr"></div>
+          <div id="sys-dialog-content"></div>
+        </div>
       </div>
       <div id="sys-dialog-sk"><span onclick="closeDialog(false)"></span><span onclick="closeDialog(true)"></span><span onclick="closeDialog(true)"></span></div>
     </div>
@@ -1801,7 +1811,7 @@ JAN 1</div>
         <a id="rsk-anchor" class="anchor" onclick="pressRight()">
           <img src="./key/ic_RSK.png">
         </a>
-        <a id="endcall-anchor" class="anchor">
+        <a id="endcall-anchor" class="anchor" onclick="pressEnd()">
           <img src="./key/ic_endcall.png">
         </a>
       </div>
@@ -1874,6 +1884,7 @@ const ICO = {
   google:   "./kaiosrt/gaia/profile/webapps/launcher/style/images/google_search_112.png",
   video:    "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 56'><rect width='56' height='56' rx='12' fill='%234a148c'/><rect x='8' y='16' width='28' height='26' rx='3' fill='white'/><polygon points='36,22 36,36 48,29' fill='white'/></svg>"
 };
+
 
 // ── Apps ──
 const LAUNCHER_IMG = './kaiosrt/gaia/profile/webapps/installed/launcher/style/images/';
@@ -2094,6 +2105,152 @@ function showApps() {
   else buildGrid();
 }
 
+// ── REAL Settings app: the static Gaia settings bundle (web-settings/, built
+// by settings-host/build-web.mjs) — no localhost server. Electron gets a
+// <webview> (file:// + disablewebsecurity so the app's XHR loads work) with
+// trusted key forwarding via sendInputEvent; the browser build (github.io)
+// gets a same-origin <iframe> and synthetic KeyboardEvents. The frame stays
+// alive across close so the app resumes where it was, like a real device.
+const ST_URL = new URL('web-settings/settings/index.html', location.href).href;
+function isStOpen() { return view === 'app-open' && openApp?.id === 'settings'; }
+let _stFails = 0;
+// Gaia's NavigationMap navigates from `document.querySelector('.focus')` —
+// without a focused menu item the key handler can't move between rows and
+// the app appears frozen. Settings itself never auto-focuses its first menu
+// item (panel code adds .focus on activate), so we do it ourselves once the
+// iframe is ready. The Settings root menu is a `<section id="root">` with
+// `<li role="menuitem">` rows; tabs (Wi-Fi, etc.) live in their own sections
+// and panels bring their own focused element on activate.
+function stFocusFirst(wv) {
+  var tryFocus = function () {
+    try {
+      var doc = wv.contentDocument; if (!doc) return;
+      // Try the root menu first (its panel always exists at boot), then any
+      // tab/section, then any [role=menuitem] anywhere in the app.
+      var el = doc.querySelector('#root li[role="menuitem"]:not(.hidden)')
+            || doc.querySelector('#root li[role="menuitem"]')
+            || doc.querySelector('#root li')
+            || doc.querySelector('section[role="region"] li[role="menuitem"]:not(.hidden)')
+            || doc.querySelector('gaia-tabs [role="tab"]')
+            || doc.querySelector('[role="menuitem"]');
+      if (!el) return;
+      if (!el.classList.contains('focus')) el.classList.add('focus');
+      if (typeof el.focus === 'function') { try { el.focus({ preventScroll: false }); } catch (e) { try { el.focus(); } catch (x) {} } }
+    } catch (e) {}
+  };
+  // `load` can fire before Gaia has parsed the locales and injected its panel
+  // markup into the document. Try immediately, then again a few times after
+  // load so we land on the row once it's been added to the DOM.
+  tryFocus();
+  [200, 600, 1200].forEach(function (ms) { setTimeout(tryFocus, ms); });
+}
+function stBuildWebview() {
+  const wrap = document.createElement('div');
+  wrap.id = 'st-wrap';
+  let wv;
+  if (isElectron) {
+    wv = document.createElement('webview');
+    wv.setAttribute('partition', 'persist:kaios-settings');
+    wv.setAttribute('disablewebsecurity', '');
+    wv.addEventListener('did-fail-load', (ev) => {
+      if (ev.isMainFrame === false) return; // subresource
+      if (_stFails++ < 3) { setTimeout(() => { try { wv.reload(); } catch (e) { wv.src = ST_URL; } }, 500); return; }
+      stCloseSettings();
+      wrap.remove();
+      showDialog({ header: 'Settings', cancel: '',
+        content: 'Không mở được app Settings (web-settings/). Chạy "node settings-host/build-web.mjs" để build bundle rồi mở lại.' });
+    });
+    wv.addEventListener('did-finish-load', () => { _stFails = 0; stFocusFirst(wv); });
+  } else {
+    wv = document.createElement('iframe');
+    wv.style.cssText = 'width:100%;height:100%;border:none;background:#fff;';
+    wv.addEventListener('load', () => { stFocusFirst(wv); });
+  }
+  wv.id = 'st-webview';
+  wv.src = ST_URL;
+  // Append the iframe to the DOM
+  wrap.appendChild(wv);
+  document.getElementById('screen').appendChild(wrap);
+  return wrap;
+}
+function stOpenSettings() {
+  _stFails = 0;
+  const wrap = document.getElementById('st-wrap') || stBuildWebview();
+  // Make sure no other view is layered on top of the settings webview. Otherwise
+  // a half-open dialer (z=30) or the softkey bar (z higher) bleeds through the
+  // loading window of the webview (z=44) — what looks like "Settings missing
+  // its content" is actually dialer keys + status bar showing through.
+  const dv = document.getElementById('view-dialer'); if (dv) dv.classList.remove('visible');
+  const ov = document.getElementById('view-open-app'); if (ov) ov.classList.add('visible');
+  wrap.classList.add('visible');
+  // The Settings app has its own statusbar inside the webview — hide the
+  // simulator's status bar so the two don't double-up.
+  const _sb = document.getElementById('statusbar');
+  _sb.classList.add('bw-sb');
+  _sb.style.display = 'none';
+  document.querySelector('.skbar').style.display = 'none'; // page brings its own
+  // Also stretch the wrap to cover the area normally reserved for the sim statusbar.
+  wrap.style.top = '0';
+}
+function stCloseSettings() {
+  const wrap = document.getElementById('st-wrap');
+  if (wrap) { wrap.classList.remove('visible'); wrap.style.top = ''; }
+  document.querySelector('.skbar').style.display = '';
+  const _sb = document.getElementById('statusbar');
+  _sb.classList.remove('bw-sb');
+  _sb.style.background = '';
+  _sb.style.color = '';
+  _sb.style.display = '';
+  document.getElementById('view-open-app').classList.remove('visible');
+  if (fromApps) {
+    view = 'apps';
+    if (appViewMode === 'list')        buildList();
+    else if (appViewMode === 'single') buildSingle();
+    else { setSK('', 'Select', 'Options', false); lbl('Apps — ' + (curApp()?.name || '')); }
+  } else {
+    goHome();
+  }
+}
+function stKey(code) {
+  const wv = document.getElementById('st-webview');
+  if (!wv) return;
+  if (isElectron) {
+    try {
+      wv.sendInputEvent({ type: 'keyDown', keyCode: code });
+      if (code.length === 1) wv.sendInputEvent({ type: 'char', keyCode: code });
+      wv.sendInputEvent({ type: 'keyUp', keyCode: code });
+    } catch (e) {}
+    return;
+  }
+  // Browser build: same-origin iframe — dispatch synthetic KeyboardEvents into
+  // the app window (Gaia + the shims register key listeners on window, not
+  // on body, so dispatching on body left them inert and the app froze after
+  // opening). We also re-fire from the focused element so Gaia's
+  // NavigationMap (which reads e.target) sees the .focus row.
+  const domKey = ({ Up: 'ArrowUp', Down: 'ArrowDown', Left: 'ArrowLeft', Right: 'ArrowRight',
+    Return: 'Enter', F1: 'SoftLeft', F2: 'SoftRight' })[code] || code;
+  try {
+    const win = wv.contentWindow;
+    const doc = wv.contentDocument;
+    const ev = (type, target) => new KeyboardEvent(type, { key: domKey, code: domKey, bubbles: true, cancelable: true });
+    const target = (doc && doc.querySelector && doc.querySelector('.focus')) || win;
+    target.dispatchEvent(ev('keydown', target));
+    target.dispatchEvent(ev('keyup', target));
+    // Also bubble to window in case a shim only listens there.
+    win.dispatchEvent(ev('keydown', win));
+    win.dispatchEvent(ev('keyup', win));
+  } catch (e) {}
+}
+function stKeyFromEvent(e) {
+  const map = { ArrowUp: 'Up', ArrowDown: 'Down', ArrowLeft: 'Left', ArrowRight: 'Right',
+    Enter: 'Return', Backspace: 'Backspace', F1: 'F1', F2: 'F2', Delete: 'Delete', Tab: 'Tab' };
+  if (map[e.key]) { stKey(map[e.key]); return; }
+  if (e.key.length === 1) stKey(e.key);
+}
+function pressEnd() {
+  if (isStOpen()) { stCloseSettings(); return; }
+}
+
 function openAppView(app) {
   if (!app) app = curApp();
   if (!app) return;
@@ -2110,6 +2267,12 @@ function openAppView(app) {
   const hdr = document.getElementById('oa-header');
   hdr.classList.remove('folder-hdr');
   hdr.style.display = '';
+  if (app.id === 'settings') {
+    hdr.style.display = 'none';
+    stOpenSettings();
+    document.getElementById('view-open-app').classList.add('visible');
+    return;
+  }
   if (app.id === 'browser') {
     bwFocus = 0;
     bwLastUrl = '';   // fresh open: Return chỉ hiện sau khi từ web mode nhấn Home
@@ -2319,7 +2482,7 @@ function showDialog(o) {
   // Ensure the panel starts off-screen, then transition up (slide from bottom)
   d.classList.remove('visible', 'closing');
   if (_sdCloseTimer) { clearTimeout(_sdCloseTimer); _sdCloseTimer = null; }
-  void document.getElementById('sys-dialog-panel').offsetWidth;
+  void document.getElementById('sys-dialog-scrim').offsetWidth;
   requestAnimationFrame(() => d.classList.add('visible'));
 }
 let _sdCloseTimer = null;
@@ -2328,16 +2491,17 @@ function closeDialog(confirmed) {
   if (!d.classList.contains('visible') || d.classList.contains('closing')) return;
   const ok = _sdOk, cancel = _sdCancel;
   _sdOk = null; _sdCancel = null;
-  // Slide the whole dialog (scrim + panel + softkeys) down together, then hide
-  const panel = document.getElementById('sys-dialog-panel');
-  void panel.offsetWidth;            // commit the current open position so the slide-down transitions
+  // Slide the whole scrim (dim background + panel, as one unit) down together;
+  // the softkey bar is hidden instantly by the .closing CSS rule.
+  const scrim = document.getElementById('sys-dialog-scrim');
+  void scrim.offsetWidth;            // commit the current open position so the slide-down transitions
   d.classList.add('closing');
   const finish = () => {
     if (_sdCloseTimer) { clearTimeout(_sdCloseTimer); _sdCloseTimer = null; }
-    panel.removeEventListener('transitionend', finish);
+    scrim.removeEventListener('transitionend', finish);
     d.classList.remove('visible', 'closing');
   };
-  panel.addEventListener('transitionend', finish);
+  scrim.addEventListener('transitionend', finish);
   _sdCloseTimer = setTimeout(finish, 380);   // fallback if transitionend doesn't fire
   if (confirmed) { if (ok) ok(); }
   else { if (cancel) cancel(); }
@@ -3718,6 +3882,7 @@ function nav(dir) {
   if (view === 'lock') return;   // lock screen: arrows do nothing (modal)
   if (isSysDialogOpen()) return; // dialog: arrows do nothing
   if (isRenameOpen() || isAppDialogOpen()) return;
+  if (isStOpen()) { stKey({ up: 'Up', down: 'Down', left: 'Left', right: 'Right' }[dir]); return; }
   if (isBwMenuOpen()) { _bwMenuNav(dir); return; }
   if (isBwSCOpen()) {
     if (_bwSCPage === 3 && _bwSCSwitch) { _bwSCPan(dir); return; }
@@ -3887,6 +4052,7 @@ function pressOK() {
   if (isSysDialogOpen())           { if (_sdCenterOk) closeDialog(true); return; }
   if (isRenameOpen())              { return; }
   if (isAppDialogOpen())           { return; }
+  if (isStOpen())                  { stKey('Return');            return; }
   if (isOMOpen())                  { selectOM();                 return; }
   if (isBwMenuOpen())              { _bwMenuSelect();            return; }
   if (isBwSCOpen())                { closeBwShortcut();          return; }
@@ -3930,6 +4096,7 @@ function pressRight() {
   if (isSysDialogOpen())   { if (!_sdCenterOk) closeDialog(true); return; }
   if (isRenameOpen())      { _renameConfirm();               return; }
   if (isAppDialogOpen())   { _appConfirmOk();                 return; }
+  if (isStOpen())          { stKey('F2');                     return; }
   if (isOMOpen())          { closeOM();                       return; }
   if (isBwSCOpen())        { _bwSCNext();                    return; }
   if (_bwPinMode)          { return; }
@@ -3965,6 +4132,7 @@ function pressBack() {
   if (isSysDialogOpen())           { closeDialog(false); return; }
   if (isRenameOpen())              { _renameCancel();   return; }
   if (isAppDialogOpen())           { _appConfirmClose(); return; }
+  if (isStOpen())                  { stKey('Backspace'); return; }
   if (isOMOpen())                  { closeOM();         return; }
   if (isBwMenuOpen())              { _bwMenuClose();    return; }
   if (isBwSCOpen())                { closeBwShortcut(); return; }
@@ -4012,6 +4180,7 @@ function softLeft() {
   if (isSysDialogOpen())           { if (!_sdCenterOk) closeDialog(false);   return; }
   if (isRenameOpen())              { _renameCancel();                        return; }
   if (isAppDialogOpen())           { _appConfirmClose();                     return; }
+  if (isStOpen())                  { stKey('F1');                            return; }
   if (isOMOpen())                  { closeOM();                              return; }
   if (isBwMenuOpen())              { _bwMenuClose();                         return; }
   if (isBwSCOpen())                { _bwSCPrev();                            return; }
@@ -4629,6 +4798,7 @@ function pressNum(k) {
   if (isBwMenuOpen()) return;
   if (_bwPinMode) return;
   if (isAppDialogOpen() || isRenameOpen()) return;
+  if (isStOpen()) { stKey(k); return; }
   if (view === 'app-open' && bwMode === 'web') { bwWebKey(k); return; }
   if ((view === 'home' || view === 'apps') && !isOMOpen()) openDialer(k);
   else if (view === 'dialer') dialerKey(k);
@@ -4971,6 +5141,16 @@ document.addEventListener('keydown', e => {
     if (e.key.length === 1)     { _renameType(e.key); return; }
     return;
   }
+  // Real Settings app open: forward every key into its webview (trusted
+  // sendInputEvent so Gaia's own nav/typing work); Escape = End exits to
+  // launcher, F8 still opens the power menu on top.
+  if (isStOpen()) {
+    e.preventDefault();
+    if (e.key === 'F8')     { openSleepMenu();   return; }
+    if (e.key === 'Escape') { stCloseSettings(); return; }
+    stKeyFromEvent(e);
+    return;
+  }
   // Number keys → dialer
   if (/^[0-9#+]$/.test(e.key) && (view === 'home' || view === 'apps') && !isOMOpen() && !isAppDialogOpen()) {
     e.preventDefault(); showNumPress(e.key); openDialer(e.key); return;
@@ -5065,6 +5245,7 @@ document.addEventListener('keyup', e => {
     if (inputLocked && (e.key === 'F8' || e.key === 'Escape' || e.key === 'Backspace')) cancelPowerOn();
     return;
   }
+  if (isStOpen()) { e.preventDefault(); return; } // keys already forwarded on keydown
   if (e.key === '*' && _starTimer) {
     clearTimeout(_starTimer); _starTimer = null;
     pressNum('*');
@@ -5102,5 +5283,10 @@ updateSbIcons();
 })();
 </script>
 <script src="proxy.js"></script>
+<script src="/settings-host/b2g.js"></script>
+<script src="/settings-host/l10n.js"></script>
+<script src="/settings-host/datetime-ui.js"></script>
+<script src="/settings-host/account-fake-ui.js"></script>
+<script src="/settings-host/activity-ui.js"></script>
 </body>
 </html>
