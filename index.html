@@ -2252,8 +2252,24 @@ function stKey(code) {
       if (!doc) return;
       try {
         win.eval('(' + function _bridge(k) {
-          var ev = new KeyboardEvent('keydown', { key: k, code: k, bubbles: true, cancelable: true });
           var t = document.querySelector('.focus') || document.activeElement || document.body;
+          if (k === 'Enter') {
+            // Direct panel navigation: read <a> href inside the focused <li>,
+            // call Settings.setCurrentPanel. Gaia click delegation needs
+            // target.nodeName === 'a' but clicking <li> fires as <li> first.
+            var a = t.querySelector('a[href], a.menu-item');
+            if (!a && t.tagName === 'A') a = t;
+            if (a) {
+              var href = a.getAttribute('href');
+              if (href && href !== '#' && window.Settings && window.Settings.setCurrentPanel) {
+                window.Settings.setCurrentPanel(href);
+                return;
+              }
+              try { a.click(); } catch (e) {}
+            }
+            try { t.click(); } catch (e) {}
+          }
+          var ev = new KeyboardEvent('keydown', { key: k, code: k, bubbles: true, cancelable: true });
           t.dispatchEvent(ev);
           t.dispatchEvent(new KeyboardEvent('keyup', { key: k, code: k, bubbles: true, cancelable: true }));
         }.toString() + ';window.__stInjectKey=_bridge;');

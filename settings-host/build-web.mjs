@@ -244,8 +244,20 @@ const INJECT =
    // iframe's own realm. Parent-realm events are rejected by Chrome.
    '<script>' +
      'window.__stInjectKey=function(k){' +
-       'var ev=new KeyboardEvent("keydown",{key:k,code:k,bubbles:true,cancelable:true});' +
        'var t=document.querySelector(".focus")||document.activeElement||document.body;' +
+       'if(k==="Enter"){' +
+         'var a=t.querySelector("a[href],a.menu-item");' +
+         'if(!a&&t.tagName==="A")a=t;' +
+         'if(a){' +
+           'var href=a.getAttribute("href");' +
+           'if(href&&href!=="#"&&window.Settings&&window.Settings.setCurrentPanel){' +
+             'window.Settings.setCurrentPanel(href);return;' +
+           '}' +
+           'try{a.click()}catch(e){}' +
+         '}' +
+         'try{t.click()}catch(e){}' +
+       '}' +
+       'var ev=new KeyboardEvent("keydown",{key:k,code:k,bubbles:true,cancelable:true});' +
        't.dispatchEvent(ev);' +
        't.dispatchEvent(new KeyboardEvent("keyup",{key:k,code:k,bubbles:true,cancelable:true}));' +
      '};' +
