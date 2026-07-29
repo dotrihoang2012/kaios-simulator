@@ -249,11 +249,7 @@ const INJECT =
          'var a=t.querySelector("a[href],a.menu-item");' +
          'if(!a&&t.tagName==="A")a=t;' +
          'if(a){' +
-           'var h=a.getAttribute("href");' +
-           'if(h&&h!=="#"){' +
-             'try{eval("Settings.setCurrentPanel(\""+h+"\")")}catch(e){}' +
-             'try{a.click()}catch(e){}' +
-           '}' +
+           'a.click();' +
          '}' +
          'try{t.click()}catch(e){}' +
        '}' +

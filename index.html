@@ -2254,22 +2254,12 @@ function stKey(code) {
         win.eval('(' + function _bridge(k) {
           var t = document.querySelector('.focus') || document.activeElement || document.body;
           if (k === 'Enter') {
-            // Read <a> href inside focused <li> and call Settings.setCurrentPanel.
-            // Settings is a top-level `const` (not window.Settings) so we use the
-            // global scope. Gaia click delegation only fires on <a> but clicking
-            // <li> sends target=li first → handleLinkClick rejects it.
+            // Click the <a> inside focused <li> — this triggers Gaia's
+            // PanelUtils.handleLinkClick → Settings.setCurrentPanel(href).
+            // Also try clicking <li> itself as a fallback.
             var a = t.querySelector('a[href], a.menu-item');
             if (!a && t.tagName === 'A') a = t;
-            if (a) {
-              var href = a.getAttribute('href');
-              if (href && href !== '#') {
-                try {
-                  eval('Settings.setCurrentPanel("' + href + '")');
-                  return;
-                } catch (e) {}
-              }
-              try { a.click(); } catch (e) {}
-            }
+            if (a) { try { a.click(); } catch (e) {} }
             try { t.click(); } catch (e) {}
           }
           var ev = new KeyboardEvent('keydown', { key: k, code: k, bubbles: true, cancelable: true });
