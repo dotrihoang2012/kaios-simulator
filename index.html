@@ -680,7 +680,7 @@
     /* ── REAL Settings app (Gaia in a webview, settings-host on :9080) ── */
     #st-wrap { display:none; position:absolute; top:var(--statusbar-height); left:0; right:0; bottom:0; z-index:44; background:#fff; }
     #st-wrap.visible { display:block; }
-    #st-wrap webview { width:100%; height:100%; border:none; }
+    #st-wrap webview, #st-wrap iframe { width:100%; height:100%; border:none; }
 
     /* Media volume overlay */
     /* Media volume overlay — exact same structure as #vol-toast */
@@ -2125,6 +2125,16 @@ function stFocusFirst(wv) {
   var tryFocus = function () {
     try {
       var doc = wv.contentDocument; if (!doc) return;
+      // The simulator's own status bar is now kept visible above the iframe
+      // (white bg + black icons), so hide the settings app's placeholder to
+      // avoid stacking two bars. This only runs while the iframe is same-origin
+      // (GitHub Pages), which is the case where the sim status bar is visible.
+      var ph = doc.querySelector('.statusbar-placeholder');
+      if (ph) { ph.style.display = 'none'; }
+      // Also collapse the statusbar height so sections start at the top of the
+      // iframe (the simulator's own status bar is already above it).
+      doc.documentElement.style.setProperty('--statusbar-height', '0px');
+      doc.documentElement.style.setProperty('--statusbar-softkeybar-height', '3rem');
       // Try the root menu first (its panel always exists at boot), then any
       // tab/section, then any [role=menuitem] anywhere in the app.
       var el = doc.querySelector('#root li[role="menuitem"]:not(.hidden)')
@@ -2176,21 +2186,22 @@ function stBuildWebview() {
 function stOpenSettings() {
   _stFails = 0;
   const wrap = document.getElementById('st-wrap') || stBuildWebview();
-  // Make sure no other view is layered on top of the settings webview. Otherwise
-  // a half-open dialer (z=30) or the softkey bar (z higher) bleeds through the
-  // loading window of the webview (z=44) — what looks like "Settings missing
-  // its content" is actually dialer keys + status bar showing through.
+  // Make sure no other view is layered on top of the settings webview.
   const dv = document.getElementById('view-dialer'); if (dv) dv.classList.remove('visible');
   const ov = document.getElementById('view-open-app'); if (ov) ov.classList.add('visible');
   wrap.classList.add('visible');
-  // The Settings app has its own statusbar inside the webview — hide the
-  // simulator's status bar so the two don't double-up.
+  // Keep the simulator's status bar visible but restyle it to match the
+  // Settings white theme (black icons/text on white background), like a
+  // real KaiOS device. The iframe starts below it; the settings app's own
+  // statusbar-placeholder is hidden from stFocusFirst to avoid a double bar.
   const _sb = document.getElementById('statusbar');
   _sb.classList.add('bw-sb');
-  _sb.style.display = 'none';
+  _sb.style.background = '#fff';
+  _sb.style.color = '#000';
+  _sb.style.display = '';
   document.querySelector('.skbar').style.display = 'none'; // page brings its own
-  // Also stretch the wrap to cover the area normally reserved for the sim statusbar.
-  wrap.style.top = '0';
+  // Position below the simulator status bar.
+  wrap.style.top = '';
 }
 function stCloseSettings() {
   const wrap = document.getElementById('st-wrap');
@@ -2202,6 +2213,7 @@ function stCloseSettings() {
   _sb.style.color = '';
   _sb.style.display = '';
   document.getElementById('view-open-app').classList.remove('visible');
+  // Restore the iframe src so it reloads fresh next open (avoid stale state).
   if (fromApps) {
     view = 'apps';
     if (appViewMode === 'list')        buildList();
@@ -2222,23 +2234,25 @@ function stKey(code) {
     } catch (e) {}
     return;
   }
-  // Browser build: same-origin iframe — dispatch synthetic KeyboardEvents into
-  // the app window (Gaia + the shims register key listeners on window, not
-  // on body, so dispatching on body left them inert and the app froze after
-  // opening). We also re-fire from the focused element so Gaia's
-  // NavigationMap (which reads e.target) sees the .focus row.
+  // Browser build: same-origin iframe — but KeyboardEvent objects created in the
+  // parent realm may be rejected or ignored when dispatched into the iframe
+  // (Chrome checks event-constructor origin for KeyboardEvent). Use eval() to
+  // create and dispatch the events entirely inside the iframe's own JS realm,
+  // so Gaia's window-level keydown listeners (navigation_handler.js,
+  // NavigationMap, RootManager) receive a native-feeling event.
   const domKey = ({ Up: 'ArrowUp', Down: 'ArrowDown', Left: 'ArrowLeft', Right: 'ArrowRight',
     Return: 'Enter', F1: 'SoftLeft', F2: 'SoftRight' })[code] || code;
   try {
-    const win = wv.contentWindow;
-    const doc = wv.contentDocument;
-    const ev = (type, target) => new KeyboardEvent(type, { key: domKey, code: domKey, bubbles: true, cancelable: true });
-    const target = (doc && doc.querySelector && doc.querySelector('.focus')) || win;
-    target.dispatchEvent(ev('keydown', target));
-    target.dispatchEvent(ev('keyup', target));
-    // Also bubble to window in case a shim only listens there.
-    win.dispatchEvent(ev('keydown', win));
-    win.dispatchEvent(ev('keyup', win));
+    wv.contentWindow.eval(
+      '(' + function(k) {
+        var ev = new KeyboardEvent('keydown', { key: k, code: k, bubbles: true, cancelable: true });
+        var t = document.querySelector('.focus') || window;
+        t.dispatchEvent(ev);
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: k, code: k, bubbles: true, cancelable: true }));
+        t.dispatchEvent(new KeyboardEvent('keyup',   { key: k, code: k, bubbles: true, cancelable: true }));
+        window.dispatchEvent(new KeyboardEvent('keyup',   { key: k, code: k, bubbles: true, cancelable: true }));
+      }.toString() + ')(' + JSON.stringify(domKey) + ')'
+    );
   } catch (e) {}
 }
 function stKeyFromEvent(e) {
