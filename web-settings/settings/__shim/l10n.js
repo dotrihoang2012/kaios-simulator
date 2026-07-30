@@ -105,7 +105,10 @@
       // { value, attributes } shape — treating it as the latter blanked out
       // every interpolated string (battery level, powerSave thresholds, ...).
       if (Array.isArray(v)) MAP[row.$i] = { value: v };
-      else if (v && typeof v === 'object') MAP[row.$i] = { value: v.value != null ? v.value : '', attrs: v.attributes || null };
+      else if (v && typeof v === 'object') {
+        var textVal = v.$o != null ? v.$o : (v.value != null ? v.value : '');
+        MAP[row.$i] = { value: textVal, attrs: v.attributes || null };
+      }
       else MAP[row.$i] = { value: v };
     });
     afterMapLoaded();

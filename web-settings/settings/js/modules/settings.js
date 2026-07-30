@@ -59,6 +59,7 @@ const Settings = { // eslint-disable-line
     this.ScreenLayout = options.ScreenLayout;
 
     // Replay pending navigation from before init.
+    var _hadPending = !!this._pendingNav;
     if (this._pendingNav) {
       var p = this._pendingNav;
       this._pendingNav = null;
@@ -73,7 +74,9 @@ const Settings = { // eslint-disable-line
      *      "currentPanel" soon.
      */
 
-    this.setCurrentPanel(window.LaunchContext.initialPanelId);
+    if (!_hadPending) {
+      this.setCurrentPanel(window.LaunchContext.initialPanelId);
+    }
 
     // Make operations not block the load time
     setTimeout(() => {

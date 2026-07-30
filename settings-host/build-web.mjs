@@ -119,6 +119,7 @@ console.log('· patch settings.js — pending-nav queue for early clicks');
     'this.SettingsService = options.SettingsService;\n' +
     '    this.ScreenLayout = options.ScreenLayout;\n\n' +
     '    // Replay pending navigation from before init.\n' +
+    '    var _hadPending = !!this._pendingNav;\n' +
     '    if (this._pendingNav) {\n' +
     '      var p = this._pendingNav;\n' +
     '      this._pendingNav = null;\n' +
@@ -126,6 +127,15 @@ console.log('· patch settings.js — pending-nav queue for early clicks');
     '      this.SettingsService.navigate(p.id, p.config);\n' +
     '      this.currentPanel = \'#\' + p.id;\n' +
     '    }'
+  );
+
+  // Guard setCurrentPanel('root') so it doesn't override a just-replayed
+  // pend-navigate request. After pending navigate('wifi') starts (async), a
+  // synchronous navigate('root') queues behind it; when wifi finishes, root
+  // replays → back to root before user sees the sub-panel.
+  s = s.replace(
+    'this.setCurrentPanel(window.LaunchContext.initialPanelId);',
+    'if (!_hadPending) {\n      this.setCurrentPanel(window.LaunchContext.initialPanelId);\n    }'
   );
 
   // Add hashchange listener — catch native <a> clicks before Alameda boots
