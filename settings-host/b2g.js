@@ -645,5 +645,11 @@
   // is faked in account-fake-ui.js — with an empty store it yields "Not signed
   // in"; after a fake login it reflects the signed-in account.
 
+  // Fire sticky events immediately so DeviceFeature.init() and downstream
+  // listeners (Customization.updateUI) that gate on services-init-complete
+  // proceed early. In the real device this fires when the API daemon connects;
+  // in the browser/file:// build it must fire right after the shim boots.
+  fireSticky();
+
   console.log('[b2g-shim] installed');
 })();
