@@ -102,3 +102,11 @@ const Settings = { // eslint-disable-line
     PerformanceTestingHelper.dispatch('startup-path-done');
   }
 };
+
+// Hashchange listener for pre-boot navigation (added by build-web.mjs)
+window.addEventListener("hashchange", function() {
+  var h = location.hash;
+  if (h && h !== "#" && h !== Settings.currentPanel) {
+    Settings.setCurrentPanel(h);
+  }
+});

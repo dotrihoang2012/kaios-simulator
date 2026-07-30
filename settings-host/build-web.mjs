@@ -128,6 +128,21 @@ console.log('· patch settings.js — pending-nav queue for early clicks');
     '    }'
   );
 
+  // Add hashchange listener — catch native <a> clicks before Alameda boots
+  // When the user presses Enter on a menu item, __stInjectKey triggers
+  // a.click() which changes location.hash. If the SettingsPanel click handler
+  // isn't installed yet (SettingsService hasn't initialized), the hash change
+  // goes unhandled. This listener captures hash changes and routes them
+  // through setCurrentPanel — which queues to _pendingNav if SettingsService
+  // is still undefined, or navigates directly if already initialized.
+  s += '\n// Hashchange listener for pre-boot navigation (added by build-web.mjs)\n' +
+    'window.addEventListener("hashchange", function() {\n' +
+    '  var h = location.hash;\n' +
+    '  if (h && h !== "#" && h !== Settings.currentPanel) {\n' +
+    '    Settings.setCurrentPanel(h);\n' +
+    '  }\n' +
+    '});\n';
+
   fs.writeFileSync(sf, s);
 }
 
