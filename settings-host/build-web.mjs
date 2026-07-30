@@ -71,6 +71,20 @@ for (const rel of [
   fs.copyFileSync(s, d);
 }
 
+// ── fix service_manager.js: let l10n=null shadows window.l10n ──────────
+// The top-level `let l10n = null` in service_manager.js shadows the real
+// window.l10n set by the l10n shim. Every bare `l10n` reference in other
+// scripts resolves to this null binding instead of the mozL10n object.
+// Rename it to _apiL10n so it doesn't pollute the global scope.
+{
+  const smf = path.join(OUT, 'settings/js/utils/service_manager.js');
+  let sm = fs.readFileSync(smf, 'utf8');
+  sm = sm.replace('let l10n=null;', 'let _apiL10n=null;');
+  sm = sm.replace('l10n=window.api.l10n', '_apiL10n=window.api.l10n');
+  fs.writeFileSync(smf, sm);
+  console.log('  ✓ service_manager.js — let l10n → let _apiL10n');
+}
+
 // ── patch settings.js — guard SettingsService init() delay ──────────────
 // Settings.init() runs async via Alameda boot. If the user presses Enter
 // before it completes, setCurrentPanel crashes on:
@@ -159,7 +173,7 @@ console.log('· patch startup.js — loadAlameda before l10n, safe stub');
     '        this.loadAlameda();',
     '        (function() {',
     '          try {',
-    '            var L = (typeof l10n !== \'undefined\' && l10n) || { once: function(cb) { cb(); }, get: function() { return \'\'; } };',
+    '            var L = window.l10n || { once: function(cb) { cb(); }, get: function() { return \'\'; } };',
     '            L.once(function l10nDone() {',
     '              var codeNode = document.querySelector(\'.current\');',
     '              if (!codeNode) return;',

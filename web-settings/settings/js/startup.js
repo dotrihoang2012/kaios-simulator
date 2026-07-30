@@ -136,7 +136,7 @@
         this.loadAlameda();
         (function() {
           try {
-            var L = (typeof l10n !== 'undefined' && l10n) || { once: function(cb) { cb(); }, get: function() { return ''; } };
+            var L = window.l10n || { once: function(cb) { cb(); }, get: function() { return ''; } };
             L.once(function l10nDone() {
               var codeNode = document.querySelector('.current');
               if (!codeNode) return;
