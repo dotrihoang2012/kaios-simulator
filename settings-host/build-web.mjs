@@ -384,6 +384,18 @@ console.log('· de-absolutize origin-root paths');
   m = m.replace(/baseUrl:\s*'\/js'/, "baseUrl: 'js'").replace(/baseUrl:\s*"\/js"/, 'baseUrl: "js"');
   if (m !== before) { fs.writeFileSync(mainJs, m); console.log('  main.js baseUrl → js'); }
 }
+// config/require.js ALSO sets baseUrl:"/js" — it loads AFTER main.js and
+// OVERRIDES the relative baseUrl from main.js. On GitHub Pages subpaths /js
+// resolves to the wrong origin root, breaking every AMD module load.
+{
+  const crf = path.join(OUT, 'settings/js/config/require.js');
+  if (fs.existsSync(crf)) {
+    let c = fs.readFileSync(crf, 'utf8');
+    const before = c;
+    c = c.replace(/baseUrl:"\/js"/g, 'baseUrl:"js"').replace(/baseUrl:'\/js'/g, "baseUrl:'js'");
+    if (c !== before) { fs.writeFileSync(crf, c); console.log('  config/require.js baseUrl → js'); }
+  }
+}
 // index.html + a few panel JS: "/locales-obj/" → "locales-obj/", "/shared/" → "../shared/"
 for (const rel of [
   'settings/index.html',
