@@ -378,7 +378,7 @@
     }
     .app-icon::after {
       content: '';
-      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      position: absolute; top: var(--statusbar-height); bottom: var(--softkeybar-height); left: 0; right: 0;
       background-image: inherit;
       background-size: 5.6rem 5.6rem;
       background-position: center;
@@ -1362,16 +1362,17 @@
     .kb-sym-cell { height: 3rem; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #333; border: 0.1rem solid #ccc; border-radius: 0.2rem; background: #f0f0f0; }
     .kb-sym-cell.selected { background: var(--highlight-color); color: #fff; border-color: var(--highlight-color); }
     /* ═══════ APP ANIMATIONS ═══════ */
-    @keyframes zoom-out {
-      0%   { transform: scale(1.3); }
-      100% { transform: scale(1); }
+    @keyframes openApp {
+      0%   { transform: scale(0.7); opacity: 0;}
+      50%  { opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
     }
     @keyframes closeApp {
       0%   { transform: scale(1); opacity: 1; }
       100% { transform: scale(0.7); opacity: 0; }
     }
     .app-opening {
-      animation: zoom-out 0.35s forwards cubic-bezier(0.3, 0.0, 0.0, 1.0);
+      animation: openApp 0.15s forwards cubic-bezier(0.3, 0, 0.3, 1);
     }
     .app-closing {
       animation: closeApp 0.15s forwards cubic-bezier(0.4, 0, 1, 1);
