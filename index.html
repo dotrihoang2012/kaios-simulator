@@ -1379,7 +1379,7 @@
     }
 
     #splash-screen {
-      position: absolute; top: var(--statusbar-height); bottom: var(--softkeybar-height); left: 0; right: 0;
+      position: absolute; top: 0; bottom: 0; left: 0; right: 0;
       background: #000;
       z-index: 1000;
       display: none;
@@ -4050,7 +4050,15 @@ function buildGrid(keepFocus) {
 //  NAVIGATION
 // ════════════════════════════════════════
 function nav(dir) {
-  if (booting || inputLocked) return;
+  if (booting || inputLocked || _splashTimer) return;
+  if (typeof SimKeyboard !== 'undefined' && SimKeyboard.active) {
+    const kMap = { up: 'ArrowUp', down: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' };
+    if (SimKeyboard.handleKeydown(kMap[dir], false)) return;
+  }
+  if (view === 'browser-search') {
+    if (dir === 'up' || dir === 'down') bwSearchNav(dir);
+    return;
+  }
   // Sleep/power menu is a top-level modal — it takes priority over everything
   if (isSleepOpen()) {
     const maxFocus = view === 'lock' ? 1 : 2;
@@ -4308,9 +4316,15 @@ function pressRight() {
 function animateCloseApp(elId, cb) {
   const el = document.getElementById(elId);
   if (!el || !el.classList.contains('visible')) { cb(); return; }
+  const sb = document.getElementById('statusbar');
+  const sk = document.querySelector('.skbar');
   el.classList.add('app-closing');
+  if (sb) sb.classList.add('app-closing');
+  if (sk) sk.classList.add('app-closing');
   setTimeout(() => {
     el.classList.remove('app-closing', 'visible');
+    if (sb) sb.classList.remove('app-closing');
+    if (sk) sk.classList.remove('app-closing');
     cb();
   }, 150);
 }
@@ -5596,9 +5610,15 @@ document.addEventListener('focusout', e => {
 
 // ── Keyboard ──
 document.addEventListener('keydown', e => {
-  if (inputLocked || booting) {
+  if (inputLocked || booting || _splashTimer) {
+    if (e.key === 'Escape' || e.key === 'Backspace') {
+      if (_splashTimer) { clearTimeout(_splashTimer); _splashTimer = null; }
+      cancelPowerOn();
+      pressBack();
+      return;
+    }
     e.preventDefault();
-    if (inputLocked && (e.key === 'F8' || e.key === 'Escape' || e.key === 'Backspace')) startPowerOn();
+    if (inputLocked && e.key === 'F8') startPowerOn();
     return;
   }
   
@@ -5606,6 +5626,16 @@ document.addEventListener('keydown', e => {
     if (SimKeyboard.handleKeydown(e.key, e.repeat)) {
       e.preventDefault();
       return;
+    }
+  }
+
+  // Allow native inputs (like in Settings app) to handle typing and Backspace/Arrows
+  const ae = document.activeElement;
+  if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA' || ae.isContentEditable)) {
+    if (e.key.length === 1 || e.key.startsWith('Arrow')) return;
+    if (e.key === 'Backspace') {
+      if (ae.value && ae.value.length > 0) return; // let browser delete char
+      // if empty, let it fall through to pressBack()
     }
   }
 
@@ -5644,7 +5674,7 @@ document.addEventListener('keydown', e => {
     if (e.key === 'F1')         { _renameCancel();   return; }
     if (e.key === 'F2')         { _renameConfirm();  return; }
     if (!SimKeyboard.active && e.key === 'Backspace')  { _renameBackspace(); return; }
-    if (!SimKeyboard.active && e.key.length === 1)     { _renameType(e.key); return; }
+    if (e.key.length === 1)     { _renameType(e.key); return; }
     return;
   }
   // Real Settings app open: forward every key into its webview (trusted
@@ -5705,7 +5735,7 @@ document.addEventListener('keydown', e => {
     if (e.key === 'ArrowDown')  { e.preventDefault(); bwSearchNav('down'); return; }
     if (e.key === 'ArrowUp')    { e.preventDefault(); bwSearchNav('up');   return; }
     if (e.key === 'Enter')      { e.preventDefault(); bwSearchGo();        return; }
-    if (!SimKeyboard.active && e.key.length === 1) { e.preventDefault(); bwSearchType(e.key); return; }
+    if (e.key.length === 1) { e.preventDefault(); bwSearchType(e.key); return; }
   }
   if (_bwPinMode && /^[0-9]$/.test(e.key)) { e.preventDefault(); showNumPress(e.key); pressNum(e.key); return; }
   // When webview is active, forward keys to it; keep F8/F1/F2/Backspace for simulator
