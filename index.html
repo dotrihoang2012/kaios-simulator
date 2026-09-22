@@ -5009,14 +5009,25 @@ function toggleVolMode() {
 (function() {
   const btn = document.getElementById('key-hash');
   btn.addEventListener('mousedown', () => {
-    if (SimKeyboard.active) return; // no long-press action when keyboard active
-    _hashTimer = setTimeout(() => { _hashTimer = null; toggleVolMode(); }, 1000);
+    if (SimKeyboard.active) return;
+    if (view === 'home' && !inputLocked) {
+      _hashTimer = setTimeout(() => { _hashTimer = null; toggleVolMode(); }, 1000);
+    } else {
+      _hashTimer = 'blocked';
+    }
   });
   btn.addEventListener('mouseup', () => {
     if (SimKeyboard.active) { SimKeyboard.handleKeydown('#', false); return; }
-    if (_hashTimer) { clearTimeout(_hashTimer); _hashTimer = null; pressNum('#'); }
+    if (_hashTimer) {
+      if (_hashTimer !== 'blocked') clearTimeout(_hashTimer);
+      _hashTimer = null;
+      pressNum('#');
+    }
   });
-  btn.addEventListener('mouseleave', () => { clearTimeout(_hashTimer); _hashTimer = null; });
+  btn.addEventListener('mouseleave', () => {
+    if (_hashTimer && _hashTimer !== 'blocked') clearTimeout(_hashTimer);
+    _hashTimer = null;
+  });
 })();
 
 // * long-press (1s) → +
