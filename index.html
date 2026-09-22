@@ -378,7 +378,7 @@
     }
     .app-icon::after {
       content: '';
-      position: absolute; top: var(--statusbar-height); bottom: var(--softkeybar-height); left: 0; right: 0;
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
       background-image: inherit;
       background-size: 5.6rem 5.6rem;
       background-position: center;
@@ -1379,7 +1379,7 @@
     }
 
     #splash-screen {
-      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      position: absolute; top: var(--statusbar-height); bottom: var(--softkeybar-height); left: 0; right: 0;
       background: #000;
       z-index: 1000;
       display: none;
