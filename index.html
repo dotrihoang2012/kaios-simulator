@@ -2365,6 +2365,7 @@ function stKeyFromEvent(e) {
   if (e.key && e.key.length === 1) stKey(e.key);
 }
 function pressEnd() {
+  if (booting || inputLocked || _splashTimer) return;
   if (isStOpen()) { stCloseSettings(); return; }
 }
 
@@ -2401,6 +2402,7 @@ function openAppView(app) {
   // Set timeout for 1.5s as requested by user
   if (_splashTimer) clearTimeout(_splashTimer);
   _splashTimer = setTimeout(() => {
+    _splashTimer = null;
     if (view !== 'app-open' || openApp !== app) {
       splash.classList.remove('visible', 'app-opening');
       return; // user exited early
@@ -4229,7 +4231,7 @@ function nav(dir) {
 }
 
 function pressOK() {
-  if (booting || inputLocked) return;
+  if (booting || inputLocked || _splashTimer) return;
   if (isSleepOpen()) {
     if (view === 'lock') { sleepFocus === 0 ? doRestart() : doPowerOff(); }
     else { if (sleepFocus === 0) doLock(); else if (sleepFocus === 1) doRestart(); else doPowerOff(); }
@@ -4277,7 +4279,7 @@ function pressOK() {
 
 // RSK
 function pressRight() {
-  if (booting || inputLocked) return;
+  if (booting || inputLocked || _splashTimer) return;
   if (isSleepOpen())       { closeSleepMenu();                return; }
   if (view === 'lock')     { return; }
   if (isSysDialogOpen())   { if (!_sdCenterOk) closeDialog(true); return; }
@@ -4316,6 +4318,11 @@ function pressRight() {
 function animateCloseApp(elId, cb) {
   const el = document.getElementById(elId);
   if (!el || !el.classList.contains('visible')) { cb(); return; }
+  try {
+    let ae = document.activeElement;
+    if (ae && ae.tagName === 'IFRAME') ae = ae.contentDocument?.activeElement;
+    if (ae && ae.blur) ae.blur();
+  } catch(e) {}
   const sb = document.getElementById('statusbar');
   const sk = document.querySelector('.skbar');
   el.classList.add('app-closing');
@@ -4378,7 +4385,7 @@ function pressBack() {
 
 // LSK
 function softLeft() {
-  if (booting || inputLocked) return;
+  if (booting || inputLocked || _splashTimer) return;
   if (isSleepOpen())               { closeSleepMenu();                       return; }
   if (view === 'lock')             { return; }
   if (isSysDialogOpen())           { if (!_sdCenterOk) closeDialog(false);   return; }
@@ -5016,13 +5023,13 @@ function renderDialer() {
   el.style.fontSize = size + 'rem';
 }
 function dialerKey(k) {
-  if (booting || inputLocked) return;
+  if (booting || inputLocked || _splashTimer) return;
   if (dialerNum.length >= 25) return;
   dialerNum += k;
   renderDialer();
 }
 function pressNum(k) {
-  if (booting || inputLocked) return;
+  if (booting || inputLocked || _splashTimer) return;
   if (isSleepOpen() || view === 'lock') return;
   // When keyboard is active, route number keys through SimKeyboard
   if (SimKeyboard.active && /^[0-9]$/.test(k)) {
@@ -5630,13 +5637,12 @@ document.addEventListener('keydown', e => {
   }
 
   // Allow native inputs (like in Settings app) to handle typing and Backspace/Arrows
-  const ae = document.activeElement;
+  let ae = document.activeElement;
+  if (ae && ae.tagName === 'IFRAME') {
+    try { ae = ae.contentDocument.activeElement; } catch(e) {}
+  }
   if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA' || ae.isContentEditable)) {
-    if (e.key.length === 1 || e.key.startsWith('Arrow')) return;
-    if (e.key === 'Backspace') {
-      if (ae.value && ae.value.length > 0) return; // let browser delete char
-      // if empty, let it fall through to pressBack()
-    }
+    if (e.key.length === 1 || e.key.startsWith('Arrow') || e.key === 'Backspace') return;
   }
 
   // Sleep/power menu is a top-level modal — capture ALL keys before anything else
