@@ -348,24 +348,25 @@ function stOpenSettings() {
   wrap.style.top = '';
 }
 function stCloseSettings() {
-  const wrap = document.getElementById('st-wrap');
-  if (wrap) { wrap.classList.remove('visible'); wrap.style.top = ''; }
-  document.querySelector('.skbar').style.display = '';
-  const _sb = document.getElementById('statusbar');
-  _sb.classList.remove('bw-sb');
-  _sb.style.background = '';
-  _sb.style.color = '';
-  _sb.style.display = '';
-  document.getElementById('view-open-app').classList.remove('visible');
-  // Restore the iframe src so it reloads fresh next open (avoid stale state).
-  if (fromApps) {
-    view = 'apps';
-    if (appViewMode === 'list')        buildList();
-    else if (appViewMode === 'single') buildSingle();
-    else { setSK('', 'Select', 'Options', false); lbl('Apps — ' + (curApp()?.name || '')); }
-  } else {
-    goHome();
-  }
+  animateCloseApp('st-wrap', () => {
+    const wrap = document.getElementById('st-wrap');
+    if (wrap) wrap.style.top = '';
+    document.querySelector('.skbar').style.display = '';
+    const _sb = document.getElementById('statusbar');
+    _sb.classList.remove('bw-sb');
+    _sb.style.background = '';
+    _sb.style.color = '';
+    _sb.style.display = '';
+    document.getElementById('view-open-app').classList.remove('visible');
+    if (fromApps) {
+      view = 'apps';
+      if (appViewMode === 'list')        buildList();
+      else if (appViewMode === 'single') buildSingle();
+      else { setSK('', 'Select', 'Options', false); lbl('Apps — ' + (curApp()?.name || '')); }
+    } else {
+      goHome();
+    }
+  });
 }
 function stKey(code) {
   const wv = document.getElementById('st-webview');
@@ -460,22 +461,54 @@ function pressEnd() {
   if (isStOpen()) { stCloseSettings(); return; }
 }
 
+let _splashTimer = null;
 function openAppView(app) {
   if (!app) app = curApp();
   if (!app) return;
   fromApps = (view === 'apps');
   openApp  = app;
   view     = 'app-open';
-  document.getElementById('statusbar').classList.remove('bw-sb');
-  const bar = document.querySelector('.skbar');
-  bar.style.backgroundColor = ''; bar.style.backgroundImage = ''; bar.style.color = '';
-  // clean up any previous browser/folder content
+  
+  // Clean up any previous browser/folder content
   const body = document.getElementById('oa-body');
   body.classList.remove('bw-mode', 'folder-mode');
   body.querySelectorAll('.bw-el').forEach(e => e.remove());
   const hdr = document.getElementById('oa-header');
   hdr.classList.remove('folder-hdr');
   hdr.style.display = '';
+
+  const splash = document.getElementById('splash-screen');
+  const splashIcon = document.getElementById('splash-icon');
+  splashIcon.src = app.icon || '';
+  
+  splash.classList.remove('app-opening', 'app-closing');
+  void splash.offsetWidth;
+  splash.classList.add('visible', 'app-opening');
+  
+  // Hide main view wrappers to prevent flashing
+  document.getElementById('view-open-app').classList.remove('visible');
+  document.getElementById('bw-webview-wrap').classList.remove('visible');
+  const stWrap = document.getElementById('st-wrap');
+  if (stWrap) stWrap.classList.remove('visible');
+
+  // Set timeout for 1.5s as requested by user
+  if (_splashTimer) clearTimeout(_splashTimer);
+  _splashTimer = setTimeout(() => {
+    if (view !== 'app-open' || openApp !== app) {
+      splash.classList.remove('visible', 'app-opening');
+      return; // user exited early
+    }
+    splash.classList.remove('visible', 'app-opening');
+    _finishOpenAppView(app);
+  }, 1500);
+}
+
+function _finishOpenAppView(app) {
+  document.getElementById('statusbar').classList.remove('bw-sb');
+  const bar = document.querySelector('.skbar');
+  bar.style.backgroundColor = ''; bar.style.backgroundImage = ''; bar.style.color = '';
+  const hdr = document.getElementById('oa-header');
+  
   if (app.id === 'settings') {
     hdr.style.display = 'none';
     stOpenSettings();
@@ -1550,20 +1583,23 @@ function _bwCloseWebviewCommon() {
   _bwResetZoomStyles();
   bwMode = 'home';
   bwCurrentUrl = '';
-  document.getElementById('bw-webview-wrap').classList.remove('visible');
-  const _f = document.getElementById('bw-iframe');
-  _f.style.pointerEvents = '';
-  if (_f.tagName === 'WEBVIEW') { _f.removeAttribute('srcdoc'); }
-  _f.src = 'about:blank';
-  _bwProgressEnd();
-  document.querySelectorAll('.bw-el').forEach(el => el.style.display = '');
-  document.getElementById('statusbar').classList.remove('bw-sb');
-  const _sk = document.querySelector('.skbar');
-  _sk.style.display = '';
-  _sk.style.backgroundColor = '';
-  _sk.style.backgroundImage = '';
-  _sk.style.color = '';
-  document.getElementById('bw-nav').classList.remove('visible');
+  animateCloseApp('bw-webview-wrap', () => {
+    const _f = document.getElementById('bw-iframe');
+    if (_f) {
+      _f.style.pointerEvents = '';
+      if (_f.tagName === 'WEBVIEW') { _f.removeAttribute('srcdoc'); }
+      _f.src = 'about:blank';
+    }
+    _bwProgressEnd();
+    document.querySelectorAll('.bw-el').forEach(el => el.style.display = '');
+    document.getElementById('statusbar').classList.remove('bw-sb');
+    const _sk = document.querySelector('.skbar');
+    _sk.style.display = '';
+    _sk.style.backgroundColor = '';
+    _sk.style.backgroundImage = '';
+    _sk.style.color = '';
+    document.getElementById('bw-nav').classList.remove('visible');
+  });
 }
 
 // Return từ browser home về web mode — hỗ trợ cả trang search results lẫn URL thường
@@ -2346,6 +2382,16 @@ function pressRight() {
 }
 
 // Back / End key short-press
+function animateCloseApp(elId, cb) {
+  const el = document.getElementById(elId);
+  if (!el || !el.classList.contains('visible')) { cb(); return; }
+  el.classList.add('app-closing');
+  setTimeout(() => {
+    el.classList.remove('app-closing', 'visible');
+    cb();
+  }, 150);
+}
+
 function pressBack() {
   if (isSleepOpen())               { closeSleepMenu();  return; }
   if (view === 'lock')             { return; }
@@ -2369,23 +2415,24 @@ function pressBack() {
   if (view === 'sidemenu')         { goHome();          return; }
   if (view === 'stub')             { closeStub();       return; }
   if (view === 'app-open') {
-    const _sb = document.getElementById('statusbar');
-    _sb.classList.remove('bw-sb');
-    _sb.style.background = '';
-    _sb.style.color = '';
-    const bar = document.querySelector('.skbar');
-    bar.style.backgroundColor = '';
-    bar.style.backgroundImage = '';
-    bar.style.color = '';
-    document.getElementById('view-open-app').classList.remove('visible');
-    if (fromApps) {
-      view = 'apps';
-      if (appViewMode === 'list')        buildList();
-      else if (appViewMode === 'single') buildSingle();
-      else { setSK('', 'Select', 'Options', false); lbl('Apps — ' + (curApp()?.name || '')); }
-    } else {
-      goHome();
-    }
+    animateCloseApp('view-open-app', () => {
+      const _sb = document.getElementById('statusbar');
+      _sb.classList.remove('bw-sb');
+      _sb.style.background = '';
+      _sb.style.color = '';
+      const bar = document.querySelector('.skbar');
+      bar.style.backgroundColor = '';
+      bar.style.backgroundImage = '';
+      bar.style.color = '';
+      if (fromApps) {
+        view = 'apps';
+        if (appViewMode === 'list')        buildList();
+        else if (appViewMode === 'single') buildSingle();
+        else { setSK('', 'Select', 'Options', false); lbl('Apps � ' + (curApp()?.name || '')); }
+      } else {
+        goHome();
+      }
+    });
     return;
   }
   if (view === 'apps' && isMoving) { exitMoveMode(true);  return; }
@@ -3379,7 +3426,8 @@ const SimKeyboard = {
   
   updateUI() {
     const el = document.getElementById('kb-mode');
-    el.textContent = this.mode;
+    const modeMap = { 'Abc': 'Ab', 'abc': 'ab', 'ABC': 'AB', '123': '12' };
+    el.textContent = modeMap[this.mode] || this.mode;
     el.classList.toggle('visible', this.active);
   },
 
@@ -3395,6 +3443,9 @@ const SimKeyboard = {
     let idx = this.modes.indexOf(this.mode);
     this.mode = this.modes[(idx + 1) % this.modes.length];
     this.updateUI();
+    if (typeof showToast === 'function') {
+      showToast(this.mode);
+    }
   },
   
   openSymbols() {
