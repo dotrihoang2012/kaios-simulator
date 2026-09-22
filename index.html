@@ -1354,8 +1354,8 @@
        KEYBOARD SYSTEM
        ══════════════════════════════════ */
     /* Mode indicator lives INSIDE the statusbar, top-left after carrier */
-    #kb-mode { display: none; font-size: 1.2rem; font-weight: 700; color: #ff0000; margin-left: 0.4rem; text-transform: none; }
-    #kb-mode.visible { display: block !important; }
+    #kb-mode { display: none; font-size: 1.2rem; font-weight: 600; color: #888; margin-left: 0.4rem; text-transform: none; }
+    #kb-mode.visible { display: inline; }
     #kb-symbols { display: none; position: absolute; bottom: var(--softkeybar-height); left: 0; right: 0; background: rgba(255,255,255,0.97); z-index: 9999; padding: 0.5rem; border-top: 0.2rem solid var(--highlight-color); box-shadow: 0 -0.2rem 0.5rem rgba(0,0,0,0.2); max-height: calc(32rem - var(--statusbar-height) - var(--softkeybar-height)); overflow-y: auto; }
     #kb-symbols.visible { display: block; }
     #kb-sym-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.2rem; }
@@ -1865,7 +1865,6 @@ JAN 1</div>
     </div><!-- /numpad -->
 
   </div><!-- /controls -->
-  <div id="debug-log" style="position:fixed;top:0;left:0;background:rgba(0,0,0,0.8);color:#fff;z-index:999999;font-size:12px;padding:5px;pointer-events:none;"></div>
 </div><!-- /simulator -->
 
 <!-- ═══════ INFO PANEL ═══════ -->
@@ -1874,14 +1873,6 @@ JAN 1</div>
 </div>
 
 <script>
-window.debugLog = function(msg) {
-  const el = document.getElementById('debug-log');
-  if(el) {
-    el.innerHTML += msg + '<br>';
-    if(el.childNodes.length > 10) el.removeChild(el.firstChild);
-  }
-};
-
 // ── App icons — flat-design SVG on rounded-square bg + real PNGs ──
 const ICO = {
   phone:    "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 56'><rect width='56' height='56' rx='12' fill='%2300c853'/><path fill='white' d='M36 34.5c-.8-.8-4.2-3.5-5-3.5-.5 0-1.2.4-2.5 1.8-.4.4-.9.5-1.4.3-1.5-.7-4.4-3.6-5.1-5.1-.2-.5-.1-1 .3-1.4C23.7 25.3 24 24.6 24 24c0-.8-2.7-4.2-3.5-5-.5-.5-1-.5-1.5 0l-2 2C15.5 22.5 16 26 18 29c2.2 3.2 5.8 6.8 9 9 3 2 6.5 2.5 8-1l2-2c.5-.5.5-1 0-1.5z'/></svg>",
@@ -3841,7 +3832,6 @@ function closeBwSearch() {
 }
 
 function bwSearchType(k) {
-  debugLog('bwSearchType: ' + k);
   if (bwSearchText.length >= 80) return;
   bwSearchText += k;
   bwSearchFocus = 0;
@@ -4905,13 +4895,10 @@ function dialerKey(k) {
   renderDialer();
 }
 function pressNum(k) {
-  debugLog('pressNum: ' + k);
   if (booting || inputLocked) return;
   if (isSleepOpen() || view === 'lock') return;
   // When keyboard is active, route number keys through SimKeyboard
-  debugLog('SimKb active? ' + SimKeyboard.active);
   if (SimKeyboard.active && /^[0-9]$/.test(k)) {
-    debugLog('Routing to SimKb');
     SimKeyboard.handleKeydown(k, false);
     return;
   }
@@ -5224,8 +5211,8 @@ function doPowerOff() {
 // ── Keyboard System ──
 const SimKeyboard = {
   active: false,
-  mode: 'Abc',
-  modes: ['Abc', 'abc', 'ABC', '123'],
+  mode: 'Ab',
+  modes: ['Ab', 'ab', 'AB', '12'],
   target: null,
   lastKey: null,
   tapCount: 0,
@@ -5250,7 +5237,7 @@ const SimKeyboard = {
   activate(target) {
     this.target = target;
     this.active = true;
-    this.mode = 'Abc';
+    this.mode = 'Ab';
     this.composing = '';
     this.symOpen = false;
     this.updateUI();
@@ -5387,8 +5374,7 @@ const SimKeyboard = {
     }
     
     if (key.match(/^[0-9]$/)) {
-      debugLog('Kb handle: ' + key + ' mode: ' + this.mode);
-      if (this.mode === '123') {
+      if (this.mode === '12') {
         this.commitChar();
         if (this.target.type) this.target.type(key);
       } else {
@@ -5404,8 +5390,8 @@ const SimKeyboard = {
         let map = this.maps[key];
         let char = map[this.tapCount % map.length];
         
-        if (this.mode === 'ABC') char = char.toUpperCase();
-        else if (this.mode === 'Abc') {
+        if (this.mode === 'AB') char = char.toUpperCase();
+        else if (this.mode === 'Ab') {
           let text = (this.target.getText && this.target.getText()) || '';
           if (text.length === 0 || text.slice(-2).match(/[.!?]\s$/)) char = char.toUpperCase();
         }
