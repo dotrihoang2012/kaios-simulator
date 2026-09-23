@@ -4027,6 +4027,9 @@ function renderBwSearch() {
   const voiceRsk = `img=${BW_ICON_PATH}ic_google_home.png`;
   setSK('Cancel', bwSearchText ? 'Go' : '', voiceRsk, false);
   const bar = document.querySelector('.skbar');
+  bar.style.backgroundColor = '#cccccc';
+  bar.style.backgroundImage = 'none';
+  bar.style.color = '#323232';
 }
 
 function openBwSearch() {
@@ -4057,10 +4060,14 @@ function closeBwSearch() {
   document.getElementById('view-bw-search').classList.remove('visible');
   view = 'app-open';
   if (bwMode === 'web') {
-    document.querySelector('.skbar').style.display = 'none';
     document.getElementById('bw-nav').classList.add('visible');
     _bwTipsBadgeShow();
     if (!_bwScrollMode) _bwCursorShow();
+    setTimeout(() => {
+      if (view === 'app-open' && bwMode === 'web') {
+        document.querySelector('.skbar').style.display = 'none';
+      }
+    }, 200);
   } else {
     bwFocus = 0;
     renderBw();
@@ -5406,7 +5413,7 @@ function restoreSK() {
   else if (view === 'apps')     setSK('', 'Select', 'Options', false);
   else if (view === 'sidemenu') setSK('', 'Select', '', false);
   else if (view === 'app-open' && openApp?.type === 'folder')  setSK('', 'Select', 'Options', false);
-  else if (view === 'app-open' && openApp?.id === 'browser')   setSK('', 'Select', '', false);
+  else if (view === 'app-open' && openApp?.id === 'browser') { if (typeof bwMode !== 'undefined' && bwMode !== 'web') _setBwSK(); }
   else if (view === 'app-open' && !openApp?.url) {
     setSK('', '', '', false);
     const _sb = document.querySelector('.skbar');
