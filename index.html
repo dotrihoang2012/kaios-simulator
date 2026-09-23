@@ -1356,11 +1356,24 @@
     /* Mode indicator lives INSIDE the statusbar, top-left after carrier */
     #kb-mode { display: none; font-size: 1.2rem; font-weight: 600; color: #888; margin-left: 0.4rem; text-transform: none; }
     #kb-mode.visible { display: inline; }
-    #kb-symbols { display: none; position: absolute; bottom: var(--softkeybar-height); left: 0; right: 0; background: rgba(255,255,255,0.97); z-index: 9999; padding: 0.5rem; border-top: 0.2rem solid var(--highlight-color); box-shadow: 0 -0.2rem 0.5rem rgba(0,0,0,0.2); max-height: calc(32rem - var(--statusbar-height) - var(--softkeybar-height)); overflow-y: auto; }
-    #kb-symbols.visible { display: block; }
-    #kb-sym-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.2rem; }
-    .kb-sym-cell { height: 3rem; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #333; border: 0.1rem solid #ccc; border-radius: 0.2rem; background: #f0f0f0; }
-    .kb-sym-cell.selected { background: var(--highlight-color); color: #fff; border-color: var(--highlight-color); }
+    #kb-symbols { display: none; position: absolute; top: var(--statusbar-height); bottom: var(--softkeybar-height); left: 0; right: 0; z-index: 100000; flex-direction: column; justify-content: flex-end; overflow: hidden; }
+    #kb-symbols.visible { display: flex; }
+    #kb-symbols-bg { position: absolute; inset: 0; background-color: rgba(0, 0, 0, 0.85); opacity: 0; transition: opacity 200ms ease-in-out; }
+    #kb-sym-content { position: relative; width: 100%; transform: translateY(100%); transition: transform 200ms ease-in-out; }
+    #kb-symbols.show > #kb-symbols-bg { opacity: 1; }
+    #kb-symbols.show > #kb-sym-content { transform: translateY(0); }
+    #kb-recent-emoji { display: none; padding: 0 0.6rem; height: 4.8rem; background-color: rgba(0, 0, 0, 0.9); }
+    #kb-recent-emoji.visible { display: flex; }
+    .kb-recent-cell { display: flex; align-items: center; justify-content: center; width: calc(100% / 6); font-size: 2.4rem; color: #fff; }
+    .kb-recent-frame { display: flex; justify-content: center; align-items: center; width: 3.4rem; height: 3.4rem; border-radius: 1.2rem; box-sizing: border-box; }
+    .kb-recent-cell.selected > .kb-recent-frame { background-color: rgba(128, 0, 255, 0.4); border: solid 2.6px #8000ff; color: #fff; }
+    #kb-sym-grid { width: 100%; display: flex; flex-wrap: wrap; padding: 0.4rem 0; background-color: #e6e6e6; }
+    .kb-sym-cell { position: relative; display: flex; flex-direction: column; justify-content: center; box-sizing: border-box; width: calc(100% / 3); height: 5.2rem; background-color: #e6e6e6; }
+    .kb-sym-cell::after { position: absolute; top: 50%; left: 68%; transform: translateY(-50%); content: attr(data-number); font-size: 2rem; color: #8c8c8c; text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff; text-align: right; font-weight: 600; }
+    .kb-sym-frame { display: flex; justify-content: center; align-self: center; box-sizing: border-box; width: 4.2rem; height: 4.2rem; border-radius: 1.6rem; background-color: #fff; transition: background-color 100ms; }
+    .kb-sym-cell.selected > .kb-sym-frame { background-color: rgba(128, 0, 255, 0.4); border: solid 2.6px #8000ff; }
+    .kb-sym-text { align-self: center; font-size: 2.4rem; text-align: center; color: #323232; transition: color 100ms; }
+    .kb-sym-cell.selected > .kb-sym-frame > .kb-sym-text { color: #fff; }
     /* ═══════ APP ANIMATIONS ═══════ */
     @keyframes openApp {
       0%   { transform: scale(0.7); opacity: 0;}
@@ -1371,17 +1384,37 @@
       0%   { transform: scale(1); opacity: 1; }
       100% { transform: scale(0.7); opacity: 0; }
     }
+    @keyframes fadeAppIn {
+      0%   { opacity: 0; }
+      100% { opacity: 1; }
+    }
+    @keyframes fadeAppOut {
+      0%   { opacity: 1; }
+      100% { opacity: 0; }
+    }
     .app-opening {
       animation: openApp 0.15s forwards cubic-bezier(0.3, 0, 0.3, 1);
     }
     .app-closing {
       animation: closeApp 0.15s forwards cubic-bezier(0.4, 0, 1, 1);
     }
+    #statusbar.app-closing {
+      transform-origin: center 160px;
+    }
+    .skbar.app-closing {
+      transform-origin: center -130px;
+    }
+    .folder-opening {
+      animation: fadeAppIn 0.15s forwards cubic-bezier(0.3, 0, 0.3, 1);
+    }
+    .folder-closing {
+      animation: fadeAppOut 0.15s forwards cubic-bezier(0.4, 0, 1, 1);
+    }
 
     #splash-screen {
       position: absolute; top: 0; bottom: 0; left: 0; right: 0;
       background: #000;
-      z-index: 1000;
+      z-index: 100000;
       display: none;
       flex-direction: column;
       justify-content: center;
@@ -1822,7 +1855,11 @@ JAN 1</div>
     <!-- Keyboard Panel -->
     <!-- Keyboard Symbols Overlay -->
     <div id="kb-symbols">
-      <div id="kb-sym-grid"></div>
+      <div id="kb-symbols-bg"></div>
+      <div id="kb-sym-content">
+        <div id="kb-recent-emoji"></div>
+        <div id="kb-sym-grid"></div>
+      </div>
     </div>
 
     <!-- Soft key bar -->
@@ -1863,7 +1900,7 @@ JAN 1</div>
         <a id="rsk-anchor" class="anchor" onclick="pressRight()">
           <img src="./key/ic_RSK.png">
         </a>
-        <a id="endcall-anchor" class="anchor" onclick="pressEnd()">
+        <a id="endcall-anchor" class="anchor">
           <img src="./key/ic_endcall.png">
         </a>
       </div>
@@ -2051,6 +2088,8 @@ function setSK(l, c, r, dark) {
       el.innerHTML = `<i data-icon="${val.slice(5)}" style="font-size:1.4rem;line-height:1;vertical-align:middle"></i>`;
     } else if (val && val.startsWith('img=')) {
       el.innerHTML = `<img src="${val.slice(4)}" style="height:2.2rem;width:2.2rem;object-fit:contain;vertical-align:middle">`;
+    } else if (val && val.startsWith('<')) {
+      el.innerHTML = val;
     } else {
       el.textContent = val;
     }
@@ -2060,6 +2099,7 @@ function setSK(l, c, r, dark) {
   setBtn('sk-r', r);
   const bar = document.querySelector('.skbar');
   if (!bar.classList.contains('sleep-mode')) {
+    bar.style.backgroundColor = dark ? '#fff' : 'transparent';
     bar.style.backgroundImage = dark ? 'none' : 'linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.45))';
     bar.style.color = dark ? '#333' : '#fff';
   }
@@ -2130,6 +2170,16 @@ function renderSidemenu() {
 //  VIEW TRANSITIONS
 // ════════════════════════════════════════
 function goHome() {
+  if (isAppDialogOpen()) _appConfirmClose();
+  if (isRenameOpen()) _renameCancel();
+  closeSleepMenu();
+  if (isStOpen()) stCloseSettings();
+  if (isOMOpen()) closeOM();
+  if (isBwMenuOpen()) _bwMenuClose();
+  if (isBwSCOpen()) closeBwShortcut();
+  if (isBwHistOpen()) closeBwHistory();
+  if (view === 'browser-search') closeBwSearch();
+  
   document.querySelectorAll('.single-previews').forEach(e => e.remove());
   ['ch1','ch2','cm1','cm2'].forEach(id => document.getElementById(id)?.classList.remove('digit-in'));
   document.getElementById('view-home').classList.remove('sidemenu-open');
@@ -2140,6 +2190,14 @@ function goHome() {
   smFocus = 0;
   renderSidemenu();
   setSK('Notices', 'icon:all-apps', 'Contacts', false);
+  const bar = document.querySelector('.skbar');
+  if (bar) bar.style.backgroundColor = '';
+  const _sb = document.getElementById('statusbar');
+  if (_sb) {
+    _sb.classList.remove('bw-sb');
+    _sb.style.background = '';
+    _sb.style.color = '';
+  }
   lbl('Home screen');
 }
 
@@ -2365,8 +2423,38 @@ function stKeyFromEvent(e) {
   if (e.key && e.key.length === 1) stKey(e.key);
 }
 function pressEnd() {
-  if (booting || inputLocked || _splashTimer) return;
+  if (booting || inputLocked) return;
+  if (typeof SimKeyboard !== 'undefined' && SimKeyboard.active) { if (SimKeyboard.handleKeydown('Backspace')) return; }
+  if (_splashTimer) {
+    clearTimeout(_splashTimer);
+    _splashTimer = null;
+    animateCloseApp('splash-screen', () => {
+      view = 'home';
+      goHome();
+    });
+    return;
+  }
   if (isStOpen()) { stCloseSettings(); return; }
+  if (isSysDialogOpen()) { closeDialog(false); return; }
+  if (isAppDialogOpen()) { _appConfirmClose(); return; }
+  if (isRenameOpen()) { _renameCancel(); return; }
+  if (view === 'browser-search') { closeBwSearch(); return; }
+  
+  // Instant minimize (Go Home) for any open app
+  if (view === 'app-open') {
+    if (bwMode === 'web' && document.getElementById('bw-iframe')) {
+      handleBwBack('END KEY');
+      return;
+    }
+    animateCloseApp('view-open-app', () => {
+      view = 'home';
+      goHome();
+    });
+    return;
+  }
+  
+  // Always jump to home from any other screen
+  if (view !== 'home' && view !== 'lock') goHome();
 }
 
 let _splashTimer = null;
@@ -2374,6 +2462,7 @@ function openAppView(app) {
   if (!app) app = curApp();
   if (!app) return;
   fromApps = (view === 'apps');
+  const isSameApp = (openApp === app);
   openApp  = app;
   view     = 'app-open';
   
@@ -2384,6 +2473,16 @@ function openAppView(app) {
   const hdr = document.getElementById('oa-header');
   hdr.classList.remove('folder-hdr');
   hdr.style.display = '';
+
+  const isFolder = app.type === 'folder';
+  if (isFolder) {
+    document.getElementById('view-open-app').classList.add('visible', 'folder-opening');
+    setTimeout(() => {
+      document.getElementById('view-open-app').classList.remove('folder-opening');
+    }, 150);
+    _finishOpenAppView(app, isSameApp);
+    return;
+  }
 
   const splash = document.getElementById('splash-screen');
   const splashIcon = document.getElementById('splash-icon');
@@ -2408,11 +2507,11 @@ function openAppView(app) {
       return; // user exited early
     }
     splash.classList.remove('visible', 'app-opening');
-    _finishOpenAppView(app);
+    _finishOpenAppView(app, isSameApp);
   }, 1500);
 }
 
-function _finishOpenAppView(app) {
+function _finishOpenAppView(app, isSameApp) {
   document.getElementById('statusbar').classList.remove('bw-sb');
   const bar = document.querySelector('.skbar');
   bar.style.backgroundColor = ''; bar.style.backgroundImage = ''; bar.style.color = '';
@@ -2425,15 +2524,30 @@ function _finishOpenAppView(app) {
     return;
   }
   if (app.id === 'browser') {
-    bwFocus = 0;
-    bwLastUrl = '';   // fresh open: Return chỉ hiện sau khi từ web mode nhấn Home
-    hdr.style.display = 'none';
-    buildBrowserView();
+    if (bwMode === 'web' && document.getElementById('bw-iframe')) {
+      document.getElementById('bw-webview-wrap').classList.add('visible');
+      document.getElementById('view-open-app').classList.add('visible');
+      document.getElementById('statusbar').classList.remove('bw-sb');
+      document.querySelector('.skbar').style.display = 'none';
+    } else {
+      bwFocus = 0;
+      bwLastUrl = ''; 
+      hdr.style.display = 'none';
+      bwMode = 'home';
+      buildBrowserView();
+    }
   } else if (app.url) {
     hdr.style.display = 'none';
     document.getElementById('oa-icon').style.cssText = '';
     document.getElementById('oa-name').textContent = '';
-    openBwWebView(app.url);
+    if (bwMode === 'web' && document.getElementById('bw-iframe') && isSameApp) {
+      document.getElementById('bw-webview-wrap').classList.add('visible');
+      document.getElementById('view-open-app').classList.add('visible');
+      document.querySelector('.skbar').style.display = 'none';
+      if (!_bwScrollMode) _bwCursorShow();
+    } else {
+      openBwWebView(app.url);
+    }
   } else if (app.type === 'folder') {
     folderFocus = 0;
     buildFolderView(app);
@@ -3532,6 +3646,54 @@ function _bwNavHome() {
   renderBw();
 }
 
+let _bwBackToastTimer = null;
+let _bwBackToastCount = 0;
+
+function handleBwBack(keyName = 'BACK') {
+  const wv = document.getElementById('bw-iframe');
+  
+  if (wv && wv.tagName === 'WEBVIEW') {
+    if (wv.canGoBack()) {
+      wv.goBack();
+      return;
+    }
+  } else if (wv && wv.tagName === 'IFRAME') {
+    try {
+      if (wv.contentWindow.history.length > 1) {
+        wv.contentWindow.history.back();
+        return;
+      }
+    } catch(e) {}
+  }
+  
+  if (_bwBackToastCount === 0) {
+    _bwBackToastCount = 1;
+    showToast(`Press ${keyName} again to exit`);
+    _bwBackToastTimer = setTimeout(() => {
+      _bwBackToastCount = 0;
+    }, 3000);
+  } else {
+    clearTimeout(_bwBackToastTimer);
+    _bwBackToastCount = 0;
+    if (openApp?.url) {
+      animateCloseApp('view-open-app', () => { closeBwWebView(); });
+    } else {
+      closeBwWebView();
+    }
+  }
+}
+
+function _minimizeBrowser() {
+  animateCloseApp('view-open-app', () => {
+    document.getElementById('bw-webview-wrap').classList.remove('visible');
+    if (document.activeElement && document.activeElement !== document.body) {
+      try { document.activeElement.blur(); } catch(e) {}
+    }
+    view = 'home';
+    goHome();
+  });
+}
+
 // Back/End key: đóng và về đúng màn hình (browser home nếu là browser app, main home nếu là URL app)
 function closeBwWebView() {
   if (bwCurrentUrl) bwLastUrl = bwCurrentUrl;
@@ -3539,7 +3701,8 @@ function closeBwWebView() {
   if (openApp?.id === 'browser') {
     bwFocus = 0;
     document.getElementById('statusbar').classList.add('bw-sb');
-    renderBw();
+    bwMode = 'home';
+    buildBrowserView();
   } else {
     goHome();
   }
@@ -3938,6 +4101,16 @@ function bwSearchNav(dir) {
   const max = bwSuggestions.length;
   if (dir === 'down') bwSearchFocus = bwSearchFocus >= max ? 0 : bwSearchFocus + 1;
   if (dir === 'up')   bwSearchFocus = bwSearchFocus <= 0  ? max : bwSearchFocus - 1;
+  if (bwSearchFocus === 0 && typeof SimKeyboard !== 'undefined' && !SimKeyboard.active) {
+    SimKeyboard.activate({
+      type: (ch) => bwSearchType(ch),
+      backspace: () => bwSearchBackspace(),
+      getText: () => bwSearchText,
+      moveCursor: (dir) => bwSearchMoveCursor(dir)
+    });
+  } else if (bwSearchFocus > 0 && typeof SimKeyboard !== 'undefined' && SimKeyboard.active) {
+    SimKeyboard.deactivate();
+  }
   renderBwSearch();
   const focused = document.querySelector('#bws-results .bws-row.focused');
   if (focused) focused.scrollIntoView({ block: 'nearest' });
@@ -4232,6 +4405,9 @@ function nav(dir) {
 
 function pressOK() {
   if (booting || inputLocked || _splashTimer) return;
+  if (typeof SimKeyboard !== 'undefined' && SimKeyboard.active) {
+    if (SimKeyboard.handleKeydown('Enter')) return;
+  }
   if (isSleepOpen()) {
     if (view === 'lock') { sleepFocus === 0 ? doRestart() : doPowerOff(); }
     else { if (sleepFocus === 0) doLock(); else if (sleepFocus === 1) doRestart(); else doPowerOff(); }
@@ -4279,7 +4455,9 @@ function pressOK() {
 
 // RSK
 function pressRight() {
-  if (booting || inputLocked || _splashTimer) return;
+  if (booting || inputLocked) return;
+  if (typeof SimKeyboard !== 'undefined' && SimKeyboard.active) { if (SimKeyboard.handleKeydown('F2')) return; }
+  if (_splashTimer) { pressBack(); return; }
   if (isSleepOpen())       { closeSleepMenu();                return; }
   if (view === 'lock')     { return; }
   if (isSysDialogOpen())   { if (!_sdCenterOk) closeDialog(true); return; }
@@ -4323,20 +4501,39 @@ function animateCloseApp(elId, cb) {
     if (ae && ae.tagName === 'IFRAME') ae = ae.contentDocument?.activeElement;
     if (ae && ae.blur) ae.blur();
   } catch(e) {}
+  const isFolder = openApp && openApp.type === 'folder';
+  const closeCls = isFolder ? 'folder-closing' : 'app-closing';
   const sb = document.getElementById('statusbar');
   const sk = document.querySelector('.skbar');
-  el.classList.add('app-closing');
-  if (sb) sb.classList.add('app-closing');
-  if (sk) sk.classList.add('app-closing');
+  el.classList.remove('app-opening', 'folder-opening');
+  el.classList.add(closeCls);
+  if (sb) sb.classList.add(closeCls);
+  if (sk) sk.classList.add(closeCls);
   setTimeout(() => {
-    el.classList.remove('app-closing', 'visible');
-    if (sb) sb.classList.remove('app-closing');
-    if (sk) sk.classList.remove('app-closing');
+    el.classList.remove(closeCls, 'visible');
+    if (sb) sb.classList.remove(closeCls);
+    if (sk) sk.classList.remove(closeCls);
     cb();
   }, 150);
 }
 
 function pressBack() {
+  if (typeof SimKeyboard !== 'undefined' && SimKeyboard.active) { if (SimKeyboard.handleKeydown('Backspace')) return; }
+  if (_splashTimer) {
+    clearTimeout(_splashTimer);
+    _splashTimer = null;
+    animateCloseApp('splash-screen', () => {
+      if (fromApps) {
+        view = 'apps';
+        if (appViewMode === 'list')        buildList();
+        else if (appViewMode === 'single') buildSingle();
+        else { setSK('', 'Select', 'Options', false); lbl('Apps - ' + (curApp()?.name || '')); }
+      } else {
+        goHome();
+      }
+    });
+    return;
+  }
   if (isSleepOpen())               { closeSleepMenu();  return; }
   if (view === 'lock')             { return; }
   if (isSysDialogOpen())           { closeDialog(false); return; }
@@ -4352,8 +4549,8 @@ function pressBack() {
   if (isBwVolOpen())               { return; }
   if (view === 'browser-search')   { closeBwSearch();   return; }
   if (view === 'app-open' && openApp?.id === 'browser' && isBwDialogOpen()) { closeBwDialog(); return; }
-  if (view === 'app-open' && openApp?.id === 'browser' && bwMode === 'web') { closeBwWebView(); return; }
-  if (view === 'app-open' && openApp?.url && bwMode === 'web') { closeBwWebView(); return; }
+  if (view === 'app-open' && openApp?.id === 'browser' && bwMode === 'web') { handleBwBack(); return; }
+  if (view === 'app-open' && openApp?.url && bwMode === 'web') { handleBwBack(); return; }
   if (view === 'instant-settings') { closeIS();         return; }
   if (view === 'dialer')           { dialerBack();      return; }
   if (view === 'sidemenu')         { goHome();          return; }
@@ -4385,7 +4582,9 @@ function pressBack() {
 
 // LSK
 function softLeft() {
-  if (booting || inputLocked || _splashTimer) return;
+  if (booting || inputLocked) return;
+  if (typeof SimKeyboard !== 'undefined' && SimKeyboard.active) { if (SimKeyboard.handleKeydown('F1')) return; }
+  if (_splashTimer) { pressBack(); return; }
   if (isSleepOpen())               { closeSleepMenu();                       return; }
   if (view === 'lock')             { return; }
   if (isSysDialogOpen())           { if (!_sdCenterOk) closeDialog(false);   return; }
@@ -5324,7 +5523,11 @@ function doPowerOff() {
     e.preventDefault();
     if (booting) return;
     if (inputLocked) { startPowerOn(); return; }
-    _powerTimer = setTimeout(() => { _powerTimer = null; openSleepMenu(); }, 500);
+    _powerTimer = setTimeout(() => { 
+      _powerTimer = null; 
+      if (window.SimKeyboard && window.SimKeyboard.active && window.SimKeyboard.symOpen) return;
+      openSleepMenu(); 
+    }, 500);
   });
   btn.addEventListener('mouseup', () => {
     if (booting) return;
@@ -5377,7 +5580,9 @@ const SimKeyboard = {
     '9': ['w', 'x', 'y', 'z', '9'],
     '0': [' ', '0']
   },
-  symbols: ['.', ',', '?', '!', '@', '-', '+', '_', '=', ';', ':', '/', '(', ')', '#', '*', '"', "'", '&', '%', '$', '€', '£', '¥', '~'],
+  symbols: ['.', ',', '@', '!', '?', '-', ':', '&', "'", '(', ')', '#', '+', '=', '/', '¡', '¿', '*', ';', '$', '"', '<', '>', '%', '^', '_', '\\', '~', '`', '|', '[', ']', '©', '{', '}', '®', '£', '¥', '€'],
+  emojis: ['😃','😄','😆','😅','😂','😉','😇','😍','😷','🤮','😎','🙁','😨','😰','😭','😱','😡','💋','👋','👌','🤘','👍','🙏','🤷','🐶','🐱','🦄','🐷','🐸','🐟','🐌','🦋','🌸','🌹','🌴','🍀','🍋','🍎','🍒','🍓','🎂','🍰','☕','🍾','🍷','🍺','🥂','🔪','🌎','🚗','🚀','🌙','🌞','⭐','🎁','🏆','💍','🎵','❤️','💯'],
+  recentEmojis: ['😃', '😂', '😡', '👍', '❤️', '💯'],
   
   activate(target) {
     this.target = target;
@@ -5424,47 +5629,178 @@ const SimKeyboard = {
     this.commitChar();
     this.symOpen = true;
     this.symIndex = 0;
-    const grid = document.getElementById('kb-sym-grid');
-    grid.innerHTML = '';
-    this.symbols.forEach((sym, i) => {
-      const el = document.createElement('div');
-      el.className = 'kb-sym-cell' + (i === 0 ? ' selected' : '');
-      el.textContent = sym;
-      grid.appendChild(el);
+    this.isEmoji = false;
+    this.symFocusRecent = false;
+    this.symRecentIndex = 0;
+    const bar = document.querySelector('.skbar');
+    this.savedSK = [
+      document.getElementById('sk-l').textContent || document.getElementById('sk-l').innerHTML,
+      document.getElementById('sk-c').textContent || document.getElementById('sk-c').innerHTML,
+      document.getElementById('sk-r').textContent || document.getElementById('sk-r').innerHTML,
+      bar.style.backgroundColor,
+      bar.style.backgroundImage,
+      bar.style.color
+    ];
+    this.renderSymPage();
+    const symEl = document.getElementById('kb-symbols');
+    symEl.classList.add('visible');
+    
+    // Trigger animation
+    requestAnimationFrame(() => {
+      symEl.classList.add('show');
     });
-    document.getElementById('kb-symbols').classList.add('visible');
   },
 
   closeSymbols() {
     this.symOpen = false;
-    document.getElementById('kb-symbols').classList.remove('visible');
+    const symEl = document.getElementById('kb-symbols');
+    symEl.classList.remove('show');
+    setTimeout(() => {
+      if (!this.symOpen) symEl.classList.remove('visible');
+    }, 200);
+    
+    // Restore softkeys
+    if (this.savedSK) {
+      setSK(this.savedSK[0], this.savedSK[1], this.savedSK[2], false); // dummy false
+      const bar = document.querySelector('.skbar');
+      bar.style.backgroundColor = this.savedSK[3];
+      bar.style.backgroundImage = this.savedSK[4];
+      bar.style.color = this.savedSK[5];
+      this.savedSK = null;
+    }
+  },
+
+  renderSymPage() {
+    const grid = document.getElementById('kb-sym-grid');
+    grid.innerHTML = '';
+    const items = this.isEmoji ? this.emojis : this.symbols;
+    const page = Math.floor(this.symIndex / 12);
+    const totalPages = Math.ceil(items.length / 12);
+    const start = page * 12;
+    const hints = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '0', '#'];
+    
+    for (let i = 0; i < 12; i++) {
+      const idx = start + i;
+      const el = document.createElement('div');
+      el.className = 'kb-sym-cell' + ((!this.symFocusRecent && idx === this.symIndex) ? ' selected' : '');
+      
+      const frame = document.createElement('div');
+      if (idx < items.length) {
+        el.setAttribute('data-number', hints[i]);
+        frame.className = 'kb-sym-frame';
+        const text = document.createElement('div');
+        text.className = 'kb-sym-text';
+        text.textContent = items[idx];
+        frame.appendChild(text);
+      }
+      el.appendChild(frame);
+      grid.appendChild(el);
+    }
+    
+    const recentBar = document.getElementById('kb-recent-emoji');
+    recentBar.classList.add('visible');
+    recentBar.innerHTML = '';
+    for (let i = 0; i < 6; i++) {
+      const rEl = document.createElement('div');
+      rEl.className = 'kb-recent-cell' + ((this.symFocusRecent && i === this.symRecentIndex) ? ' selected' : '');
+      const rFrame = document.createElement('div');
+      rFrame.className = 'kb-recent-frame';
+      rFrame.textContent = this.recentEmojis[i] || '';
+      rEl.appendChild(rFrame);
+      recentBar.appendChild(rEl);
+    }
+    
+    const lsk = this.isEmoji ? 'Symbols' : '😀❤️👍';
+    setSK(lsk, 'SELECT', `${page + 1}/${totalPages}`, true);
+    document.querySelector('.skbar').style.backgroundColor = '#cccccc';
   },
 
   handleSymKey(key) {
+    const items = this.isEmoji ? this.emojis : this.symbols;
+    const hints = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '0', '#'];
+    
     if (key === 'Enter') {
-      this.target.type(this.symbols[this.symIndex]);
-      this.closeSymbols();
+      let typed = '';
+      if (this.symFocusRecent) {
+        typed = this.recentEmojis[this.symRecentIndex];
+      } else {
+        typed = items[this.symIndex];
+      }
+      if (typed) {
+        if (this.isEmoji) {
+           this.recentEmojis = [typed, ...this.recentEmojis.filter(e => e !== typed)].slice(0, 6);
+        }
+        this.target.type(typed);
+        this.closeSymbols();
+      }
     } else if (key === 'Escape' || key === 'Backspace') {
       this.closeSymbols();
-    } else if (key === 'ArrowRight') {
-      this.symIndex = (this.symIndex + 1) % this.symbols.length;
-      this.updateSymUI();
-    } else if (key === 'ArrowLeft') {
-      this.symIndex = (this.symIndex - 1 + this.symbols.length) % this.symbols.length;
-      this.updateSymUI();
-    } else if (key === 'ArrowDown') {
-      this.symIndex = Math.min(this.symIndex + 5, this.symbols.length - 1);
-      this.updateSymUI();
-    } else if (key === 'ArrowUp') {
-      this.symIndex = Math.max(this.symIndex - 5, 0);
-      this.updateSymUI();
+    } else if (key === 'F1') {
+      this.isEmoji = !this.isEmoji;
+      this.symIndex = 0;
+      this.symFocusRecent = false;
+      this.renderSymPage();
+    } else if (key === 'F2') {
+      const page = Math.floor(this.symIndex / 12);
+      const totalPages = Math.ceil(items.length / 12);
+      this.symIndex = ((page + 1) % totalPages) * 12;
+      this.symFocusRecent = false;
+      this.renderSymPage();
+    } else if (hints.indexOf(key) !== -1) {
+      const page = Math.floor(this.symIndex / 12);
+      const idx = page * 12 + hints.indexOf(key);
+      if (idx < items.length) {
+        const typed = items[idx];
+        if (this.isEmoji) {
+           this.recentEmojis = [typed, ...this.recentEmojis.filter(e => e !== typed)].slice(0, 6);
+        }
+        this.target.type(typed);
+        this.closeSymbols();
+      }
+    } else {
+      if (this.symFocusRecent) {
+        if (key === 'ArrowRight') this.symRecentIndex = (this.symRecentIndex + 1) % 6;
+        else if (key === 'ArrowLeft') this.symRecentIndex = (this.symRecentIndex + 5) % 6;
+        else if (key === 'ArrowDown') this.symFocusRecent = false;
+        this.updateSymUI();
+      } else {
+        let oldPage = Math.floor(this.symIndex / 12);
+        if (key === 'ArrowRight') {
+          this.symIndex = (this.symIndex + 1) % items.length;
+        } else if (key === 'ArrowLeft') {
+          this.symIndex = (this.symIndex - 1 + items.length) % items.length;
+        } else if (key === 'ArrowDown') {
+          this.symIndex = Math.min(this.symIndex + 3, items.length - 1);
+        } else if (key === 'ArrowUp') {
+          if (this.symIndex % 12 < 3) {
+            this.symFocusRecent = true;
+          } else {
+            this.symIndex = Math.max(this.symIndex - 3, 0);
+          }
+        }
+        let newPage = Math.floor(this.symIndex / 12);
+        if (oldPage !== newPage || this.symFocusRecent) {
+          this.renderSymPage();
+        } else {
+          this.updateSymUI();
+        }
+      }
     }
   },
 
   updateSymUI() {
+    const page = Math.floor(this.symIndex / 12);
+    const start = page * 12;
     const cells = document.querySelectorAll('#kb-sym-grid .kb-sym-cell');
     cells.forEach((el, i) => {
-      if (i === this.symIndex) el.classList.add('selected');
+      const idx = start + i;
+      if (!this.symFocusRecent && idx === this.symIndex) el.classList.add('selected');
+      else el.classList.remove('selected');
+    });
+    
+    const rCells = document.querySelectorAll('#kb-recent-emoji .kb-recent-cell');
+    rCells.forEach((el, i) => {
+      if (this.symFocusRecent && i === this.symRecentIndex) el.classList.add('selected');
       else el.classList.remove('selected');
     });
   },
@@ -5572,7 +5908,7 @@ const SimKeyboard = {
     return false;
   }
 };
-
+window.SimKeyboard = SimKeyboard;
 // Prevent ALL simulator control buttons from stealing focus when clicked
 // This is critical: clicking numpad/softkeys must NOT cause focusout on text inputs
 document.getElementById('controls').addEventListener('mousedown', e => { e.preventDefault(); });
@@ -5618,12 +5954,8 @@ document.addEventListener('focusout', e => {
 // ── Keyboard ──
 document.addEventListener('keydown', e => {
   if (inputLocked || booting || _splashTimer) {
-    if (e.key === 'Escape' || e.key === 'Backspace') {
-      if (_splashTimer) { clearTimeout(_splashTimer); _splashTimer = null; }
-      cancelPowerOn();
-      pressBack();
-      return;
-    }
+    if (e.key === 'Escape' || e.key === 'Backspace') { cancelPowerOn(); pressBack(); return; }
+    if (e.key === 'F8') { cancelPowerOn(); pressEnd(); return; }
     e.preventDefault();
     if (inputLocked && e.key === 'F8') startPowerOn();
     return;
@@ -5638,11 +5970,26 @@ document.addEventListener('keydown', e => {
 
   // Allow native inputs (like in Settings app) to handle typing and Backspace/Arrows
   let ae = document.activeElement;
+  let doc = document;
   if (ae && ae.tagName === 'IFRAME') {
-    try { ae = ae.contentDocument.activeElement; } catch(e) {}
+    try { doc = ae.contentDocument; ae = doc.activeElement; } catch(e) {}
   }
+  
+  if (ae && ae.tagName !== 'INPUT' && ae.tagName !== 'TEXTAREA' && !ae.isContentEditable) {
+    let focusEl = doc.querySelector('.focus');
+    if (!focusEl && ae !== doc.body) focusEl = ae;
+    if (focusEl) {
+      let inp = focusEl.querySelector('input, textarea');
+      if (inp && (e.key.length === 1 || e.key === 'Backspace')) {
+        inp.focus(); ae = inp;
+      } else if (inp && e.key === 'Enter') {
+        inp.focus(); e.preventDefault(); return;
+      }
+    }
+  }
+
   if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA' || ae.isContentEditable)) {
-    if (e.key.length === 1 || e.key.startsWith('Arrow') || e.key === 'Backspace') return;
+    if (e.key.length === 1 || e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'Backspace') return;
   }
 
   // Sleep/power menu is a top-level modal — capture ALL keys before anything else
