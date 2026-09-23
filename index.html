@@ -2734,12 +2734,6 @@ function showDialog(o) {
   const c = document.getElementById('sys-dialog-content');
   c.textContent = o.content || '';
   if (o.sub) { const p = document.createElement('div'); p.className = 'sys-dialog-sub'; p.textContent = o.sub; c.appendChild(p); }
-  if (o.input !== undefined) {
-    const inp = document.createElement('input');
-    inp.type = 'text';
-    inp.value = o.input;
-    c.appendChild(inp);
-  }
   const cancel = o.cancel !== undefined ? o.cancel : 'Cancel';
   const ok = o.ok !== undefined ? o.ok : 'OK';
   _sdCenterOk = !cancel;
@@ -6183,7 +6177,6 @@ updateSbIcons();
       header: 'Welcome',
       content: 'Welcome to KaiOS 3.0 Simulator on Browser!',
       sub: 'If any bugs exist, email me at: dotrihoang2012@gmail.com',
-      input: 'Settings app is under constructions, do not press it!',
       cancel: '', ok: 'Got it'
     }), 500);
   }, { once: true });
