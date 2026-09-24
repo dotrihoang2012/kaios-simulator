@@ -4540,7 +4540,15 @@ function animateCloseApp(elId, cb) {
     } else if (ae && ae.blur) {
       ae.blur();
     }
-    window.focus();
+    let fg = document.getElementById('focus-grabber');
+    if (!fg) {
+      fg = document.createElement('input');
+      fg.id = 'focus-grabber';
+      fg.style.cssText = 'position:absolute;top:-999px;opacity:0;';
+      document.body.appendChild(fg);
+    }
+    fg.focus();
+    fg.blur();
   } catch(e) {}
   const isFolder = openApp && openApp.type === 'folder';
   const closeCls = isFolder ? 'folder-closing' : 'app-closing';
