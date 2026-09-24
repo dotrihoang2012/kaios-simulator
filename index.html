@@ -1374,6 +1374,11 @@
     .kb-sym-cell.selected > .kb-sym-frame { background-color: rgba(128, 0, 255, 0.4); border: solid 2.6px #8000ff; }
     .kb-sym-text { align-self: center; font-size: 2.4rem; text-align: center; color: #323232; transition: color 100ms; }
     .kb-sym-cell.selected > .kb-sym-frame > .kb-sym-text { color: #fff; }
+    
+    #kb-candidates { display: none; position: absolute; flex-direction: row; justify-content: flex-start; align-items: center; width: 100%; height: var(--softkeybar-height); bottom: 0; background-color: #cccccc; z-index: 10000; overflow: hidden; }
+    #kb-candidates.visible { display: flex; }
+    .kb-cand-item { display: flex; flex-direction: row; justify-content: flex-start; align-items: center; box-sizing: border-box; height: 100%; width: max-content; padding: 0 1rem; color: #323232; font-size: 1.7rem; font-variant-numeric: normal; word-break: keep-all; }
+    .kb-cand-item.current { color: #fff; background-color: #8000ff; }
     /* ═══════ APP ANIMATIONS ═══════ */
     @keyframes openApp {
       0%   { transform: scale(0.7); opacity: 0;}
@@ -1863,6 +1868,7 @@ JAN 1</div>
       </div>
     </div>
 
+    <div id="kb-candidates"></div>
     <!-- Soft key bar -->
     <div class="skbar">
       <button class="sk" id="sk-l" onclick="softLeft()"></button>
@@ -5620,6 +5626,37 @@ const SimKeyboard = {
     this.lastKey = null;
     this.tapCount = 0;
     if (this.idleTimer) { clearTimeout(this.idleTimer); this.idleTimer = null; }
+    this.updateCandidates();
+  },
+
+  updateCandidates() {
+    const candEl = document.getElementById('kb-candidates');
+    if (!candEl) return;
+    if (this.lastKey && this.mode !== '123' && !this.symOpen) {
+      let map = this.maps[this.lastKey];
+      if (!map) return;
+      candEl.innerHTML = '';
+      let isCapitalized = false;
+      if (this.mode === 'ABC') isCapitalized = true;
+      else if (this.mode === 'Abc') {
+        let text = (this.target && this.target.getText && this.target.getText()) || '';
+        // If we are composing, we should remove the composing char's length to check the real context
+        if (this.composing && text.length > 0) text = text.slice(0, -1);
+        if (text.length === 0 || text.slice(-2).match(/[.!?]\s$/) || text.match(/^[.!?]$/)) isCapitalized = true;
+      }
+      map.forEach((c, idx) => {
+        let char = c;
+        if (isCapitalized) char = char.toUpperCase();
+        const item = document.createElement('div');
+        item.className = 'kb-cand-item' + ((this.tapCount % map.length) === idx ? ' current' : '');
+        item.textContent = char;
+        candEl.appendChild(item);
+      });
+      candEl.classList.add('visible');
+    } else {
+      candEl.classList.remove('visible');
+      candEl.innerHTML = '';
+    }
   },
 
   cycleMode() {
@@ -5898,6 +5935,7 @@ const SimKeyboard = {
         }
         this.composing = char;
         if (this.target.type) this.target.type(this.composing);
+        this.updateCandidates();
 
         this.idleTimer = setTimeout(() => {
           this.commitChar();
