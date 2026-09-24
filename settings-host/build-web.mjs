@@ -80,7 +80,7 @@ for (const rel of [
   const smf = path.join(OUT, 'settings/js/utils/service_manager.js');
   let sm = fs.readFileSync(smf, 'utf8');
   sm = sm.replace('let l10n=null;', 'let _apiL10n=null;');
-  sm = sm.replace('l10n=window.api.l10n', '_apiL10n=window.api.l10n');
+  sm = sm.replace('l10n=window.api.l10n', '_apiL10n=navigator.mozL10n');
   fs.writeFileSync(smf, sm);
   console.log('  ✓ service_manager.js — let l10n → let _apiL10n');
 }
@@ -95,15 +95,21 @@ console.log('· patch settings.js — pending-nav queue for early clicks');
 {
   const sf = path.join(OUT, 'settings/js/modules/settings.js');
   let s = fs.readFileSync(sf, 'utf8');
+    let mf = path.join(OUT, 'settings/js/main.js');
+    let ms = fs.readFileSync(mf, 'utf8');
+    ms = ms.replace('const Settings =', 'var Settings =');
+    fs.writeFileSync(mf, ms);
 
   // Add _pendingNav field after isBackHref
-  s = s.replace(
+  s = s.replace('const Settings =', 'var Settings =');
+    s = s.replace(
     'isBackHref: false,',
     'isBackHref: false,\n  _pendingNav: null,'
   );
 
   // Guard the navigate call + queue pending
-  s = s.replace(
+  s = s.replace('const Settings =', 'var Settings =');
+    s = s.replace(
     'this.currentPanel = hash;\n    this.SettingsService.navigate(panelID, config);',
     'this.currentPanel = hash;\n' +
     '    if (this.SettingsService) {\n' +
@@ -114,7 +120,8 @@ console.log('· patch settings.js — pending-nav queue for early clicks');
   );
 
   // Add pending-nav replay after SettingsService is assigned in init()
-  s = s.replace(
+  s = s.replace('const Settings =', 'var Settings =');
+    s = s.replace(
     'this.SettingsService = options.SettingsService;\n    this.ScreenLayout = options.ScreenLayout;',
     'this.SettingsService = options.SettingsService;\n' +
     '    this.ScreenLayout = options.ScreenLayout;\n\n' +
@@ -133,7 +140,8 @@ console.log('· patch settings.js — pending-nav queue for early clicks');
   // pend-navigate request. After pending navigate('wifi') starts (async), a
   // synchronous navigate('root') queues behind it; when wifi finishes, root
   // replays → back to root before user sees the sub-panel.
-  s = s.replace(
+  s = s.replace('const Settings =', 'var Settings =');
+    s = s.replace(
     'this.setCurrentPanel(window.LaunchContext.initialPanelId);',
     'if (!_hadPending) {\n      this.setCurrentPanel(window.LaunchContext.initialPanelId);\n    }'
   );
@@ -170,6 +178,10 @@ console.log('· patch startup.js — loadAlameda before l10n, safe stub');
 {
   const sf = path.join(OUT, 'settings/js/startup.js');
   let s = fs.readFileSync(sf, 'utf8');
+    let mf = path.join(OUT, 'settings/js/main.js');
+    let ms = fs.readFileSync(mf, 'utf8');
+    ms = ms.replace('const Settings =', 'var Settings =');
+    fs.writeFileSync(mf, ms);
 
   const oldBlock = [
     '        l10n.once(function l10nDone() {',
@@ -198,7 +210,7 @@ console.log('· patch startup.js — loadAlameda before l10n, safe stub');
     '        this.loadAlameda();',
     '        (function() {',
     '          try {',
-    '            var L = window.l10n || { once: function(cb) { cb(); }, get: function() { return \'\'; } };',
+    '            window.api = window.api || {}; window.api.l10n = navigator.mozL10n || window.l10n; var L = window.l10n || { once: function(cb) { cb(); }, get: function() { return \'\'; } };',
     '            L.once(function l10nDone() {',
     '              var codeNode = document.querySelector(\'.current\');',
     '              if (!codeNode) return;',
@@ -226,6 +238,7 @@ console.log('· patch startup.js — loadAlameda before l10n, safe stub');
   ].join('\n');
 
   if (s.includes(oldBlock)) {
+    s = s.replace('const Settings =', 'var Settings =');
     s = s.replace(oldBlock, newBlock);
     fs.writeFileSync(sf, s);
     console.log('  ✓ startup.js patched');
@@ -262,7 +275,8 @@ console.log('· patch startup.js — loadAlameda before l10n, safe stub');
         '        this.loadAlameda();',
       ].join('\n');
       if (s.includes(midOld)) {
-        s = s.replace(midOld, newBlock);
+        s = s.replace('const Settings =', 'var Settings =');
+    s = s.replace(midOld, newBlock);
         fs.writeFileSync(sf, s);
         console.log('  ✓ startup.js patched (fixed previous broken patch)');
       } else {
