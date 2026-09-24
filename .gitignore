@@ -1,6 +1,6 @@
 node_modules/
 start.bat
-main.js
+/main.js
 package.json
 package-lock.json
 worker.js
