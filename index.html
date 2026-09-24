@@ -2243,14 +2243,6 @@ function stFocusFirst(wv) {
   var tryFocus = function () {
     try {
       var doc = wv.contentDocument; if (!doc) return;
-      if (wv.contentWindow && !wv.contentWindow._stCloseOverride) {
-        wv.contentWindow._stCloseOverride = true;
-        wv.contentWindow.close = function() {
-          if (window.parent && typeof window.parent.stCloseSettings === 'function') {
-            window.parent.stCloseSettings();
-          }
-        };
-      }
       // The simulator's own status bar is now kept visible above the iframe
       // (white bg + black icons), so hide the settings app's placeholder to
       // avoid stacking two bars. This only runs while the iframe is same-origin
@@ -2331,6 +2323,7 @@ function stOpenSettings() {
   wrap.style.top = '';
 }
 function stCloseSettings() {
+  if (typeof SimKeyboard !== 'undefined') SimKeyboard.deactivate();
   animateCloseApp('st-wrap', () => {
     const wrap = document.getElementById('st-wrap');
     if (wrap) wrap.style.top = '';
@@ -2341,14 +2334,18 @@ function stCloseSettings() {
     _sb.style.color = '';
     _sb.style.display = '';
     document.getElementById('view-open-app').classList.remove('visible');
+    openApp = null;
     if (fromApps) {
       view = 'apps';
       if (appViewMode === 'list')        buildList();
       else if (appViewMode === 'single') buildSingle();
       else { setSK('', 'Select', 'Options', false); lbl('Apps — ' + (curApp()?.name || '')); }
     } else {
+      view = 'home';
       goHome();
     }
+    const wv = document.getElementById('st-webview');
+    if (wv) wv.src = 'about:blank';
   });
 }
 function stKey(code) {
