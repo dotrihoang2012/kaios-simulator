@@ -4521,8 +4521,14 @@ function animateCloseApp(elId, cb) {
   if (!el || !el.classList.contains('visible')) { cb(); return; }
   try {
     let ae = document.activeElement;
-    if (ae && ae.tagName === 'IFRAME') ae = ae.contentDocument?.activeElement;
-    if (ae && ae.blur) ae.blur();
+    if (ae && ae.tagName === 'IFRAME') {
+      if (ae.blur) ae.blur();
+      let inner = ae.contentDocument?.activeElement;
+      if (inner && inner.blur) inner.blur();
+    } else if (ae && ae.blur) {
+      ae.blur();
+    }
+    window.focus();
   } catch(e) {}
   const isFolder = openApp && openApp.type === 'folder';
   const closeCls = isFolder ? 'folder-closing' : 'app-closing';
