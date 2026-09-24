@@ -2544,6 +2544,13 @@ function openAppView(app) {
   const stWrap = document.getElementById('st-wrap');
   if (stWrap) stWrap.classList.remove('visible');
 
+  // BACKGROUND INIT
+  if (app.id === 'settings') {
+    const hdr = document.getElementById('oa-header');
+    hdr.style.display = 'none';
+    stOpenSettings();
+  }
+
   // Set timeout for 1.5s as requested by user
   if (_splashTimer) clearTimeout(_splashTimer);
   _splashTimer = setTimeout(() => {
@@ -2564,8 +2571,6 @@ function _finishOpenAppView(app, isSameApp) {
   const hdr = document.getElementById('oa-header');
   
   if (app.id === 'settings') {
-    hdr.style.display = 'none';
-    stOpenSettings();
     return;
   }
   if (app.id === 'browser') {
