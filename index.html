@@ -2474,7 +2474,13 @@ function pressEnd() {
   if (_splashTimer) {
     clearTimeout(_splashTimer);
     _splashTimer = null;
+    let handled = false;
+    if (view === 'app-open' && openApp?.id === 'settings' && document.getElementById('st-wrap')?.classList.contains('visible')) {
+      stCloseSettings();
+      handled = true;
+    }
     animateCloseApp('splash-screen', () => {
+      if (handled) return;
       view = 'home';
       goHome();
     });
@@ -4595,7 +4601,13 @@ function pressBack() {
   if (_splashTimer) {
     clearTimeout(_splashTimer);
     _splashTimer = null;
+    let handled = false;
+    if (view === 'app-open' && openApp?.id === 'settings' && document.getElementById('st-wrap')?.classList.contains('visible')) {
+      stCloseSettings();
+      handled = true;
+    }
     animateCloseApp('splash-screen', () => {
+      if (handled) return;
       if (fromApps) {
         view = 'apps';
         if (appViewMode === 'list')        buildList();
