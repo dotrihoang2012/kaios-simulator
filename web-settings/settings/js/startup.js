@@ -136,7 +136,7 @@
         this.loadAlameda();
         (function() {
           try {
-            var L = window.l10n || { once: function(cb) { cb(); }, get: function() { return ''; } };
+            window.api = window.api || {}; window.api.l10n = navigator.mozL10n || window.l10n; var L = window.l10n || { once: function(cb) { cb(); }, get: function() { return ''; } };
             L.once(function l10nDone() {
               var codeNode = document.querySelector('.current');
               if (!codeNode) return;

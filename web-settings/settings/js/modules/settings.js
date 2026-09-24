@@ -7,7 +7,7 @@
  */
 
 
-const Settings = { // eslint-disable-line
+var Settings = { // eslint-disable-line
   isTabletAndLandscape: function isTabletAndLandscape() {
     return ScreenLayout.getCurrentLayout('tabletAndLandscaped');
   },
