@@ -1369,7 +1369,7 @@
     .kb-recent-cell.selected > .kb-recent-frame { background-color: rgba(128, 0, 255, 0.4); border: solid 2.6px #8000ff; color: #fff; }
     #kb-sym-grid { width: 100%; display: flex; flex-wrap: wrap; padding: 0.4rem 0; background-color: #e6e6e6; }
     .kb-sym-cell { position: relative; display: flex; flex-direction: column; justify-content: center; box-sizing: border-box; width: calc(100% / 3); height: 5.2rem; background-color: #e6e6e6; }
-    .kb-sym-cell::after { position: absolute; bottom: 0.2rem; right: 0.4rem; content: attr(data-number); font-size: 1.4rem; color: #8c8c8c; text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff; text-align: right; font-weight: 600; }
+    .kb-sym-cell::after { position: absolute; bottom: 0; right: 0.2rem; content: attr(data-number); font-size: 2rem; color: #8c8c8c; text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff; text-align: right; font-weight: 600; line-height: 1; }
     .kb-sym-frame { display: flex; justify-content: center; align-self: center; box-sizing: border-box; width: 4.2rem; height: 4.2rem; border-radius: 1.6rem; background-color: #fff; transition: background-color 100ms; }
     .kb-sym-cell.selected > .kb-sym-frame { background-color: rgba(128, 0, 255, 0.4); border: solid 2.6px #8000ff; }
     .kb-sym-text { align-self: center; font-size: 2.4rem; text-align: center; color: #323232; transition: color 100ms; }
