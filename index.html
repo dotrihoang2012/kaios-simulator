@@ -2369,14 +2369,27 @@ function stKey(code) {
   try {
     function callInject(k) {
       if (k === 'Backspace' || k === 'Escape') {
-        wv.contentWindow._stCloseFlag = false;
-        var _origClose = wv.contentWindow.close;
-        wv.contentWindow.close = function() { wv.contentWindow._stCloseFlag = true; };
-        wv.contentWindow.__stInjectKey(k);
-        if (wv.contentWindow._stCloseFlag) {
+        var win = wv.contentWindow;
+        var doc = wv.contentDocument;
+        var ae = doc ? doc.activeElement : null;
+        var isInput = ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA' || ae.tagName === 'SELECT');
+        var cp = win.Settings ? win.Settings.currentPanel : null;
+        var isRoot = cp === '#root';
+        if (!isRoot && doc) {
+          var cur = doc.querySelector('section.current');
+          if (cur && cur.id === 'root') isRoot = true;
+        }
+
+        win._stCloseFlag = false;
+        var _origClose = win.close;
+        win.close = function() { win._stCloseFlag = true; };
+        
+        win.__stInjectKey(k);
+        
+        if (win._stCloseFlag || (isRoot && !isInput)) {
           if (window.stCloseSettings) window.stCloseSettings();
         }
-        wv.contentWindow.close = _origClose;
+        win.close = _origClose;
       } else {
         wv.contentWindow.__stInjectKey(k);
       }
