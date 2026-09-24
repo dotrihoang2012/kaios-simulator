@@ -2243,6 +2243,14 @@ function stFocusFirst(wv) {
   var tryFocus = function () {
     try {
       var doc = wv.contentDocument; if (!doc) return;
+      if (wv.contentWindow && !wv.contentWindow._stCloseOverride) {
+        wv.contentWindow._stCloseOverride = true;
+        wv.contentWindow.close = function() {
+          if (window.parent && typeof window.parent.stCloseSettings === 'function') {
+            window.parent.stCloseSettings();
+          }
+        };
+      }
       // The simulator's own status bar is now kept visible above the iframe
       // (white bg + black icons), so hide the settings app's placeholder to
       // avoid stacking two bars. This only runs while the iframe is same-origin
@@ -2289,6 +2297,7 @@ function stBuildWebview() {
         content: 'Không mở được app Settings (web-settings/). Chạy "node settings-host/build-web.mjs" để build bundle rồi mở lại.' });
     });
     wv.addEventListener('did-finish-load', () => { _stFails = 0; stFocusFirst(wv); });
+    wv.addEventListener('close', () => stCloseSettings());
   } else {
     wv = document.createElement('iframe');
     wv.style.cssText = 'width:100%;height:100%;border:none;background:#fff;';
