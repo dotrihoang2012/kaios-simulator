@@ -2370,8 +2370,23 @@ function stKey(code) {
   const domKey = ({ Up: 'ArrowUp', Down: 'ArrowDown', Left: 'ArrowLeft', Right: 'ArrowRight',
     Return: 'Enter', F1: 'SoftLeft', F2: 'SoftRight' })[code] || code;
   try {
+    function callInject(k) {
+      if (k === 'Backspace' || k === 'Escape') {
+        wv.contentWindow._stCloseFlag = false;
+        var _origClose = wv.contentWindow.close;
+        wv.contentWindow.close = function() { wv.contentWindow._stCloseFlag = true; };
+        wv.contentWindow.__stInjectKey(k);
+        if (wv.contentWindow._stCloseFlag) {
+          if (window.stCloseSettings) window.stCloseSettings();
+        }
+        wv.contentWindow.close = _origClose;
+      } else {
+        wv.contentWindow.__stInjectKey(k);
+      }
+    }
+
     if (wv.contentWindow && wv.contentWindow.__stInjectKey) {
-      wv.contentWindow.__stInjectKey(domKey);
+      callInject(domKey);
     } else {
       // __stInjectKey bridge not available (engine init errors may have
       // prevented the baked-in script from running). Inject it now via
@@ -2396,7 +2411,7 @@ function stKey(code) {
         }.toString() + ';window.__stInjectKey=_bridge;');
       } catch (e) {}
       if (win.__stInjectKey) {
-        win.__stInjectKey(domKey);
+        callInject(domKey);
         return;
       }
       // Ultimate fallback: direct DOM manipulation. Handles all keys so
