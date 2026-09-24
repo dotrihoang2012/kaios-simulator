@@ -2544,7 +2544,18 @@ function openAppView(app) {
   const stWrap = document.getElementById('st-wrap');
   if (stWrap) stWrap.classList.remove('visible');
 
-  // Set timeout for 300ms (matches zoom animation)
+  // Initialize in the background AFTER the 300ms zoom animation completes (to avoid animation stutter)
+  if (app.id === 'settings') {
+    setTimeout(() => {
+      if (view === 'app-open' && openApp === app) {
+        const hdr = document.getElementById('oa-header');
+        hdr.style.display = 'none';
+        stOpenSettings();
+      }
+    }, 300);
+  }
+
+  // Set timeout for 1.5s as requested by user
   if (_splashTimer) clearTimeout(_splashTimer);
   _splashTimer = setTimeout(() => {
     _splashTimer = null;
@@ -2554,7 +2565,7 @@ function openAppView(app) {
     }
     splash.classList.remove('visible', 'app-opening');
     _finishOpenAppView(app, isSameApp);
-  }, 300);
+  }, 1500);
 }
 
 function _finishOpenAppView(app, isSameApp) {
@@ -2564,8 +2575,6 @@ function _finishOpenAppView(app, isSameApp) {
   const hdr = document.getElementById('oa-header');
   
   if (app.id === 'settings') {
-    hdr.style.display = 'none';
-    stOpenSettings();
     return;
   }
   if (app.id === 'browser') {
