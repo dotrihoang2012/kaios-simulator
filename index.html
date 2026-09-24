@@ -4633,7 +4633,7 @@ function pressBack() {
         view = 'apps';
         if (appViewMode === 'list')        buildList();
         else if (appViewMode === 'single') buildSingle();
-        else { setSK('', 'Select', 'Options', false); lbl('Apps � ' + (curApp()?.name || '')); }
+        else { setSK('', 'Select', 'Options', false); lbl('Apps   ' + (curApp()?.name || '')); }
       } else {
         goHome();
       }
@@ -6280,7 +6280,7 @@ updateSbIcons();
     setTimeout(() => showDialog({
       header: 'Welcome',
       content: 'Welcome to KaiOS 3.0 Simulator on Browser!',
-      sub: 'If any bugs exist, email me at: dotrihoang2012@gmail.com Settings app is under construction, do not press it!',
+      sub: 'If any bugs exist, email me at: dotrihoang2012@gmail.com',
       cancel: '', ok: 'Got it'
     }), 500);
   }, { once: true });
