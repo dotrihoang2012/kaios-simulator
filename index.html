@@ -2307,8 +2307,11 @@ function stOpenSettings() {
   const wrap = document.getElementById('st-wrap') || stBuildWebview();
   // Make sure no other view is layered on top of the settings webview.
   const dv = document.getElementById('view-dialer'); if (dv) dv.classList.remove('visible');
-  const ov = document.getElementById('view-open-app'); if (ov) ov.classList.add('visible');
   wrap.classList.add('visible');
+  
+  const wv = document.getElementById('st-webview');
+  // In browser environment, ST_URL is a relative path. We check if src ends with it.
+  if (wv && !wv.src.endsWith(ST_URL)) wv.src = ST_URL;
   // Keep the simulator's status bar visible but restyle it to match the
   // Settings white theme (black icons/text on white background), like a
   // real KaiOS device. The iframe starts below it; the settings app's own
@@ -2563,7 +2566,6 @@ function _finishOpenAppView(app, isSameApp) {
   if (app.id === 'settings') {
     hdr.style.display = 'none';
     stOpenSettings();
-    document.getElementById('view-open-app').classList.add('visible');
     return;
   }
   if (app.id === 'browser') {
