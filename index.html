@@ -4094,8 +4094,9 @@ function bwSearchType(k) {
 
 function bwSearchBackspace() {
   if (bwSearchCursor > 0) {
-    bwSearchText = bwSearchText.slice(0, bwSearchCursor - 1) + bwSearchText.slice(bwSearchCursor);
-    bwSearchCursor--;
+    const res = deleteCharBeforeCursor(bwSearchText, bwSearchCursor);
+    bwSearchText = res.text;
+    bwSearchCursor = res.cursor;
     bwSearchFocus = 0;
     renderBwSearch();
     _fetchSuggestions(bwSearchText);
@@ -4759,11 +4760,24 @@ function _renameType(ch) {
   }
   _renameRender();
 }
+function deleteCharBeforeCursor(text, cursor) {
+  if (cursor <= 0) return { text, cursor };
+  let before = text.slice(0, cursor);
+  let after = text.slice(cursor);
+  let arr = Array.from(before);
+  if (arr.length > 0) {
+    let last = arr.pop();
+    return { text: arr.join('') + after, cursor: cursor - last.length };
+  }
+  return { text, cursor };
+}
+
 function _renameBackspace() {
   if (_renameSelAll) { _renameText = ''; _renameSelAll = false; _renameCursor = 0; }
   else if (_renameCursor > 0) {
-    _renameText = _renameText.slice(0, _renameCursor - 1) + _renameText.slice(_renameCursor);
-    _renameCursor--;
+    const res = deleteCharBeforeCursor(_renameText, _renameCursor);
+    _renameText = res.text;
+    _renameCursor = res.cursor;
   }
   _renameRender();
 }
@@ -5979,8 +5993,9 @@ document.addEventListener('focusin', e => {
         const end = e.target.selectionEnd;
         const val = e.target.value;
         if (start === end && start > 0) {
-          e.target.value = val.substring(0, start - 1) + val.substring(end);
-          e.target.selectionStart = e.target.selectionEnd = start - 1;
+          const res = deleteCharBeforeCursor(val, start);
+          e.target.value = res.text;
+          e.target.selectionStart = e.target.selectionEnd = res.cursor;
         } else if (start !== end) {
           e.target.value = val.substring(0, start) + val.substring(end);
           e.target.selectionStart = e.target.selectionEnd = start;
