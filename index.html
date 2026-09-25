@@ -5735,24 +5735,7 @@ const SimKeyboard = {
   activate(target) {
       this.target = target;
       this.active = true;
-      const bar = document.querySelector('.skbar');
-      this.savedKbSK = [
-          bar.style.backgroundColor,
-          bar.style.backgroundImage,
-          bar.style.color,
-          bar.style.display,
-          document.getElementById('sk-l').innerHTML,
-          document.getElementById('sk-c').innerHTML,
-          document.getElementById('sk-r').innerHTML
-        ];
-        bar.style.display = 'grid';
-        document.getElementById('sk-l').textContent = 'Abc';
-        document.getElementById('sk-c').textContent = '';
-        document.getElementById('sk-r').textContent = '';
-      bar.style.backgroundColor = '#e6e6e6';
-      bar.style.backgroundImage = 'none';
-      bar.style.color = '#323232';
-    this.mode = 'Abc';
+      this.mode = 'Abc';
     this.composing = '';
     this.symOpen = false;
     this.updateUI();
