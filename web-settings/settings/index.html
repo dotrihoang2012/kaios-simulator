@@ -461,7 +461,20 @@ window.__KAIOS_L10N_ENUS = [{"$i":"softkey-options","$v":"Options"},{"$i":"stopp
     setTimeout(function () {
       if (on && typeof wifi.onenabled === 'function') wifi.onenabled(ev);
       if (!on && typeof wifi.ondisabled === 'function') wifi.ondisabled(ev);
-      if (typeof wifi.onstatuschange === 'function') wifi.onstatuschange({ status: on ? 'connected' : 'disconnected' });
+      if (on) {
+        wifi.connection.status = 'connecting';
+        if (typeof wifi.onstatuschange === 'function') wifi.onstatuschange({ status: 'connecting', network: wifi.connection.network });
+        setTimeout(function() {
+          wifi.connection.status = 'connected';
+          if (typeof wifi.onstatuschange === 'function') wifi.onstatuschange({ status: 'connected', network: wifi.connection.network });
+          if (window.parent && typeof window.parent.showToast === 'function') {
+            window.parent.showToast('Connected to KaiOS-sim');
+          }
+        }, 1500);
+      } else {
+        wifi.connection.status = 'disconnected';
+        if (typeof wifi.onstatuschange === 'function') wifi.onstatuschange({ status: 'disconnected' });
+      }
     }, 30);
   });
   // Reactive Bluetooth adapter — BtContext derives its on/off from adapter.state

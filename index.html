@@ -6365,21 +6365,11 @@ updateSbIcons();
   }
   
   function applySettings(settings) {
-    const sbWifi = document.getElementById('sb-wifi');
-    if (sbWifi) sbWifi.style.display = settings['wifi.enabled'] === true ? 'flex' : 'none';
-    
-    const sbBt = document.getElementById('sb-bluetooth');
-    if (sbBt) sbBt.style.display = settings['bluetooth.enabled'] ? 'flex' : 'none';
-    
-    const sbAirplane = document.getElementById('sb-airplane');
-    if (sbAirplane) {
-      if (settings['airplaneMode.status'] === 'enabled') {
-        sbAirplane.style.display = 'flex';
-        if (sbWifi) sbWifi.style.display = 'none';
-        if (sbBt) sbBt.style.display = 'none';
-      } else {
-        sbAirplane.style.display = 'none';
-      }
+    if (typeof IS_TILES !== 'undefined') {
+      IS_TILES[3].active = settings['wifi.enabled'] === true;
+      IS_TILES[5].active = settings['bluetooth.enabled'] === true;
+      IS_TILES[2].active = settings['airplaneMode.status'] === 'enabled';
+      if (typeof updateSbIcons === 'function') updateSbIcons();
     }
     
     const sbSound = document.getElementById('sb-sound');
