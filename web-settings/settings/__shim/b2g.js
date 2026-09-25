@@ -331,7 +331,7 @@
           if (typeof wifi.onstatuschange === 'function') wifi.onstatuschange({ status: 'connected', network: wifi.connection.network });
           if (typeof wifi.onwifihasinternet === 'function') wifi.onwifihasinternet({ network: wifi.connection.network });
           if (window.parent && typeof window.parent.showToast === 'function') {
-            window.parent.showToast('Connected to KaiOS-sim');
+            window.parent.showToast('Wi-Fi Connected');
           }
         }, 1500);
       } else {
