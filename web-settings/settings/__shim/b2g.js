@@ -299,6 +299,7 @@
                    if (level === 0) level = 1;
                    window.parent.setWifiStatus('connected', level);
                 }
+                if (window.parent && window.parent.showToast) window.parent.showToast('Wi-Fi Connected');
               }, 1000);
             }, 2000);
           }, 10);
