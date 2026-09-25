@@ -5733,8 +5733,17 @@ const SimKeyboard = {
   recentEmojis: ['😃', '😂', '😡', '👍', '❤️', '💯'],
   
   activate(target) {
-    this.target = target;
-    this.active = true;
+      this.target = target;
+      this.active = true;
+      const bar = document.querySelector('.skbar');
+      this.savedKbSK = [
+        bar.style.backgroundColor,
+        bar.style.backgroundImage,
+        bar.style.color
+      ];
+      bar.style.backgroundColor = '#e6e6e6';
+      bar.style.backgroundImage = 'none';
+      bar.style.color = '#323232';
     this.mode = 'Abc';
     this.composing = '';
     this.symOpen = false;
@@ -5742,8 +5751,15 @@ const SimKeyboard = {
   },
   
   deactivate() {
-    this.commitChar();
-    this.active = false;
+      this.commitChar();
+      this.active = false;
+      if (this.savedKbSK) {
+        const bar = document.querySelector('.skbar');
+        bar.style.backgroundColor = this.savedKbSK[0];
+        bar.style.backgroundImage = this.savedKbSK[1];
+        bar.style.color = this.savedKbSK[2];
+        this.savedKbSK = null;
+      }
     this.target = null;
     this.closeSymbols();
     document.getElementById('kb-mode').classList.remove('visible');
@@ -5889,8 +5905,11 @@ const SimKeyboard = {
     }
     
     const lsk = this.isEmoji ? 'Symbols' : '<span class="emoji-font">😀❤️👍</span>';
-    setSK(lsk, 'SELECT', `${page + 1}/${totalPages}`, true);
-    document.querySelector('.skbar').style.backgroundColor = '#cccccc';
+    setSK(lsk, 'SELECT', `${page + 1}/${totalPages}`, false);
+      const bar = document.querySelector('.skbar');
+      bar.style.backgroundColor = '#e6e6e6';
+      bar.style.backgroundImage = 'none';
+      bar.style.color = '#323232';
   },
 
   handleSymKey(key) {
