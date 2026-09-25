@@ -5266,19 +5266,25 @@ function toggleIS(i) {
   if (tile.disabled) return;
   if (tile.type === 'toggle') {
     if ((i === 2 || i === 3 || i === 5) && !tile.active) {
-      _activatingTiles.add(i);
-      if (i === 3) window.setWifiStatus('connecting', 0);
-      renderIS();
-      setTimeout(() => {
-        _activatingTiles.delete(i);
-        tile.active = true;
+        _activatingTiles.add(i);
+        renderIS();
+        setTimeout(() => {
+          _activatingTiles.delete(i);
+          tile.active = true;
           try { let ov = JSON.parse(localStorage.getItem('kaios.settings.v2')||'{}'); if (i===3) ov['wifi.enabled']=true; if (i===5) ov['bluetooth.enabled']=true; localStorage.setItem('kaios.settings.v2', JSON.stringify(ov)); } catch(e){}
           if (i === 2) { IS_TILES[3].active = false; IS_TILES[5].active = false; }
-        updateSbIcons();
-        if (i === 3) window.showToast('Wi-Fi Connected');
-        renderIS();
-      }, 1500);
-    } else {
+          
+          if (i === 3) {
+            window.setWifiStatus('connecting', 0);
+            setTimeout(() => {
+              window.setWifiStatus('connected', 4);
+              window.showToast('Wi-Fi Connected');
+            }, 1500);
+          }
+          updateSbIcons();
+          renderIS();
+        }, 1500);
+      } else {
       tile.active = !tile.active;
         try { let ov = JSON.parse(localStorage.getItem('kaios.settings.v2')||'{}'); if (i===3) ov['wifi.enabled']=tile.active; if (i===5) ov['bluetooth.enabled']=tile.active; localStorage.setItem('kaios.settings.v2', JSON.stringify(ov)); } catch(e){}
       }
