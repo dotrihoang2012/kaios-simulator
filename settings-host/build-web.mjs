@@ -318,6 +318,11 @@ for (const f of ['l10n.js', 'b2g.js', 'select-ui.js', 'datetime-ui.js', 'activit
 {
   const localePath = path.join(INSTALLED, 'settings/locales-obj/en-US.json');
   const raw = fs.readFileSync(localePath, 'utf8');
+    let data = JSON.parse(raw);
+    data.push({'$i': 'shortStatus-connecting', '$v': 'Connecting...'});
+    data.push({'$i': 'shortStatus-associated', '$v': 'Obtaining an IP address...'});
+    const rawFixed = JSON.stringify(data);
+
   fs.writeFileSync(path.join(shimDir, 'l10n-data.js'),
     '// Auto-generated from settings/locales-obj/en-US.json by build-web.mjs.\n' +
     'window.__KAIOS_L10N_ENUS = ' + raw + ';\n');
