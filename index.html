@@ -5173,8 +5173,11 @@ function updateSbIcons() {
       sbWifi.setAttribute('data-icon', 'wifi-' + Math.min(4, Math.max(1, level)));
       sbWifi.classList.remove('connecting');
       sbWifiConn.style.display = 'none';
+      }
+    };
+    if (!window._wifiConnectingPhase) {
+      window.setWifiStatus(wifi.active ? 'connected' : 'disconnected', 4);
     }
-  };
 
 const sbBt = document.getElementById('sb-bluetooth');
   if (bt.active) {
@@ -5275,8 +5278,10 @@ function toggleIS(i) {
           if (i === 2) { IS_TILES[3].active = false; IS_TILES[5].active = false; }
           
           if (i === 3) {
+            window._wifiConnectingPhase = true;
             window.setWifiStatus('connecting', 0);
             setTimeout(() => {
+              window._wifiConnectingPhase = false;
               window.setWifiStatus('connected', 4);
               window.showToast('Wi-Fi Connected');
             }, 1500);
@@ -5287,6 +5292,7 @@ function toggleIS(i) {
       } else {
       tile.active = !tile.active;
         try { let ov = JSON.parse(localStorage.getItem('kaios.settings.v2')||'{}'); if (i===3) ov['wifi.enabled']=tile.active; if (i===5) ov['bluetooth.enabled']=tile.active; localStorage.setItem('kaios.settings.v2', JSON.stringify(ov)); } catch(e){}
+        if (i === 3) { window.setWifiStatus('disconnected', 0); }
       }
     } else if (tile.type === 'brightness') {
     const idx = BRIGHTNESS_LEVELS.indexOf(brightnessLevel);
