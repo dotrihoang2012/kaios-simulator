@@ -6331,7 +6331,7 @@ updateSbIcons();
 <script>
 (function() {
   function getSettings() {
-    try { return JSON.parse(localStorage.getItem('__kaiSettings') || '{}'); } catch(e) { return {}; }
+    try { return JSON.parse(localStorage.getItem('kaios.settings.v2') || '{}'); } catch(e) { return {}; }
   }
   
   function applySettings(settings) {
@@ -6380,7 +6380,7 @@ updateSbIcons();
   applySettings(getSettings());
   
   window.addEventListener('storage', function(e) {
-    if (e.key === '__kaiSettings') applySettings(getSettings());
+    if (e.key === 'kaios.settings.v2') applySettings(getSettings());
   });
 })();
 </script>

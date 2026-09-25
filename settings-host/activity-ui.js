@@ -241,6 +241,9 @@
         openChooser();
       });
     }
+    if (this.name === 'show-toast') {
+      return Promise.resolve();
+    }
     return Promise.reject(new Error('NO_PROVIDER: ' + this.name));
   };
   WebActivity.prototype.cancel = function () {};

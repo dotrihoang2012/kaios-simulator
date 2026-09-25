@@ -1077,6 +1077,7 @@
         return Promise.resolve({ result: 'success', success: true });
       }
       if (Orig) return new Orig(this.name, this.data).start();
+      if (this.name === 'show-toast') return Promise.resolve();
       return Promise.reject(new Error('NO_PROVIDER: ' + this.name));
     };
     WebActivity.prototype.cancel = function () {};
