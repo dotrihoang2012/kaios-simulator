@@ -326,10 +326,12 @@
       if (on) {
         wifi.connection.status = 'connecting';
         if (typeof wifi.onstatuschange === 'function') wifi.onstatuschange({ status: 'connecting', network: wifi.connection.network });
+        if (window.parent && typeof window.parent.setWifiStatus === 'function') window.parent.setWifiStatus('connecting', 0);
         setTimeout(function() {
           wifi.connection.status = 'connected';
           if (typeof wifi.onstatuschange === 'function') wifi.onstatuschange({ status: 'connected', network: wifi.connection.network });
           if (typeof wifi.onwifihasinternet === 'function') wifi.onwifihasinternet({ network: wifi.connection.network });
+          if (window.parent && typeof window.parent.setWifiStatus === 'function') window.parent.setWifiStatus('connected', 4);
           if (window.parent && typeof window.parent.showToast === 'function') {
             window.parent.showToast('Wi-Fi Connected');
           }
@@ -337,6 +339,7 @@
       } else {
         wifi.connection.status = 'disconnected';
         if (typeof wifi.onstatuschange === 'function') wifi.onstatuschange({ status: 'disconnected' });
+        if (window.parent && typeof window.parent.setWifiStatus === 'function') window.parent.setWifiStatus('disconnected', 0);
       }
     }, 30);
   });
