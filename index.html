@@ -1464,7 +1464,6 @@
       <!-- Sidemenu: quick-app icons on left edge (launcher .sidemenuItem) -->
       <div class="sidemenu" id="sidemenu"></div>
       <div class="clock-wrap">
-        <div class="clock-ampm" id="campm" style="display:none"></div>
         <div class="clockDigi-container">
           <span class="clock-digit-box">
             <span class="clockDigi--time" id="ch1" data-icon="numeric_1_rounded_semibold"></span>
@@ -1473,8 +1472,7 @@
           <div class="clock-colon"></div>
           <span class="clock-digit-box">
             <span class="clockDigi--time" id="cm1" data-icon="numeric_0_rounded_semibold"></span>
-            <span class="clockDigi--time" id="cm2" data-icon="numeric_0_rounded_semibold"></span>
-          </span>
+            <span class="clockDigi--time" id="cm2" data-icon="numeric_0_rounded_semibold"></span></span><span class="clock-ampm" id="campm" style="display:none"></span>
         </div>
         <div class="clock-date" id="cdate">MONDAY
 JAN 1</div>
@@ -1794,8 +1792,7 @@ JAN 1</div>
           <div class="clock-colon"></div>
           <span class="clock-digit-box">
             <span class="clockDigi--time" id="lc-m1" data-icon="numeric_0_rounded_semibold"></span>
-            <span class="clockDigi--time" id="lc-m2" data-icon="numeric_0_rounded_semibold"></span>
-          </span>
+            <span class="clockDigi--time" id="lc-m2" data-icon="numeric_0_rounded_semibold"></span></span><span class="clock-ampm" id="lcampm" style="display:none"></span>
         </div>
         <hr id="lock-divider">
         <div id="lock-date">MON, JAN 1</div>
@@ -5604,11 +5601,31 @@ function doUnlock() {
 }
 function tickLock(silent = false) {
   const now = new Date();
-  const hs = pad(now.getHours()), ms = pad(now.getMinutes());
+  let h = now.getHours(), m = now.getMinutes();
+  let ampm = '';
+  if (window.__simHour12) {
+    ampm = h >= 12 ? ' PM' : ' AM';
+    h = h % 12 || 12;
+  }
+  const hs = window.__simHour12 ? (h < 10 ? ' ' + h : '' + h) : pad(now.getHours());
+  const ms = pad(m);
   const setDig = silent
     ? (id, icon) => { const el = document.getElementById(id); if (el) el.dataset.icon = icon; }
     : animDigit;
-  setDig('lc-h1', 'numeric_' + hs[0] + '_rounded_semibold');
+  const lcampm = document.getElementById('lcampm');
+  if (window.__simHour12) {
+    if (lcampm) { lcampm.style.display = 'block'; lcampm.textContent = ampm.trim(); }
+    if (hs[0] === ' ') {
+      document.getElementById('lc-h1').style.display = 'none';
+    } else {
+      document.getElementById('lc-h1').style.display = '';
+      setDig('lc-h1', 'numeric_' + hs[0] + '_rounded_semibold');
+    }
+  } else {
+    if (lcampm) lcampm.style.display = 'none';
+    document.getElementById('lc-h1').style.display = '';
+    setDig('lc-h1', 'numeric_' + hs[0] + '_rounded_semibold');
+  }
   setDig('lc-h2', 'numeric_' + hs[1] + '_rounded_semibold');
   setDig('lc-m1', 'numeric_' + ms[0] + '_rounded_semibold');
   setDig('lc-m2', 'numeric_' + ms[1] + '_rounded_semibold');
@@ -6386,3 +6403,5 @@ updateSbIcons();
 </script>
 </body>
 </html>
+
+
