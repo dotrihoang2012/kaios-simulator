@@ -5083,7 +5083,7 @@ function closeStub() {
 //  layout: 3-col grid, slide down from top
 // ════════════════════════════════════════
 const _skey = 'kaios.settings.v2';
-let _ov = {}; try { _ov = JSON.parse(localStorage.getItem(_skey) || '{}'); } catch(e){}
+let _ov = {}; try { _ov = JSON.parse(localStorage.getItem(_skey) || '{}'); _ov['wifi.enabled'] = false; _ov['bluetooth.enabled'] = false; localStorage.setItem(_skey, JSON.stringify(_ov)); } catch(e){}
 const IS_TILES = [
   { icon: 'flashlight-on',    iconOff: 'flashlight-off',       name: 'Flashlight',   type: 'toggle',     active: false },
   { icon: 'brightness',                                         name: 'Brightness',   type: 'brightness'              },
