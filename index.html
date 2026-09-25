@@ -5162,12 +5162,12 @@ function updateSbIcons() {
       sbWifi.classList.remove('connecting');
       sbWifiConn.style.display = 'none';
     } else if (status === 'connecting') {
-      sbWifi.style.display = 'flex';
+      sbWifi.style.display = '';
       sbWifi.setAttribute('data-icon', '');
       sbWifi.classList.add('connecting');
       sbWifiConn.style.display = 'inline';
     } else if (status === 'connected') {
-      sbWifi.style.display = 'flex';
+      sbWifi.style.display = '';
       sbWifi.setAttribute('data-icon', 'wifi-' + Math.min(4, Math.max(1, level)));
       sbWifi.classList.remove('connecting');
       sbWifiConn.style.display = 'none';
