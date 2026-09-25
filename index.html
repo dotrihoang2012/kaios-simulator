@@ -6366,7 +6366,7 @@ updateSbIcons();
   
   function applySettings(settings) {
     const sbWifi = document.getElementById('sb-wifi');
-    if (sbWifi) sbWifi.style.display = settings['wifi.enabled'] !== false ? 'flex' : 'none';
+    if (sbWifi) sbWifi.style.display = settings['wifi.enabled'] === true ? 'flex' : 'none';
     
     const sbBt = document.getElementById('sb-bluetooth');
     if (sbBt) sbBt.style.display = settings['bluetooth.enabled'] ? 'flex' : 'none';

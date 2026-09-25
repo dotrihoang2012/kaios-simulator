@@ -128,7 +128,7 @@
     'screen.brightness': 0.6,
     'audio.volume.content': 8, 'audio.volume.notification': 8, 'audio.volume.alarm': 8,
     'ring.enabled': true, 'vibration.enabled': true,
-    'wifi.enabled': true, 'bluetooth.enabled': true,
+    'wifi.enabled': false, 'bluetooth.enabled': false,
     'airplaneMode.status': 'disabled', 'airplaneMode.enabled': false, 'nfc.enabled': false,
     'geolocation.enabled': true, 'privacy.donottrackheader.value': '-1',
     'lockscreen.notifications-preview.enabled': true,
