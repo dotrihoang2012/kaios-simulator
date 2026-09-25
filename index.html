@@ -5086,9 +5086,9 @@ const IS_TILES = [
   { icon: 'flashlight-on',    iconOff: 'flashlight-off',       name: 'Flashlight',   type: 'toggle',     active: false },
   { icon: 'brightness',                                         name: 'Brightness',   type: 'brightness'              },
   { icon: 'airplane-mode',    iconOff: 'airplane-mode-off',    name: 'Airplane Mode',type: 'toggle',     active: false },
-  { icon: 'wifi-32px',        iconOff: 'wifi-off-32px',        name: 'Wi-Fi',        type: 'toggle',     active: false },
+  { icon: 'wifi-32px',        iconOff: 'wifi-off-32px',        name: 'Wi-Fi',        type: 'toggle',     active: !!_ov['wifi.enabled'] },
   { icon: 'network-activity', iconOff: 'network-activity-off', name: 'Cellular Data',  type: 'toggle',     active: false, disabled: true },
-  { icon: 'bluetooth-32px',   iconOff: 'bluetooth-off-32px',   name: 'Bluetooth',    type: 'toggle',     active: false },
+  { icon: 'bluetooth-32px',   iconOff: 'bluetooth-off-32px',   name: 'Bluetooth',    type: 'toggle',     active: !!_ov['bluetooth.enabled'] },
   { icon: 'sound-max',                                         name: 'Volume',       type: 'volume'                  },
 ];
 const BRIGHTNESS_LEVELS = [25, 50, 75, 100];
@@ -5199,7 +5199,19 @@ const sbBt = document.getElementById('sb-bluetooth');
   else if (volIdx === 1) { sbSound.setAttribute('data-icon', 'vibrate'); sbSound.style.display = ''; }
   else sbSound.style.display = 'none';
 }
-function renderIS() {
+window.addEventListener('storage', (e) => {
+    if (e.key === 'kaios.settings.v2') {
+      try {
+        const ov = JSON.parse(e.newValue || '{}');
+        if (ov['wifi.enabled'] !== undefined) IS_TILES[3].active = ov['wifi.enabled'];
+        if (ov['bluetooth.enabled'] !== undefined) IS_TILES[5].active = ov['bluetooth.enabled'];
+        updateSbIcons();
+        if (view === 'instant-settings') renderIS();
+      } catch(err){}
+    }
+  });
+
+  function renderIS() {
   document.querySelectorAll('.is-tile').forEach((t, i) => {
     const tile = IS_TILES[i];
     t.classList.toggle('focused', i === isFocus);
@@ -5258,15 +5270,17 @@ function toggleIS(i) {
       setTimeout(() => {
         _activatingTiles.delete(i);
         tile.active = true;
-        if (i === 2) { IS_TILES[3].active = false; IS_TILES[5].active = false; }
+          try { let ov = JSON.parse(localStorage.getItem('kaios.settings.v2')||'{}'); if (i===3) ov['wifi.enabled']=true; if (i===5) ov['bluetooth.enabled']=true; localStorage.setItem('kaios.settings.v2', JSON.stringify(ov)); } catch(e){}
+          if (i === 2) { IS_TILES[3].active = false; IS_TILES[5].active = false; }
         updateSbIcons();
         if (i === 3) window.showToast('Wi-Fi Connected');
         renderIS();
       }, 1500);
     } else {
       tile.active = !tile.active;
-    }
-  } else if (tile.type === 'brightness') {
+        try { let ov = JSON.parse(localStorage.getItem('kaios.settings.v2')||'{}'); if (i===3) ov['wifi.enabled']=tile.active; if (i===5) ov['bluetooth.enabled']=tile.active; localStorage.setItem('kaios.settings.v2', JSON.stringify(ov)); } catch(e){}
+      }
+    } else if (tile.type === 'brightness') {
     const idx = BRIGHTNESS_LEVELS.indexOf(brightnessLevel);
     brightnessLevel = BRIGHTNESS_LEVELS[(idx + 1) % BRIGHTNESS_LEVELS.length];
   }
