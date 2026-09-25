@@ -191,7 +191,10 @@
     }
     .clock-ampm {
       font-size: 1.4rem;
-      line-height: 1.4rem;
+      font-weight: 700;
+      text-align: right;
+      padding-right: 0.2rem;
+      margin-bottom: -0.2rem;
     }
     .clockDigi-container {
       display: inline-flex;
@@ -877,6 +880,13 @@
       transition: opacity 0.2s;
     }
     #view-lock.visible { opacity: 1; pointer-events: auto; }
+    #lock-clock .clock-ampm {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-left: 0.6rem;
+      align-self: flex-end;
+      padding-bottom: 0.8rem;
+    }
     #lock-clock {
       width: 100%;
       display: flex; flex-direction: column;
@@ -1464,7 +1474,8 @@
       <!-- Sidemenu: quick-app icons on left edge (launcher .sidemenuItem) -->
       <div class="sidemenu" id="sidemenu"></div>
       <div class="clock-wrap">
-        <div class="clockDigi-container">
+          <div class="clock-ampm" id="campm" style="display:none"></div>
+          <div class="clockDigi-container">
           <span class="clock-digit-box">
             <span class="clockDigi--time" id="ch1" data-icon="numeric_1_rounded_semibold"></span>
             <span class="clockDigi--time" id="ch2" data-icon="numeric_2_rounded_semibold"></span>
@@ -1472,7 +1483,8 @@
           <div class="clock-colon"></div>
           <span class="clock-digit-box">
             <span class="clockDigi--time" id="cm1" data-icon="numeric_0_rounded_semibold"></span>
-            <span class="clockDigi--time" id="cm2" data-icon="numeric_0_rounded_semibold"></span></span><span class="clock-ampm" id="campm" style="display:none"></span>
+            <span class="clockDigi--time" id="cm2" data-icon="numeric_0_rounded_semibold"></span>
+            </span>
         </div>
         <div class="clock-date" id="cdate">MONDAY
 JAN 1</div>
