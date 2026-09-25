@@ -5737,10 +5737,18 @@ const SimKeyboard = {
       this.active = true;
       const bar = document.querySelector('.skbar');
       this.savedKbSK = [
-        bar.style.backgroundColor,
-        bar.style.backgroundImage,
-        bar.style.color
-      ];
+          bar.style.backgroundColor,
+          bar.style.backgroundImage,
+          bar.style.color,
+          bar.style.display,
+          document.getElementById('sk-l').innerHTML,
+          document.getElementById('sk-c').innerHTML,
+          document.getElementById('sk-r').innerHTML
+        ];
+        bar.style.display = 'grid';
+        document.getElementById('sk-l').textContent = 'Abc';
+        document.getElementById('sk-c').textContent = '';
+        document.getElementById('sk-r').textContent = '';
       bar.style.backgroundColor = '#e6e6e6';
       bar.style.backgroundImage = 'none';
       bar.style.color = '#323232';
@@ -5758,7 +5766,11 @@ const SimKeyboard = {
         bar.style.backgroundColor = this.savedKbSK[0];
         bar.style.backgroundImage = this.savedKbSK[1];
         bar.style.color = this.savedKbSK[2];
-        this.savedKbSK = null;
+          bar.style.display = this.savedKbSK[3];
+          document.getElementById('sk-l').innerHTML = this.savedKbSK[4];
+          document.getElementById('sk-c').innerHTML = this.savedKbSK[5];
+          document.getElementById('sk-r').innerHTML = this.savedKbSK[6];
+          this.savedKbSK = null;
       }
     this.target = null;
     this.closeSymbols();
