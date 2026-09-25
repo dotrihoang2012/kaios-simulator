@@ -423,6 +423,7 @@ define(['require'],function(require) {
      * @param {Function} callback
      */
     associateNetwork: function(network, cb) {
+        if (window.parent && window.parent.showToast) window.parent.showToast('WifiContext.associateNetwork called');
       cb = cb || function() {};
       var request = wifiManager.associate(network);
       var done = function() {
