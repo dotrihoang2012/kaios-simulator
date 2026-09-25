@@ -480,7 +480,7 @@ const INJECT =
      'window.__stInjectKey=function(k){' +
        'var t=document.querySelector(".focus")||document.activeElement||document.body;' +
        'if(k==="Enter"){' +
-         'var a=t.querySelector("a[href],a.menu-item");' +
+         'var a=t.querySelector("a");' +
          'if(!a&&t.tagName==="A")a=t;' +
          'if(a){' +
            'a.click();' +
