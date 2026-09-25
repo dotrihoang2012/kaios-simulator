@@ -5253,12 +5253,14 @@ function toggleIS(i) {
   if (tile.type === 'toggle') {
     if ((i === 2 || i === 3 || i === 5) && !tile.active) {
       _activatingTiles.add(i);
+      if (i === 3) window.setWifiStatus('connecting', 0);
       renderIS();
       setTimeout(() => {
         _activatingTiles.delete(i);
         tile.active = true;
         if (i === 2) { IS_TILES[3].active = false; IS_TILES[5].active = false; }
         updateSbIcons();
+        if (i === 3) window.showToast('Wi-Fi Connected');
         renderIS();
       }, 1500);
     } else {
