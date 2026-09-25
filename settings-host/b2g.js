@@ -277,7 +277,35 @@
         { ssid: 'CoffeeShop', security: '', signalStrength: 48, relSignalStrength: 48, keyManagement: [] },
       ]); },
       getKnownNetworks: function () { return req([{ ssid: 'KaiOS-Sim', security: 'WPA2-PSK' }]); },
-      associate: function () { return req(true); }, forget: function () { return req(true); },
+      associate: function (network) {
+          var r = { result: true, error: null, onsuccess: null, onerror: null };
+          setTimeout(function() {
+            if (typeof r.onsuccess === 'function') r.onsuccess({ target: r });
+            wifi.connection.status = 'connecting';
+            wifi.connection.network = network;
+            if (typeof wifi.onstatuschange === 'function') wifi.onstatuschange({ status: 'connecting', network: network });
+            if (window.parent && typeof window.parent.setWifiStatus === 'function') {
+               window.parent.setWifiStatus('connecting', 0);
+            }
+            setTimeout(function() {
+              wifi.connection.status = 'associated';
+              if (typeof wifi.onstatuschange === 'function') wifi.onstatuschange({ status: 'associated', network: network });
+              setTimeout(function() {
+                wifi.connection.status = 'connected';
+                network.connected = true;
+                network.hasInternet = true;
+                if (typeof wifi.onstatuschange === 'function') wifi.onstatuschange({ status: 'connected', network: network });
+                if (typeof wifi.onwifihasinternet === 'function') wifi.onwifihasinternet({ network: network });
+                if (window.parent && typeof window.parent.setWifiStatus === 'function') {
+                   var level = Math.min(Math.floor((network.relSignalStrength || 100) / 20), 4);
+                   if (level === 0) level = 1;
+                   window.parent.setWifiStatus('connected', level);
+                }
+              }, 1000);
+            }, 2000);
+          }, 10);
+          return r;
+        }, forget: function () { return req(true); },
       wps: function () { return req(true); },
     };
     return lenient(w);

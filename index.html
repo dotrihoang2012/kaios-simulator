@@ -5153,42 +5153,28 @@ function updateSbIcons() {
   document.getElementById('sb-airplane').style.display  = airplane.active ? '' : 'none';
   const la = document.getElementById('lock-airplane');
   if (la) la.style.display = airplane.active ? '' : 'none';
-  const sbWifi = document.getElementById('sb-wifi');
-  const sbWifiConn = document.getElementById('sb-wifi-connecting');
-  if (wifi.active) {
-    if (window._wifiDisconnectTimer) { clearTimeout(window._wifiDisconnectTimer); window._wifiDisconnectTimer = null; }
-    const alreadyConnected = sbWifi.getAttribute('data-icon') === 'wifi-4';
-    if (alreadyConnected) { sbWifi.style.display = ''; }
-    else if (!window._wifiConnectTimer) {
+  window.setWifiStatus = function(status, level) {
+    const sbWifi = document.getElementById('sb-wifi');
+    const sbWifiConn = document.getElementById('sb-wifi-connecting');
+    if (status === 'disconnected' || !status) {
       sbWifi.style.display = 'none';
       sbWifi.setAttribute('data-icon', '');
       sbWifi.classList.remove('connecting');
       sbWifiConn.style.display = 'none';
-      window._wifiConnectTimer = setTimeout(() => {
-        sbWifi.style.display = '';
-        sbWifi.classList.add('connecting');
-        sbWifiConn.style.display = 'inline';
-        window._wifiConnectTimer = setTimeout(() => {
-          sbWifi.setAttribute('data-icon', 'wifi-4');
-          sbWifi.classList.remove('connecting');
-          sbWifiConn.style.display = 'none';
-          window._wifiConnectTimer = null;
-        }, 2000);
-      }, 1000);
+    } else if (status === 'connecting') {
+      sbWifi.style.display = 'flex';
+      sbWifi.setAttribute('data-icon', '');
+      sbWifi.classList.add('connecting');
+      sbWifiConn.style.display = 'inline';
+    } else if (status === 'connected') {
+      sbWifi.style.display = 'flex';
+      sbWifi.setAttribute('data-icon', 'wifi-' + Math.min(4, Math.max(1, level)));
+      sbWifi.classList.remove('connecting');
+      sbWifiConn.style.display = 'none';
     }
-  } else {
-    if (window._wifiConnectTimer) { clearTimeout(window._wifiConnectTimer); window._wifiConnectTimer = null; }
-    if (!window._wifiDisconnectTimer) {
-      window._wifiDisconnectTimer = setTimeout(() => {
-        sbWifi.style.display = 'none';
-        sbWifi.setAttribute('data-icon', '');
-        sbWifi.classList.remove('connecting');
-        sbWifiConn.style.display = 'none';
-        window._wifiDisconnectTimer = null;
-      }, 1500);
-    }
-  }
-  const sbBt = document.getElementById('sb-bluetooth');
+  };
+
+const sbBt = document.getElementById('sb-bluetooth');
   if (bt.active) {
     if (window._btDisconnectTimer) { clearTimeout(window._btDisconnectTimer); window._btDisconnectTimer = null; }
     if (sbBt.style.display === '') {
