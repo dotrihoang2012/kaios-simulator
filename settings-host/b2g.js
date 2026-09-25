@@ -267,7 +267,7 @@
     var w = {
       enabled: store['wifi.enabled'] !== false,
       macAddress: '02:00:00:00:00:01',
-      connection: { status: 'connected', network: { ssid: 'KaiOS-Sim', security: 'WPA2', signalStrength: 92, relSignalStrength: 92, connected: true, keyManagement: ['WPA-PSK'] } },
+      connection: { status: 'connected', network: { ssid: 'KaiOS-Sim', security: 'WPA2', signalStrength: 92, relSignalStrength: 92, connected: true, keyManagement: ['WPA-PSK'], hasInternet: true } },
       onenabled: null, ondisabled: null, onstatuschange: null, onconnectioninfoupdate: null,
       onwifihasinternet: null, oncaptiveportallogin: null,
       setStaticIpMode: function () { return req(true); },
@@ -296,6 +296,7 @@
         setTimeout(function() {
           wifi.connection.status = 'connected';
           if (typeof wifi.onstatuschange === 'function') wifi.onstatuschange({ status: 'connected', network: wifi.connection.network });
+          if (typeof wifi.onwifihasinternet === 'function') wifi.onwifihasinternet({ network: wifi.connection.network });
           if (window.parent && typeof window.parent.showToast === 'function') {
             window.parent.showToast('Connected to KaiOS-sim');
           }
