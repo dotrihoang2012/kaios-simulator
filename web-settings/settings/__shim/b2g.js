@@ -199,12 +199,6 @@
     }
   });
   var store = Object.assign({}, DEFAULTS, overrides);
-    // Force Wi-Fi and Bluetooth OFF on boot
-    store['wifi.enabled'] = false;
-    store['bluetooth.enabled'] = false;
-    delete overrides['wifi.enabled'];
-    delete overrides['bluetooth.enabled'];
-    saveStore();
   // A persisted null must not wipe out the wallpaper — the display panel does
   // value.indexOf() on it and crashes.
   if (!store['wallpaper.image']) store['wallpaper.image'] = DEFAULTS['wallpaper.image'];
