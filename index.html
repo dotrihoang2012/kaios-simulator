@@ -2330,7 +2330,39 @@ function stBuildWebview() {
   document.getElementById('screen').appendChild(wrap);
   return wrap;
 }
-function stOpenSettings() {
+function stOpenSettingsFromBrowser() {
+  window._isSettingsFromBrowser = true;
+  const splash = document.createElement('div');
+  splash.id = 'bw-settings-splash';
+  splash.style.cssText = 'position:absolute;inset:0;background:#000;z-index:99999;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s;';
+  const img = document.createElement('img');
+  img.src = ICO.settings;
+  img.style.cssText = 'width:5.6rem;height:5.6rem;';
+  splash.appendChild(img);
+  document.getElementById('screen').appendChild(splash);
+
+  // Trigger reflow
+  splash.getBoundingClientRect();
+  splash.style.opacity = '1';
+
+  setTimeout(() => {
+    stOpenSettings('#search');
+    
+    // Clear any zoom animation from wrap
+    const wrap = document.getElementById('st-wrap');
+    if (wrap) {
+      wrap.style.transform = 'none';
+      wrap.style.animation = 'none';
+      wrap.style.opacity = '1';
+    }
+
+    setTimeout(() => {
+       splash.style.opacity = '0';
+       setTimeout(() => splash.remove(), 300);
+    }, 500);
+  }, 300);
+}
+function stOpenSettings(hash) {
   _stFails = 0;
   const wrap = document.getElementById('st-wrap') || stBuildWebview();
   // Make sure no other view is layered on top of the settings webview.
@@ -2339,7 +2371,10 @@ function stOpenSettings() {
   
   const wv = document.getElementById('st-webview');
   // In browser environment, ST_URL is a relative path. We check if src ends with it.
-  if (wv && !wv.src.endsWith(ST_URL)) wv.src = ST_URL;
+  if (wv) {
+    if (hash) wv.src = ST_URL + hash;
+    else if (!wv.src.endsWith(ST_URL)) wv.src = ST_URL;
+  }
   // Keep the simulator's status bar visible but restyle it to match the
   // Settings white theme (black icons/text on white background), like a
   // real KaiOS device. The iframe starts below it; the settings app's own
@@ -2355,7 +2390,8 @@ function stOpenSettings() {
 }
 function stCloseSettings() {
   if (typeof SimKeyboard !== 'undefined') SimKeyboard.deactivate();
-  animateCloseApp('st-wrap', () => {
+  
+  const restoreLogic = () => {
     const wrap = document.getElementById('st-wrap');
     if (wrap) wrap.style.top = '';
     document.querySelector('.skbar').style.display = '';
@@ -2364,20 +2400,43 @@ function stCloseSettings() {
     _sb.style.background = '';
     _sb.style.color = '';
     _sb.style.display = '';
-    document.getElementById('view-open-app').classList.remove('visible');
-    openApp = null;
-    if (fromApps) {
-      view = 'apps';
-      if (appViewMode === 'list')        buildList();
-      else if (appViewMode === 'single') buildSingle();
-      else { setSK('', 'Select', 'Options', false); lbl('Apps — ' + (curApp()?.name || '')); }
-    } else {
-      view = 'home';
-      goHome();
-    }
+    
     const wv = document.getElementById('st-webview');
     if (wv) wv.src = 'about:blank';
-  });
+
+    if (window._isSettingsFromBrowser) {
+        window._isSettingsFromBrowser = false;
+        document.querySelector('.skbar').style.display = 'none';
+    } else {
+        document.getElementById('view-open-app').classList.remove('visible');
+        openApp = null;
+        if (typeof fromApps !== 'undefined' && fromApps) {
+          view = 'apps';
+          if (appViewMode === 'list')        buildList();
+          else if (appViewMode === 'single') buildSingle();
+          else { setSK('', 'Select', 'Options', false); lbl('Apps — ' + (curApp()?.name || '')); }
+        } else {
+          view = 'home';
+          goHome();
+        }
+    }
+  };
+
+  if (window._isSettingsFromBrowser) {
+    const wrap = document.getElementById('st-wrap');
+    wrap.style.transition = 'opacity 0.3s';
+    wrap.style.opacity = '0';
+    setTimeout(() => {
+      wrap.classList.remove('visible');
+      wrap.style.transition = '';
+      wrap.style.opacity = '';
+      restoreLogic();
+    }, 300);
+  } else {
+    animateCloseApp('st-wrap', () => {
+      restoreLogic();
+    });
+  }
 }
 function stKey(code) {
   const wv = document.getElementById('st-webview');
@@ -2883,7 +2942,7 @@ const _BW_OM = [
     { label: 'Minimize',        a: () => { _bwMenuClose(); if(bwCurrentUrl) bwLastUrl=bwCurrentUrl; _bwCloseWebviewCommon(); goHome(); } },
     { label: 'Share',           a: () => { _bwMenuClose(); _bwShareOpen(); } },
     { label: 'Pin To',          a: () => { _bwMenuClose(); _bwPinToStart(); } },
-    { label: 'Settings',        a: () => { _bwMenuClose(); } },
+    { label: 'Settings',        a: () => { _bwMenuClose(); stOpenSettingsFromBrowser(); } },
   ],
   [
     { label: 'Quit',            a: () => { _bwMenuClose(); bwLastUrl=''; _bwCloseWebviewCommon(); goHome(); } },
@@ -4640,7 +4699,7 @@ function pressBack() {
         view = 'apps';
         if (appViewMode === 'list')        buildList();
         else if (appViewMode === 'single') buildSingle();
-        else { setSK('', 'Select', 'Options', false); lbl('Apps - ' + (curApp()?.name || '')); }
+        else { setSK('', 'Select', 'Options', false); lbl('Apps — ' + (curApp()?.name || '')); }
       } else {
         goHome();
       }
@@ -4682,7 +4741,7 @@ function pressBack() {
         view = 'apps';
         if (appViewMode === 'list')        buildList();
         else if (appViewMode === 'single') buildSingle();
-        else { setSK('', 'Select', 'Options', false); lbl('Apps   ' + (curApp()?.name || '')); }
+        else { setSK('', 'Select', 'Options', false); lbl('Apps — ' + (curApp()?.name || '')); }
       } else {
         goHome();
       }
