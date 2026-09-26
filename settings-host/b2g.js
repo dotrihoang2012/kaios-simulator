@@ -285,13 +285,9 @@
         onwifihasinternet: null, oncaptiveportallogin: null,
         setStaticIpMode: function () { return req(true); },
         getNetworks: function () { 
-          return req(_availableNetworks.map(n => {
-            var isConnected = w.connection && w.connection.network && w.connection.network.ssid === n.ssid && w.connection.status === 'connected';
-            var isKnown = _knownNetworks.some(kn => kn.ssid === n.ssid);
-            var merged = Object.assign({}, n, { connected: isConnected, known: isKnown });
-            if (isKnown) merged.password = '*';
-            return merged;
-          }));
+          var r = { result: [], error: null, onsuccess: null, onerror: null };
+          // Never fire onsuccess or onerror -> stays in "Searching..." state
+          return r;
         },
         getKnownNetworks: function () { return req(_knownNetworks); },
         associate: function (network) {
@@ -344,12 +340,7 @@
         wps: function () { return req(true); },
       };
       
-      if (w.enabled) {
-        var knownAvailableBoot = _availableNetworks.find(n => _knownNetworks.some(kn => kn.ssid === n.ssid));
-        if (knownAvailableBoot) {
-          w.connection = { status: 'connected', network: Object.assign({}, knownAvailableBoot, { connected: true, hasInternet: true }) };
-        }
-      }
+      
 
       return lenient(w);
     })();
@@ -362,24 +353,7 @@
       if (on && typeof wifi.onenabled === 'function') wifi.onenabled(ev);
       if (!on && typeof wifi.ondisabled === 'function') wifi.ondisabled(ev);
       if (on) {
-        var knownAvailable = _availableNetworks.find(n => _knownNetworks.some(kn => kn.ssid === n.ssid));
-        if (knownAvailable) {
-          wifi.connection.status = 'connecting';
-          wifi.connection.network = knownAvailable;
-          if (typeof wifi.onstatuschange === 'function') wifi.onstatuschange({ status: 'connecting', network: knownAvailable });
-          if (window.parent && typeof window.parent.setWifiStatus === 'function') window.parent.setWifiStatus('connecting', 0);
-          setTimeout(function() {
-            wifi.connection.status = 'connected';
-            knownAvailable.connected = true;
-            knownAvailable.hasInternet = true;
-            if (typeof wifi.onstatuschange === 'function') wifi.onstatuschange({ status: 'connected', network: knownAvailable });
-            if (typeof wifi.onwifihasinternet === 'function') wifi.onwifihasinternet({ network: knownAvailable });
-            if (window.parent && typeof window.parent.setWifiStatus === 'function') window.parent.setWifiStatus('connected', 4);
-            if (window.parent && typeof window.parent.showToast === 'function') {
-              window.parent.showToast('Wi-Fi Connected');
-            }
-          }, 1500);
-        } else {
+        if (false) { } else {
           wifi.connection.status = 'disconnected';
           wifi.connection.network = null;
           if (typeof wifi.onstatuschange === 'function') wifi.onstatuschange({ status: 'disconnected', network: null });
