@@ -515,8 +515,11 @@ window.__KAIOS_L10N_ENUS = [{"$i":"softkey-options","$v":"Options"},{"$i":"stopp
         wps: function () { return req(true); },
       };
       
-      if (w.enabled && _knownNetworks.some(kn => kn.ssid === 'KaiOS-Sim')) {
-        w.connection = { status: 'connected', network: Object.assign({}, _availableNetworks[0], { connected: true, hasInternet: true }) };
+      if (w.enabled) {
+        var knownAvailableBoot = _availableNetworks.find(n => _knownNetworks.some(kn => kn.ssid === n.ssid));
+        if (knownAvailableBoot) {
+          w.connection = { status: 'connected', network: Object.assign({}, knownAvailableBoot, { connected: true, hasInternet: true }) };
+        }
       }
 
       return lenient(w);
@@ -530,18 +533,28 @@ window.__KAIOS_L10N_ENUS = [{"$i":"softkey-options","$v":"Options"},{"$i":"stopp
       if (on && typeof wifi.onenabled === 'function') wifi.onenabled(ev);
       if (!on && typeof wifi.ondisabled === 'function') wifi.ondisabled(ev);
       if (on) {
-        wifi.connection.status = 'connecting';
-        if (typeof wifi.onstatuschange === 'function') wifi.onstatuschange({ status: 'connecting', network: wifi.connection.network });
-        if (window.parent && typeof window.parent.setWifiStatus === 'function') window.parent.setWifiStatus('connecting', 0);
-        setTimeout(function() {
-          wifi.connection.status = 'connected';
-          if (typeof wifi.onstatuschange === 'function') wifi.onstatuschange({ status: 'connected', network: wifi.connection.network });
-          if (typeof wifi.onwifihasinternet === 'function') wifi.onwifihasinternet({ network: wifi.connection.network });
-          if (window.parent && typeof window.parent.setWifiStatus === 'function') window.parent.setWifiStatus('connected', 4);
-          if (window.parent && typeof window.parent.showToast === 'function') {
-            window.parent.showToast('Wi-Fi Connected');
-          }
-        }, 1500);
+        var knownAvailable = _availableNetworks.find(n => _knownNetworks.some(kn => kn.ssid === n.ssid));
+        if (knownAvailable) {
+          wifi.connection.status = 'connecting';
+          wifi.connection.network = knownAvailable;
+          if (typeof wifi.onstatuschange === 'function') wifi.onstatuschange({ status: 'connecting', network: knownAvailable });
+          if (window.parent && typeof window.parent.setWifiStatus === 'function') window.parent.setWifiStatus('connecting', 0);
+          setTimeout(function() {
+            wifi.connection.status = 'connected';
+            knownAvailable.connected = true;
+            knownAvailable.hasInternet = true;
+            if (typeof wifi.onstatuschange === 'function') wifi.onstatuschange({ status: 'connected', network: knownAvailable });
+            if (typeof wifi.onwifihasinternet === 'function') wifi.onwifihasinternet({ network: knownAvailable });
+            if (window.parent && typeof window.parent.setWifiStatus === 'function') window.parent.setWifiStatus('connected', 4);
+            if (window.parent && typeof window.parent.showToast === 'function') {
+              window.parent.showToast('Wi-Fi Connected');
+            }
+          }, 1500);
+        } else {
+          wifi.connection.status = 'disconnected';
+          wifi.connection.network = null;
+          if (typeof wifi.onstatuschange === 'function') wifi.onstatuschange({ status: 'disconnected', network: null });
+        }
       } else {
         wifi.connection.status = 'disconnected';
         if (typeof wifi.onstatuschange === 'function') wifi.onstatuschange({ status: 'disconnected' });

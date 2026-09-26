@@ -5278,14 +5278,23 @@ function toggleIS(i) {
           if (i === 2) { IS_TILES[3].active = false; IS_TILES[5].active = false; }
           
           if (i === 3) {
-            window._wifiConnectingPhase = true;
-            window.setWifiStatus('connecting', 0);
-            setTimeout(() => {
-              window._wifiConnectingPhase = false;
-              window.setWifiStatus('connected', 4);
-              window.showToast('Wi-Fi Connected');
-            }, 1500);
+            var kn = [];
+            try { kn = JSON.parse(localStorage.getItem('kaios.wifi.known')||'null') || []; } catch(e){}
+            var hasKnown = kn.some(n => n.ssid === 'KaiOS-Sim' || n.ssid === 'Home_5G');
+            if (hasKnown) {
+              window._wifiConnectingPhase = true;
+              window.setWifiStatus('connecting', 0);
+              setTimeout(() => {
+                window._wifiConnectingPhase = false;
+                window.setWifiStatus('connected', 4);
+                window.showToast('Wi-Fi Connected');
+              }, 1500);
+            } else {
+              window.setWifiStatus('disconnected', 0);
+            }
           }
+          
+          
           updateSbIcons();
           renderIS();
         }, 1500);
