@@ -2275,6 +2275,14 @@ function stFocusFirst(wv) {
       // (white bg + black icons), so hide the settings app's placeholder to
       // avoid stacking two bars. This only runs while the iframe is same-origin
       // (GitHub Pages), which is the case where the sim status bar is visible.
+      if (window.parent && window.parent._pendingStHash) {
+        var link = doc.querySelector('a[href="' + window.parent._pendingStHash + '"]');
+        if (link) {
+            setTimeout(function() { link.click(); }, 100);
+            window.parent._pendingStHash = null;
+            return;
+        }
+      }
       var ph = doc.querySelector('.statusbar-placeholder');
       if (ph) { ph.style.display = 'none'; }
       // Also collapse the statusbar height so sections start at the top of the
@@ -2372,8 +2380,8 @@ function stOpenSettings(hash) {
   const wv = document.getElementById('st-webview');
   // In browser environment, ST_URL is a relative path. We check if src ends with it.
   if (wv) {
-    if (hash) wv.src = ST_URL + hash;
-    else if (!wv.src.endsWith(ST_URL)) wv.src = ST_URL;
+    window._pendingStHash = hash || null;
+    wv.src = ST_URL;
   }
   // Keep the simulator's status bar visible but restyle it to match the
   // Settings white theme (black icons/text on white background), like a
@@ -2474,7 +2482,7 @@ function stKey(code) {
         var win = wv.contentWindow;
         var doc = wv.contentDocument;
         var ae = doc ? doc.activeElement : null;
-        var isInput = ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA');
+        var isInput = ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA' || !!ae.closest('[role="dialog"]'));
         var cp = win.Settings ? win.Settings.currentPanel : null;
         var isRoot = cp === '#root' || window._isSettingsFromBrowser;
         if (!isRoot && doc) {
@@ -2486,7 +2494,7 @@ function stKey(code) {
         var _origClose = win.close;
         win.close = function() { win._stCloseFlag = true; };
         
-        win.__stInjectKey(k);
+        if(typeof win.__stInjectKey === 'function') { win.__stInjectKey(k); }
         
         showToast('Debug: isRoot=' + isRoot + ' isInput=' + isInput + ' tag=' + (ae?ae.tagName:'none') + ' br=' + window._isSettingsFromBrowser);
         if (win._stCloseFlag || (isRoot && !isInput)) {
