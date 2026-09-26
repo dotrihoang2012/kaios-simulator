@@ -5175,9 +5175,7 @@ function updateSbIcons() {
       sbWifiConn.style.display = 'none';
       }
     };
-    if (!window._wifiConnectingPhase) {
-      window.setWifiStatus(wifi.active ? 'connected' : 'disconnected', 4);
-    }
+    
 
 const sbBt = document.getElementById('sb-bluetooth');
   if (bt.active) {
