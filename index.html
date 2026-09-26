@@ -2474,9 +2474,9 @@ function stKey(code) {
         var win = wv.contentWindow;
         var doc = wv.contentDocument;
         var ae = doc ? doc.activeElement : null;
-        var isInput = ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA' || ae.tagName === 'SELECT');
+        var isInput = ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA');
         var cp = win.Settings ? win.Settings.currentPanel : null;
-        var isRoot = cp === '#root';
+        var isRoot = cp === '#root' || window._isSettingsFromBrowser;
         if (!isRoot && doc) {
           var cur = doc.querySelector('section.current');
           if (cur && cur.id === 'root') isRoot = true;
