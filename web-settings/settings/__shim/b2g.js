@@ -377,7 +377,7 @@
       onattributechanged: null, ondevicepaired: null, ondeviceunpaired: null,
       addEventListener: function (t, cb) { (listeners[t] = listeners[t] || []).push(cb); },
       removeEventListener: function (t, cb) { if (listeners[t]) listeners[t] = listeners[t].filter(function (c) { return c !== cb; }); },
-      getPairedDevices: function () { return a.state === 'enabled' ? [{ name: 'JBL Speaker', address: '11:22:33:44:55:66', paired: true, type: 'audio-card', cod: { majorDeviceClass: 4, majorServiceClass: 0, minorDeviceClass: 1 } }] : []; },
+      getPairedDevices: function () { return []; },
       startDiscovery: function () { a.discovering = true; fire('discovering'); return req(lenient(evt())); },
       stopDiscovery: function () { a.discovering = false; fire('discovering'); return req(true); },
       setDiscoverable: function (v) { a.discoverable = !!v; fire('discoverable'); return req(true); },
