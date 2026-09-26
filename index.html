@@ -2274,14 +2274,18 @@ function stFocusFirst(wv) {
   var tryFocus = function () {
     try {
       var doc = wv.contentDocument; if (!doc) return;
-      // The simulator's own status bar is now kept visible above the iframe
-      // (white bg + black icons), so hide the settings app's placeholder to
-      // avoid stacking two bars. This only runs while the iframe is same-origin
-      // (GitHub Pages), which is the case where the sim status bar is visible.
+      var win = wv.contentWindow;
+      
+      // Delay navigation until Settings module is fully loaded
       if (window.parent && window.parent._pendingStHash) {
-        doc.defaultView.location.hash = window.parent._pendingStHash;
+        if (!win.Settings) {
+            setTimeout(tryFocus, 100);
+            return;
+        }
+        win.Settings.setCurrentPanel(window.parent._pendingStHash);
         window.parent._pendingStHash = null;
       }
+      
       var ph = doc.querySelector('.statusbar-placeholder');
       if (ph) { ph.style.display = 'none'; }
       // Also collapse the statusbar height so sections start at the top of the
@@ -2398,7 +2402,7 @@ function stOpenSettings(hash) {
 function stCloseSettings() {
   if (window._stClosing) return; // Prevent double trigger
   window._stClosing = true;
-  if (typeof SimKeyboard !== 'undefined') SimKeyboard.deactivate();
+  if (typeof SimKeyboard !== 'undefined') { try { SimKeyboard.deactivate(); } catch(e){} }
   
   const wasFromBrowser = window._isSettingsFromBrowser;
   window._isSettingsFromBrowser = false;
@@ -4222,7 +4226,7 @@ function openBwSearch() {
 }
 
 function closeBwSearch() {
-  if (typeof SimKeyboard !== 'undefined') SimKeyboard.deactivate();
+  if (typeof SimKeyboard !== 'undefined') { try { SimKeyboard.deactivate(); } catch(e){} }
   document.getElementById('view-bw-search').classList.remove('visible');
   view = 'app-open';
   if (bwMode === 'web') {
@@ -4971,13 +4975,13 @@ function _renameConfirm() {
   if (name && _renameApp) _renameApp.name = name;
   _renameApp = null;
   document.getElementById('rename-dialog').classList.remove('visible');
-  if (typeof SimKeyboard !== 'undefined') SimKeyboard.deactivate();
+  if (typeof SimKeyboard !== 'undefined') { try { SimKeyboard.deactivate(); } catch(e){} }
   rebuildCurrentView();
 }
 function _renameCancel() {
   _renameApp = null;
   document.getElementById('rename-dialog').classList.remove('visible');
-  if (typeof SimKeyboard !== 'undefined') SimKeyboard.deactivate();
+  if (typeof SimKeyboard !== 'undefined') { try { SimKeyboard.deactivate(); } catch(e){} }
   rebuildCurrentView();
 }
 function closeOM() {
