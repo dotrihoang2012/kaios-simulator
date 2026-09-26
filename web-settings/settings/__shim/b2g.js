@@ -264,36 +264,61 @@
   // simulate that: observe wifi.enabled and fire the matching event so the
   // panel's toggle updates and re-enables (otherwise it stays stuck "off").
   var wifi = (function () {
-    var w = {
-      enabled: store['wifi.enabled'] === true,
-      macAddress: '02:00:00:00:00:01',
-      connection: { status: 'connected', network: { ssid: 'KaiOS-Sim', security: 'WPA2-PSK', signalStrength: 92, relSignalStrength: 92, connected: true, keyManagement: ['WPA-PSK'], hasInternet: true } },
-      onenabled: null, ondisabled: null, onstatuschange: null, onconnectioninfoupdate: null,
-      onwifihasinternet: null, oncaptiveportallogin: null,
-      setStaticIpMode: function () { return req(true); },
-      getNetworks: function () { return req([
-        { ssid: 'KaiOS-Sim', security: 'WPA2-PSK', signalStrength: 92, relSignalStrength: 92, connected: true, keyManagement: ['WPA-PSK'] },
+      var _knownNetworks = [];
+      try { _knownNetworks = JSON.parse(localStorage.getItem('kaios.wifi.known') || 'null'); } catch(e){}
+      if (!_knownNetworks) {
+        _knownNetworks = [{ ssid: 'KaiOS-Sim', security: 'WPA2-PSK', keyManagement: ['WPA-PSK'] }];
+        localStorage.setItem('kaios.wifi.known', JSON.stringify(_knownNetworks));
+      }
+      
+      var _availableNetworks = [
+        { ssid: 'KaiOS-Sim', security: 'WPA2-PSK', signalStrength: 92, relSignalStrength: 92, keyManagement: ['WPA-PSK'] },
         { ssid: 'Home_5G', security: 'WPA2-PSK', signalStrength: 70, relSignalStrength: 70, keyManagement: ['WPA-PSK'] },
-        { ssid: 'CoffeeShop', security: '', signalStrength: 48, relSignalStrength: 48, keyManagement: [] },
-      ]); },
-      getKnownNetworks: function () { return req([{ ssid: 'KaiOS-Sim', security: 'WPA2-PSK' }]); },
-      associate: function (network) {
-                    var r = { result: true, error: null, onsuccess: null, onerror: null };
+        { ssid: 'CoffeeShop', security: '', signalStrength: 48, relSignalStrength: 48, keyManagement: [] }
+      ];
+
+      var w = {
+        enabled: store['wifi.enabled'] === true,
+        macAddress: '02:00:00:00:00:01',
+        connection: { status: 'disconnected', network: null },
+        onenabled: null, ondisabled: null, onstatuschange: null, onconnectioninfoupdate: null,
+        onwifihasinternet: null, oncaptiveportallogin: null,
+        setStaticIpMode: function () { return req(true); },
+        getNetworks: function () { 
+          return req(_availableNetworks.map(n => {
+            var isConnected = w.connection && w.connection.network && w.connection.network.ssid === n.ssid && w.connection.status === 'connected';
+            var isKnown = _knownNetworks.some(kn => kn.ssid === n.ssid);
+            var merged = Object.assign({}, n, { connected: isConnected, known: isKnown });
+            if (isKnown) merged.password = '*';
+            return merged;
+          }));
+        },
+        getKnownNetworks: function () { return req(_knownNetworks); },
+        associate: function (network) {
+          var r = { result: true, error: null, onsuccess: null, onerror: null };
           setTimeout(function() {
-                        if (typeof r.onsuccess === 'function') r.onsuccess({ target: r });
-            wifi.connection.status = 'connecting';
-            wifi.connection.network = network;
-            if (typeof wifi.onstatuschange === 'function') wifi.onstatuschange({ status: 'connecting', network: network });
+            if (typeof r.onsuccess === 'function') r.onsuccess({ target: r });
+            w.connection.status = 'connecting';
+            w.connection.network = network;
+            if (typeof w.onstatuschange === 'function') w.onstatuschange({ status: 'connecting', network: network });
             if (window.parent && typeof window.parent.setWifiStatus === 'function') window.parent.setWifiStatus('connecting', 0);
+            
             setTimeout(function() {
-                            wifi.connection.status = 'associated';
-              if (typeof wifi.onstatuschange === 'function') wifi.onstatuschange({ status: 'associated', network: network });
+              w.connection.status = 'associated';
+              if (typeof w.onstatuschange === 'function') w.onstatuschange({ status: 'associated', network: network });
+              
               setTimeout(function() {
-                                wifi.connection.status = 'connected';
+                w.connection.status = 'connected';
                 network.connected = true;
                 network.hasInternet = true;
-                if (typeof wifi.onstatuschange === 'function') wifi.onstatuschange({ status: 'connected', network: network });
-                if (typeof wifi.onwifihasinternet === 'function') wifi.onwifihasinternet({ network: network });
+                
+                if (!_knownNetworks.some(kn => kn.ssid === network.ssid)) {
+                  _knownNetworks.push({ ssid: network.ssid, security: network.security, keyManagement: network.keyManagement });
+                  localStorage.setItem('kaios.wifi.known', JSON.stringify(_knownNetworks));
+                }
+
+                if (typeof w.onstatuschange === 'function') w.onstatuschange({ status: 'connected', network: network });
+                if (typeof w.onwifihasinternet === 'function') w.onwifihasinternet({ network: network });
                 if (window.parent && typeof window.parent.setWifiStatus === 'function') {
                    var level = Math.min(Math.floor((network.relSignalStrength || 100) / 20), 4);
                    if (level === 0) level = 1;
@@ -304,11 +329,27 @@
             }, 2000);
           }, 10);
           return r;
-        }, forget: function () { return req(true); },
-      wps: function () { return req(true); },
-    };
-    return lenient(w);
-  })();
+        }, 
+        forget: function (network) {
+          _knownNetworks = _knownNetworks.filter(n => n.ssid !== network.ssid);
+          localStorage.setItem('kaios.wifi.known', JSON.stringify(_knownNetworks));
+          if (w.connection && w.connection.network && w.connection.network.ssid === network.ssid) {
+            w.connection.status = 'disconnected';
+            w.connection.network = null;
+            if (typeof w.onstatuschange === 'function') w.onstatuschange({ status: 'disconnected', network: null });
+            if (window.parent && typeof window.parent.setWifiStatus === 'function') window.parent.setWifiStatus('disconnected', 0);
+          }
+          return req(true); 
+        },
+        wps: function () { return req(true); },
+      };
+      
+      if (w.enabled && _knownNetworks.some(kn => kn.ssid === 'KaiOS-Sim')) {
+        w.connection = { status: 'connected', network: Object.assign({}, _availableNetworks[0], { connected: true, hasInternet: true }) };
+      }
+
+      return lenient(w);
+    })();
   // Bridge the wifi.enabled setting to the manager's hardware events.
   window.__kaiSettings.observe('wifi.enabled', true, function (e) {
     var on = e.settingValue !== false;
