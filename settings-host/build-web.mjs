@@ -324,6 +324,7 @@ for (const f of ['l10n.js', 'b2g.js', 'select-ui.js', 'datetime-ui.js', 'activit
     data.push({'$i': 'WPA-PSK', '$v': 'WPA/WPA2-Personal'});
     data.push({'$i': 'securedBy', '$v': 'Secured by {{capabilities}}'});
       data.push({'$i': 'scanning', '$v': 'Searching...'});
+      data.push({'$i': 'search-for-device', '$v': 'Searching for devices...'});
     const rawFixed = JSON.stringify(data);
 
   fs.writeFileSync(path.join(shimDir, 'l10n-data.js'),
