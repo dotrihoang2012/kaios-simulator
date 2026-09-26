@@ -2331,7 +2331,7 @@ function stBuildWebview() {
   return wrap;
 }
 function stOpenSettingsFromBrowser() {
-  window._isSettingsFromBrowser = true;
+  window._isSettingsFromBrowser = true; showToast('M? t? Web (B?n v� m?i)');
   const splash = document.createElement('div');
   splash.id = 'bw-settings-splash';
   splash.style.cssText = 'position:absolute;inset:0;background:#000;z-index:99999;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s;';
@@ -2488,6 +2488,7 @@ function stKey(code) {
         
         win.__stInjectKey(k);
         
+        showToast('Debug: isRoot=' + isRoot + ' isInput=' + isInput + ' tag=' + (ae?ae.tagName:'none') + ' br=' + window._isSettingsFromBrowser);
         if (win._stCloseFlag || (isRoot && !isInput)) {
           if (window.stCloseSettings) window.stCloseSettings();
         }
