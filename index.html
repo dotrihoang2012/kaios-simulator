@@ -2389,40 +2389,52 @@ function stOpenSettings(hash) {
   wrap.style.top = '';
 }
 function stCloseSettings() {
+  if (window._stClosing) return; // Prevent double trigger
+  window._stClosing = true;
   if (typeof SimKeyboard !== 'undefined') SimKeyboard.deactivate();
   
+  const wasFromBrowser = window._isSettingsFromBrowser;
+  window._isSettingsFromBrowser = false;
+
   const restoreLogic = () => {
     const wrap = document.getElementById('st-wrap');
     if (wrap) wrap.style.top = '';
-    document.querySelector('.skbar').style.display = '';
-    const _sb = document.getElementById('statusbar');
-    _sb.classList.remove('bw-sb');
-    _sb.style.background = '';
-    _sb.style.color = '';
-    _sb.style.display = '';
     
-    const wv = document.getElementById('st-webview');
-    if (wv) wv.src = 'about:blank';
-
-    if (window._isSettingsFromBrowser) {
-        window._isSettingsFromBrowser = false;
+    const _sb = document.getElementById('statusbar');
+    if (wasFromBrowser) {
+        // Keep browser status bar style
+        _sb.classList.add('bw-sb');
+        _sb.style.background = '';
+        _sb.style.color = '';
+        _sb.style.display = '';
         document.querySelector('.skbar').style.display = 'none';
+        if (typeof _bwUpdateSkbar === 'function') _bwUpdateSkbar();
     } else {
+        document.querySelector('.skbar').style.display = '';
+        _sb.classList.remove('bw-sb');
+        _sb.style.background = '';
+        _sb.style.color = '';
+        _sb.style.display = '';
+        
         document.getElementById('view-open-app').classList.remove('visible');
         openApp = null;
         if (typeof fromApps !== 'undefined' && fromApps) {
           view = 'apps';
           if (appViewMode === 'list')        buildList();
           else if (appViewMode === 'single') buildSingle();
-          else { setSK('', 'Select', 'Options', false); lbl('Apps — ' + (curApp()?.name || '')); }
+          else { setSK('', 'Select', 'Options', false); lbl('Apps \u2014 ' + (curApp()?.name || '')); }
         } else {
           view = 'home';
           goHome();
         }
     }
+    
+    const wv = document.getElementById('st-webview');
+    if (wv) wv.src = 'about:blank';
+    window._stClosing = false;
   };
 
-  if (window._isSettingsFromBrowser) {
+  if (wasFromBrowser) {
     const wrap = document.getElementById('st-wrap');
     wrap.style.transition = 'opacity 0.3s';
     wrap.style.opacity = '0';
