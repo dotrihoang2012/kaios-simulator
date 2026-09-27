@@ -5796,19 +5796,7 @@ function doPowerOff() {
     if (inputLocked) { cancelPowerOn(); return; }
     if (_powerTimer) {
       clearTimeout(_powerTimer); _powerTimer = null;
-      if (isSleepOpen()) { closeSleepMenu(); return; }
-      if (isSysDialogOpen()) { closeDialog(false); return; }   // End key dismisses the dialog
-      if (isBwMenuOpen()) { _bwMenuClose(); return; }
-      if (_bwPinMode) { _bwPinExit(); return; }
-      if (isBwSCOpen()) { closeBwShortcut(); return; }
-      if (isBwShareOpen()) { _bwShareClose(); return; }
-      if (isBwVolOpen()) { _bwVolClose(); return; }
-      if (view === 'app-open' && bwMode === 'web' && (openApp?.id === 'browser' || openApp?.url)) {
-        if (_bwCanGoBack()) _bwNavBack();
-        else { if (bwCurrentUrl) bwLastUrl = bwCurrentUrl; _bwCloseWebviewCommon(); goHome(); }
-      } else {
-        pressBack();
-      }
+      pressEnd();
     }
   });
   btn.addEventListener('mouseleave', () => {
