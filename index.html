@@ -2272,42 +2272,40 @@ let _stFails = 0;
 // `<li role="menuitem">` rows; tabs (Wi-Fi, etc.) live in their own sections
 // and panels bring their own focused element on activate.
 function stFocusFirst(wv) {
+  var _navigated = false; // flag: once we navigate to a hash, stop retrying root focus
   var tryFocus = function () {
     try {
       var doc = wv.contentDocument; if (!doc) return;
       var win = wv.contentWindow;
-      
-      // Delay navigation until Settings module is fully loaded
-      if (window.parent && window.parent._pendingStHash) {
-        if (!win.Settings) {
-            setTimeout(tryFocus, 100);
-            return;
-        }
-        var _hash = window.parent._pendingStHash;
-        window.parent._pendingStHash = null;
-        // #search is under the Personalization tab - activate it first
-        var _panelsUnderPersonalization = ['#search', '#sound', '#display', '#notifications', '#date_time', '#languages', '#input_methods', '#wallpaper', '#home_screen'];
-        if (_panelsUnderPersonalization.indexOf(_hash) !== -1) {
-          var _tabs = doc.querySelectorAll('gaia-tabs [role="tab"]');
-          if (_tabs && _tabs.length > 1) {
-            _tabs[1].click(); // Personalization tab (index 1)
-            setTimeout(function() { win.Settings.setCurrentPanel(_hash); }, 150);
-          } else {
-            win.Settings.setCurrentPanel(_hash);
-          }
-        } else {
-          win.Settings.setCurrentPanel(_hash);
-        }
-      }
-      
+
+      // Hide statusbar placeholder every time
       var ph = doc.querySelector('.statusbar-placeholder');
-      if (ph) { ph.style.display = 'none'; }
-      // Also collapse the statusbar height so sections start at the top of the
-      // iframe (the simulator's own status bar is already above it).
+      if (ph) ph.style.display = 'none';
       doc.documentElement.style.setProperty('--statusbar-height', '0px');
       doc.documentElement.style.setProperty('--statusbar-softkeybar-height', '3rem');
-      // Try the root menu first (its panel always exists at boot), then any
-      // tab/section, then any [role=menuitem] anywhere in the app.
+
+      // If we already navigated to a specific panel, stop touching focus
+      if (_navigated) return;
+
+      // Delay navigation until Settings module is fully loaded
+      var pending = window._pendingStHash;
+      if (pending) {
+        if (!win.Settings) { setTimeout(tryFocus, 100); return; }
+        window._pendingStHash = null;
+        _navigated = true;
+        // Click the correct tab first, then navigate
+        var _personPanels = ['#search','#sound','#display','#notifications','#date_time','#languages','#input_methods','#wallpaper','#home_screen'];
+        var _tabs = doc.querySelectorAll('gaia-tabs [role="tab"]');
+        if (_personPanels.indexOf(pending) !== -1 && _tabs && _tabs.length > 1) {
+          _tabs[1].click();
+          setTimeout(function() { try { win.Settings.setCurrentPanel(pending); } catch(e){} }, 200);
+        } else {
+          try { win.Settings.setCurrentPanel(pending); } catch(e) {}
+        }
+        return; // Don't touch root focus
+      }
+
+      // No pending hash: focus first root item
       var el = doc.querySelector('#root li[role="menuitem"]:not(.hidden)')
             || doc.querySelector('#root li[role="menuitem"]')
             || doc.querySelector('#root li')
