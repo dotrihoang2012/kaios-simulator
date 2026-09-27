@@ -2210,6 +2210,7 @@ function renderSidemenu() {
 //  VIEW TRANSITIONS
 // ════════════════════════════════════════
 function goHome() {
+  if (window._stClosingToBrowser) return; // Prevent goHome during Settings fade out back to Browser
   if (isAppDialogOpen()) _appConfirmClose();
   if (isRenameOpen()) _renameCancel();
   closeSleepMenu();
@@ -2386,7 +2387,14 @@ function stOpenSettings(hash) {
   // In browser environment, ST_URL is a relative path. We check if src ends with it.
   if (wv) {
     window._pendingStHash = hash || null;
-    wv.src = ST_URL;
+    if (wv.src.endsWith(ST_URL.replace('./', ''))) {
+      if (wv.contentWindow && wv.contentWindow.Settings) {
+        if (hash) wv.contentWindow.Settings.setCurrentPanel(hash);
+        stFocusFirst(wv);
+      } else wv.src = ST_URL;
+    } else {
+      wv.src = ST_URL;
+    }
   }
   // Keep the simulator's status bar visible but restyle it to match the
   // Settings white theme (black icons/text on white background), like a
@@ -2407,6 +2415,7 @@ function stCloseSettings() {
   if (typeof SimKeyboard !== 'undefined') { try { SimKeyboard.deactivate(); } catch(e){} }
   
   const wasFromBrowser = window._isSettingsFromBrowser;
+  if (wasFromBrowser) window._stClosingToBrowser = true;
   window._isSettingsFromBrowser = false;
 
   const restoreLogic = () => {
@@ -2423,6 +2432,8 @@ function stCloseSettings() {
         document.querySelector('.skbar').style.display = 'none';
         if (typeof _bwUpdateSkbar === 'function') _bwUpdateSkbar();
         setTimeout(() => { try { document.getElementById('bw-iframe').focus(); } catch(e){} }, 100);
+        window._stClosing = false;
+        window._stClosingToBrowser = false;
     } else {
         document.querySelector('.skbar').style.display = '';
         _sb.classList.remove('bw-sb');
@@ -2490,7 +2501,7 @@ function stKey(code) {
         var ae = doc ? doc.activeElement : null;
         var isInput = ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA' || !!ae.closest('[role="dialog"]'));
         var cp = win.Settings ? win.Settings.currentPanel : null;
-        var isRoot = cp === '#root' || window._isSettingsFromBrowser;
+        var isRoot = cp === '#root';
         if (!isRoot && doc) {
           var cur = doc.querySelector('section.current');
           if (cur && cur.id === 'root') isRoot = true;
