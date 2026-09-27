@@ -2378,7 +2378,7 @@ function stOpenSettingsFromBrowser() {
 
     setTimeout(() => { splash.style.opacity = '0'; setTimeout(() => splash.remove(), 300); }, 500);
 
-    // Poll until Settings is ready, then navigate to #search in Personalization tab
+    // Poll until Settings is ready, then navigate directly to #search
     var _attempts = 0;
     var _navigateSearch = function() {
       _attempts++;
@@ -2387,13 +2387,7 @@ function stOpenSettingsFromBrowser() {
       if (!wv || !wv.contentWindow || !wv.contentWindow.Settings) {
         setTimeout(_navigateSearch, 100); return;
       }
-      var win = wv.contentWindow;
-      var doc = wv.contentDocument;
-      var tabs = doc ? doc.querySelectorAll('gaia-tabs [role="tab"]') : [];
-      if (tabs.length > 1) tabs[1].click(); // click Personalization tab
-      setTimeout(function() {
-        try { win.Settings.setCurrentPanel('#search'); } catch(e) {}
-      }, 400);
+      try { wv.contentWindow.Settings.setCurrentPanel('#search'); } catch(e) {}
     };
     setTimeout(_navigateSearch, 200);
   }, 300);
