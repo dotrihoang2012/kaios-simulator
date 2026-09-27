@@ -1,11 +1,4 @@
-btn.addEventListener('mouseup', () => {
-    if (booting) return;
-    if (inputLocked) { cancelPowerOn(); return; }
-    if (_powerTimer) {
-      clearTimeout(_powerTimer); _powerTimer = null;
-      pressEnd();
-    }
-  });<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
