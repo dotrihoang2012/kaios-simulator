@@ -2262,7 +2262,7 @@ function showApps() {
 // gets a same-origin <iframe> and synthetic KeyboardEvents. The frame stays
 // alive across close so the app resumes where it was, like a real device.
 const ST_URL = new URL('web-settings/settings/index.html', location.href).href;
-function isStOpen() { return view === 'app-open' && openApp?.id === 'settings'; }
+function isStOpen() { return (view === 'app-open' && openApp?.id === 'settings') || (document.getElementById('st-wrap')?.classList.contains('visible')); }
 let _stFails = 0;
 // Gaia's NavigationMap navigates from `document.querySelector('.focus')` —
 // without a focused menu item the key handler can't move between rows and
