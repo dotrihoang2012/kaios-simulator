@@ -2283,8 +2283,21 @@ function stFocusFirst(wv) {
             setTimeout(tryFocus, 100);
             return;
         }
-        win.Settings.setCurrentPanel(window.parent._pendingStHash);
+        var _hash = window.parent._pendingStHash;
         window.parent._pendingStHash = null;
+        // #search is under the Personalization tab - activate it first
+        var _panelsUnderPersonalization = ['#search', '#sound', '#display', '#notifications', '#date_time', '#languages', '#input_methods', '#wallpaper', '#home_screen'];
+        if (_panelsUnderPersonalization.indexOf(_hash) !== -1) {
+          var _tabs = doc.querySelectorAll('gaia-tabs [role="tab"]');
+          if (_tabs && _tabs.length > 1) {
+            _tabs[1].click(); // Personalization tab (index 1)
+            setTimeout(function() { win.Settings.setCurrentPanel(_hash); }, 150);
+          } else {
+            win.Settings.setCurrentPanel(_hash);
+          }
+        } else {
+          win.Settings.setCurrentPanel(_hash);
+        }
       }
       
       var ph = doc.querySelector('.statusbar-placeholder');
@@ -2379,6 +2392,9 @@ function stOpenSettingsFromBrowser() {
 }
 function stOpenSettings(hash) {
   _stFails = 0;
+  // Hide browser tips badge when Settings opens
+  const _tipsBadge = document.getElementById('bw-tips-badge');
+  if (_tipsBadge) _tipsBadge.classList.remove('visible');
   const wrap = document.getElementById('st-wrap') || stBuildWebview();
   // Make sure no other view is layered on top of the settings webview.
   const dv = document.getElementById('view-dialer'); if (dv) dv.classList.remove('visible');
