@@ -2344,6 +2344,7 @@ function stBuildWebview() {
 }
 function stOpenSettingsFromBrowser() {
   window._isSettingsFromBrowser = true;
+  window._settingsOpenedFromBrowser = true; // permanent flag for this session
   window._stOpening = true;
   const splash = document.createElement('div');
   splash.id = 'bw-settings-splash';
@@ -2414,9 +2415,10 @@ function stCloseSettings() {
   window._stClosing = true;
   if (typeof SimKeyboard !== 'undefined') { try { SimKeyboard.deactivate(); } catch(e){} }
   
-  const wasFromBrowser = window._isSettingsFromBrowser;
+  const wasFromBrowser = !!(window._isSettingsFromBrowser || window._settingsOpenedFromBrowser);
   if (wasFromBrowser) window._stClosingToBrowser = true;
   window._isSettingsFromBrowser = false;
+  window._settingsOpenedFromBrowser = false;
 
   const restoreLogic = () => {
     const wrap = document.getElementById('st-wrap');
@@ -2429,6 +2431,12 @@ function stCloseSettings() {
         _sb.style.background = '';
         _sb.style.color = '';
         _sb.style.display = '';
+        // Ensure browser web view is visible
+        const bwWrap = document.getElementById('bw-webview-wrap');
+        if (bwWrap) bwWrap.classList.add('visible');
+        // Restore view state
+        view = 'app-open';
+        bwMode = 'web';
         document.querySelector('.skbar').style.display = 'none';
         if (typeof _bwUpdateSkbar === 'function') _bwUpdateSkbar();
         setTimeout(() => { try { document.getElementById('bw-iframe').focus(); } catch(e){} }, 100);
