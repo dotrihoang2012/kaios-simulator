@@ -2378,16 +2378,17 @@ function stOpenSettingsFromBrowser() {
 
     setTimeout(() => { splash.style.opacity = '0'; setTimeout(() => splash.remove(), 300); }, 500);
 
-    // Poll until Settings is ready, then navigate directly to #search
+    // Poll until Settings is fully ready (currentPanel != null), then navigate to #search
     var _attempts = 0;
     var _navigateSearch = function() {
       _attempts++;
-      if (_attempts > 50) return; // give up after 5s
+      if (_attempts > 80) return; // give up after 8s
       var wv = document.getElementById('st-webview');
-      if (!wv || !wv.contentWindow || !wv.contentWindow.Settings) {
+      var S = wv && wv.contentWindow && wv.contentWindow.Settings;
+      if (!S || S.currentPanel === null || S.currentPanel === undefined) {
         setTimeout(_navigateSearch, 100); return;
       }
-      try { wv.contentWindow.Settings.setCurrentPanel('#search'); } catch(e) {}
+      try { S.setCurrentPanel('#search'); } catch(e) {}
     };
     setTimeout(_navigateSearch, 200);
   }, 300);
