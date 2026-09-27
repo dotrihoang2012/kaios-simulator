@@ -48,12 +48,7 @@
      */
     showInitialPanel: function showInitialPanel(panelId) {
       const initialPanel = document.getElementById(panelId);
-      if (initialPanel) {
-          initialPanel.classList.add('current');
-      } else {
-          const root = document.getElementById('root');
-          if (root) root.classList.add('current');
-      }
+      initialPanel.classList.add('current');
     },
 
     /**
