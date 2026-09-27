@@ -2343,6 +2343,7 @@ function stBuildWebview() {
 }
 function stOpenSettingsFromBrowser() {
   window._isSettingsFromBrowser = true;
+  window._stOpening = true;
   const splash = document.createElement('div');
   splash.id = 'bw-settings-splash';
   splash.style.cssText = 'position:absolute;inset:0;background:#000;z-index:99999;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s;';
@@ -2358,6 +2359,7 @@ function stOpenSettingsFromBrowser() {
 
   setTimeout(() => {
     stOpenSettings('#search');
+    window._stOpening = false;
     
     // Clear any zoom animation from wrap
     const wrap = document.getElementById('st-wrap');
@@ -2420,6 +2422,7 @@ function stCloseSettings() {
         _sb.style.display = '';
         document.querySelector('.skbar').style.display = 'none';
         if (typeof _bwUpdateSkbar === 'function') _bwUpdateSkbar();
+        setTimeout(() => { try { document.getElementById('bw-iframe').focus(); } catch(e){} }, 100);
     } else {
         document.querySelector('.skbar').style.display = '';
         _sb.classList.remove('bw-sb');
@@ -2597,7 +2600,7 @@ function pressEnd() {
     });
     return;
   }
-  if (isStOpen()) { stCloseSettings(); return; }
+  if (isStOpen() || window._stOpening) { if (window._stOpening) { window._stOpening = false; document.getElementById('bw-settings-splash')?.remove(); } stCloseSettings(); return; }
   if (isSysDialogOpen()) { closeDialog(false); return; }
   if (isAppDialogOpen()) { _appConfirmClose(); return; }
   if (isRenameOpen()) { _renameCancel(); return; }
@@ -4653,7 +4656,7 @@ function pressRight() {
   if (view === 'app-open' && openApp?.type === 'folder') { return; }
   if (view === 'app-open' && openApp?.id === 'browser') {
     if (isBwDialogOpen()) { if (_bwDialogConfirm) _bwDialogConfirm(); closeBwDialog(); return; }
-    if (bwMode === 'web') { _bwMenuOpen(); return; }
+    if (bwMode === 'web') { closeBwWebView(); return; }
     const _unpinTile = BW_TILES[bwFocus];
     if (_unpinTile && !_unpinTile.builtin && _unpinTile.label) {
       openBwDialog('Confirmation', `Unpin website ${_unpinTile.label}?`, 'Unpin', () => {
@@ -4797,7 +4800,7 @@ function softLeft() {
   if (view === 'home')             { showStub('Notices', 'notifications');   return; }
   if (view === 'browser-search')   { closeBwSearch();                        return; }
   if (view === 'app-open' && openApp?.id === 'browser' && isBwDialogOpen()) { closeBwDialog(); return; }
-  if (view === 'app-open' && openApp?.id === 'browser' && bwMode === 'web') { closeBwWebView(); return; }
+  if (view === 'app-open' && openApp?.id === 'browser' && bwMode === 'web') { _bwMenuOpen(); return; }
   if (view === 'app-open' && openApp?.url && bwMode === 'web') { _bwNavHome(); return; }
   if (view === 'app-open' && openApp?.id === 'browser' && bwMode === 'home') { _bwReturnToWeb(); return; }
   if (view === 'app-open' && !openApp?.url && openApp?.id !== 'browser' && openApp?.type !== 'folder') return;
