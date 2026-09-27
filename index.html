@@ -2355,7 +2355,7 @@ function stBuildWebview() {
 }
 function stOpenSettingsFromBrowser() {
   window._isSettingsFromBrowser = true;
-  window._settingsOpenedFromBrowser = true; // permanent flag for this session
+  window._settingsOpenedFromBrowser = true;
   window._stOpening = true;
   const splash = document.createElement('div');
   splash.id = 'bw-settings-splash';
@@ -2366,26 +2366,36 @@ function stOpenSettingsFromBrowser() {
   splash.appendChild(img);
   document.getElementById('screen').appendChild(splash);
 
-  // Trigger reflow
   splash.getBoundingClientRect();
   splash.style.opacity = '1';
 
   setTimeout(() => {
-    stOpenSettings('#search');
+    stOpenSettings(); // open without hash - let poll below handle navigation
     window._stOpening = false;
-    
-    // Clear any zoom animation from wrap
-    const wrap = document.getElementById('st-wrap');
-    if (wrap) {
-      wrap.style.transform = 'none';
-      wrap.style.animation = 'none';
-      wrap.style.opacity = '1';
-    }
 
-    setTimeout(() => {
-       splash.style.opacity = '0';
-       setTimeout(() => splash.remove(), 300);
-    }, 500);
+    const wrap = document.getElementById('st-wrap');
+    if (wrap) { wrap.style.transform = 'none'; wrap.style.animation = 'none'; wrap.style.opacity = '1'; }
+
+    setTimeout(() => { splash.style.opacity = '0'; setTimeout(() => splash.remove(), 300); }, 500);
+
+    // Poll until Settings is ready, then navigate to #search in Personalization tab
+    var _attempts = 0;
+    var _navigateSearch = function() {
+      _attempts++;
+      if (_attempts > 50) return; // give up after 5s
+      var wv = document.getElementById('st-webview');
+      if (!wv || !wv.contentWindow || !wv.contentWindow.Settings) {
+        setTimeout(_navigateSearch, 100); return;
+      }
+      var win = wv.contentWindow;
+      var doc = wv.contentDocument;
+      var tabs = doc ? doc.querySelectorAll('gaia-tabs [role="tab"]') : [];
+      if (tabs.length > 1) tabs[1].click(); // click Personalization tab
+      setTimeout(function() {
+        try { win.Settings.setCurrentPanel('#search'); } catch(e) {}
+      }, 400);
+    };
+    setTimeout(_navigateSearch, 200);
   }, 300);
 }
 function stOpenSettings(hash) {
