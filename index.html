@@ -2298,7 +2298,7 @@ function stFocusFirst(wv) {
         var _tabs = doc.querySelectorAll('gaia-tabs [role="tab"]');
         if (_personPanels.indexOf(pending) !== -1 && _tabs && _tabs.length > 1) {
           _tabs[1].click();
-          setTimeout(function() { try { win.Settings.setCurrentPanel(pending); } catch(e){} }, 200);
+          setTimeout(function() { try { win.Settings.setCurrentPanel(pending); } catch(e){} }, 400);
         } else {
           try { win.Settings.setCurrentPanel(pending); } catch(e) {}
         }
@@ -2404,7 +2404,7 @@ function stOpenSettings(hash) {
     window._pendingStHash = hash || null;
     if (wv.src.endsWith(ST_URL.replace('./', ''))) {
       if (wv.contentWindow && wv.contentWindow.Settings) {
-        if (hash) wv.contentWindow.Settings.setCurrentPanel(hash);
+        // Let stFocusFirst handle tab switching + panel navigation via _pendingStHash
         stFocusFirst(wv);
       } else wv.src = ST_URL;
     } else {
