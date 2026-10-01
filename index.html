@@ -2432,7 +2432,9 @@ function stCloseSettings() {
   window._stClosing = true;
   if (typeof SimKeyboard !== 'undefined') { try { SimKeyboard.deactivate(); } catch(e){} }
   
-  const wasFromBrowser = !!(window._isSettingsFromBrowser || window._settingsOpenedFromBrowser);
+  // Also detect browser origin from DOM: bw-webview-wrap visible = Settings opened from browser
+  const _bwVisible = !!(document.getElementById('bw-webview-wrap')?.classList.contains('visible'));
+  const wasFromBrowser = !!(window._isSettingsFromBrowser || window._settingsOpenedFromBrowser || _bwVisible);
   if (wasFromBrowser) window._stClosingToBrowser = true;
   window._isSettingsFromBrowser = false;
   window._settingsOpenedFromBrowser = false;
