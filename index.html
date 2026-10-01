@@ -6437,7 +6437,7 @@ document.addEventListener('keydown', e => {
     case 'ArrowRight': e.preventDefault(); showArrowPress('right'); nav('right'); break;
     case 'Enter':      e.preventDefault(); showOkPress(); pressOK(); break;
     case 'Backspace':  e.preventDefault(); pressBack();      break;
-    case 'Escape':     e.preventDefault(); pressBack();      break;
+    case 'Escape':     e.preventDefault(); pressEnd();       break; // Escape = End/Red button
     case 'F1':         e.preventDefault(); softLeft();       break;
     case 'F2':         e.preventDefault(); pressRight();     break;
     case 'F8':         e.preventDefault(); openSleepMenu();  break;
