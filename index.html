@@ -2639,7 +2639,7 @@ function pressEnd() {
     });
     return;
   }
-  if (isStOpen() || window._stOpening) { if (window._stOpening) { window._stOpening = false; document.getElementById('bw-settings-splash')?.remove(); } stCloseSettings(); return; }
+  if (isStOpen() || window._stOpening) { if (window._stOpening) { window._stOpening = false; document.getElementById('bw-settings-splash')?.remove(); } stKey('Backspace'); return; }
   if (isSysDialogOpen()) { closeDialog(false); return; }
   if (isAppDialogOpen()) { _appConfirmClose(); return; }
   if (isRenameOpen()) { _renameCancel(); return; }
@@ -6359,7 +6359,7 @@ document.addEventListener('keydown', e => {
   if (isStOpen()) {
     e.preventDefault();
     if (e.key === 'F8')     { openSleepMenu();   return; }
-    if (e.key === 'Escape') { stCloseSettings(); return; }
+    if (e.key === 'Escape') { stKey('Backspace'); return; }
     stKeyFromEvent(e);
     return;
   }
