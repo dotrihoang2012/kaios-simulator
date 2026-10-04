@@ -2294,15 +2294,7 @@ function stFocusFirst(wv) {
         if (!win.Settings) { setTimeout(tryFocus, 100); return; }
         window._pendingStHash = null;
         _navigated = true;
-        // Click the correct tab first, then navigate
-        var _personPanels = ['#search','#sound','#display','#notifications','#date_time','#languages','#input_methods','#wallpaper','#home_screen'];
-        var _tabs = doc.querySelectorAll('gaia-tabs [role="tab"]');
-        if (_personPanels.indexOf(pending) !== -1 && _tabs && _tabs.length > 1) {
-          _tabs[1].click();
-          setTimeout(function() { try { win.Settings.setCurrentPanel(pending); } catch(e){} }, 400);
-        } else {
-          try { win.Settings.setCurrentPanel(pending); } catch(e) {}
-        }
+        try { win.Settings.setCurrentPanel(pending); } catch(e) {}
         return; // Don't touch root focus
       }
 
