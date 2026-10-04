@@ -2227,6 +2227,7 @@ function goHome() {
   document.getElementById('view-home').style.display = '';
   document.getElementById('view-apps').classList.remove('open');
   document.getElementById('view-open-app').classList.remove('visible');
+  const dv = document.getElementById('view-dialer'); if (dv) dv.classList.remove('visible');
   view    = 'home';
   smFocus = 0;
   renderSidemenu();
@@ -2656,6 +2657,8 @@ function pressEnd() {
     });
     return;
   }
+  
+  if (view === 'dialer') { dialerBack(); return; }
   
   // Always jump to home from any other screen
   if (view !== 'home' && view !== 'lock') goHome();
