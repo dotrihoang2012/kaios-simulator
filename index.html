@@ -2370,6 +2370,7 @@ function stOpenSettingsFromBrowser() {
     if (wrap) { wrap.style.transform = 'none'; wrap.style.animation = 'none'; wrap.style.opacity = '1'; }
 
     var _attempts = 0;
+    var _attempts_triggered = false;
     var _navigateSearch = function() {
       _attempts++;
       if (_attempts > 150) { 
@@ -2384,6 +2385,10 @@ function stOpenSettingsFromBrowser() {
       }
       
       if (S.currentPanel !== '#search') {
+        if (!_attempts_triggered) {
+          try { S.setCurrentPanel('#search'); } catch(e) {}
+          _attempts_triggered = true;
+        }
         setTimeout(_navigateSearch, 150); return;
       }
       
