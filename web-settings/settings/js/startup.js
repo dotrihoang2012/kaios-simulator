@@ -192,6 +192,9 @@
           NavigationMap.menuReset();
         });
         this.showInitialPanel(_directPanel);
+        if (window.Settings) {
+          window.Settings.currentPanel = '#' + _directPanel;
+        }
         const el = document.getElementById('airplane_mode_switch');
         if (el) {
           el.classList.add('focus');
