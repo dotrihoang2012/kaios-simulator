@@ -2371,25 +2371,39 @@ function stOpenSettingsFromBrowser() {
   splash.style.opacity = '1';
 
   setTimeout(() => {
-    stOpenSettings(); // open without hash - let poll below handle navigation
+    stOpenSettings('#search');
     window._stOpening = false;
 
     const wrap = document.getElementById('st-wrap');
     if (wrap) { wrap.style.transform = 'none'; wrap.style.animation = 'none'; wrap.style.opacity = '1'; }
 
-    setTimeout(() => { splash.style.opacity = '0'; setTimeout(() => splash.remove(), 300); }, 500);
-
-    // Poll until Settings is fully ready (currentPanel != null), then navigate to #search
     var _attempts = 0;
+    var _navigated = false;
     var _navigateSearch = function() {
       _attempts++;
-      if (_attempts > 80) return; // give up after 8s
+      if (_attempts > 150) { 
+        splash.style.opacity = '0'; setTimeout(() => splash.remove(), 300);
+        return; 
+      }
       var wv = document.getElementById('st-webview');
       var S = wv && wv.contentWindow && wv.contentWindow.Settings;
+      
       if (!S || S.currentPanel === null || S.currentPanel === undefined) {
         setTimeout(_navigateSearch, 100); return;
       }
-      try { S.setCurrentPanel('#search'); } catch(e) {}
+      
+      if (!_navigated && S.currentPanel !== '#search') {
+        try { S.setCurrentPanel('#search'); } catch(e) {}
+        _navigated = true;
+        setTimeout(_navigateSearch, 100); return;
+      }
+      
+      if (S.currentPanel !== '#search') {
+        setTimeout(_navigateSearch, 100); return;
+      }
+      
+      splash.style.opacity = '0'; 
+      setTimeout(() => splash.remove(), 300);
     };
     setTimeout(_navigateSearch, 200);
   }, 300);
