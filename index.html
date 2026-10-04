@@ -3897,7 +3897,7 @@ function handleBwBack(keyName = 'BACK') {
   
   if (_bwBackToastCount === 0) {
     _bwBackToastCount = 1;
-    showToast(`Press ${keyName} again to exit`);
+    showToast(`Press ${keyName} again to minimize broser.`);
     _bwBackToastTimer = setTimeout(() => {
       _bwBackToastCount = 0;
     }, 3000);
