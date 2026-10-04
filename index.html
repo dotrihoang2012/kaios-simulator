@@ -2392,15 +2392,13 @@ function stOpenSettingsFromBrowser() {
       }
       
       if (S.currentPanel !== '#search') {
-        // If it's taking too long (e.g., 10 attempts = 1s), we can try to force it
-        if (_attempts % 10 === 0) {
-          try {
-            var _tabs = wv.contentDocument.querySelectorAll('gaia-tabs [role="tab"]');
-            if (_tabs && _tabs.length > 1) _tabs[1].click();
-            S.setCurrentPanel('#search'); 
-          } catch(e) {}
-        }
-        setTimeout(_navigateSearch, 100); return;
+        try { 
+          // Attempt to click the Personalization tab first if available
+          var _tabs = wv.contentDocument.querySelectorAll('gaia-tabs [role="tab"]');
+          if (_tabs && _tabs.length > 1) _tabs[1].click();
+          S.setCurrentPanel('#search'); 
+        } catch(e) {}
+        setTimeout(_navigateSearch, 150); return;
       }
       
       splash.style.opacity = '0'; 
@@ -3898,7 +3896,7 @@ function handleBwBack(keyName = 'BACK') {
   
   if (_bwBackToastCount === 0) {
     _bwBackToastCount = 1;
-    showToast(`Press ${keyName} again to minimize broser.`);
+    showToast(`Press ${keyName} again to minimize browser.`);
     _bwBackToastTimer = setTimeout(() => {
       _bwBackToastCount = 0;
     }, 3000);
