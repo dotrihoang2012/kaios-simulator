@@ -179,11 +179,19 @@
       }
       this.started = true;
       if (!ActivityHandler.currentActivity) {
+        let _directPanel = 'root';
+        try {
+          if (window.parent && window.parent._pendingStHash) {
+            _directPanel = window.parent._pendingStHash.replace('#', '');
+            window.parent._pendingStHash = null;
+          }
+        } catch(e) {}
+        
         window.addEventListener('navigation-map-init', () => {
-          NavigationMap.currentSection = '#root';
+          NavigationMap.currentSection = '#' + _directPanel;
           NavigationMap.menuReset();
         });
-        this.showInitialPanel('root');
+        this.showInitialPanel(_directPanel);
         const el = document.getElementById('airplane_mode_switch');
         if (el) {
           el.classList.add('focus');
