@@ -35,7 +35,7 @@
             resolve(window.ActivityHandler.targetPanelId);
           });
         } else {
-          resolve('root');
+          resolve(this._directPanel || 'root');
         }
       });
     },
@@ -186,15 +186,13 @@
             window.parent._pendingStHash = null;
           }
         } catch(e) {}
+        this._directPanel = _directPanel;
         
         window.addEventListener('navigation-map-init', () => {
           NavigationMap.currentSection = '#' + _directPanel;
           NavigationMap.menuReset();
         });
         this.showInitialPanel(_directPanel);
-        if (window.Settings) {
-          window.Settings.currentPanel = '#' + _directPanel;
-        }
         const el = document.getElementById('airplane_mode_switch');
         if (el) {
           el.classList.add('focus');
