@@ -2392,6 +2392,11 @@ function stOpenSettingsFromBrowser() {
         setTimeout(_navigateSearch, 150); return;
       }
       
+      var searchEl = wv.contentDocument && wv.contentDocument.getElementById('search');
+      if (!searchEl || !searchEl.classList.contains('current')) {
+        setTimeout(_navigateSearch, 150); return;
+      }
+      
       splash.style.opacity = '0'; 
       setTimeout(() => splash.remove(), 300);
     };
