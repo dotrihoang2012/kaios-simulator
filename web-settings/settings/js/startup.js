@@ -35,7 +35,7 @@
             resolve(window.ActivityHandler.targetPanelId);
           });
         } else {
-          resolve(this._directPanel || 'root');
+          resolve('root');
         }
       });
     },
@@ -48,9 +48,7 @@
      */
     showInitialPanel: function showInitialPanel(panelId) {
       const initialPanel = document.getElementById(panelId);
-      if (initialPanel) {
-        initialPanel.classList.add('current');
-      }
+      initialPanel.classList.add('current');
     },
 
     /**
@@ -135,34 +133,26 @@
         }
         ApiManager.setL10n();
 
+        l10n.once(function l10nDone() {
+          const codeNode = document.querySelector('.current');
+          const dataL10ns = codeNode.querySelectorAll('[data-l10n-id]');
+          for (let i = 0; i < dataL10ns.length; i++) {
+            if (dataL10ns[i].getAttribute('data-l10n-args')) {
+              dataL10ns[i].textContent = l10n.get(
+                dataL10ns[i].getAttribute('data-l10n-id'),
+                JSON.parse(dataL10ns[i].getAttribute('data-l10n-args'))
+              );
+            } else {
+              dataL10ns[i].textContent = l10n.get(
+                dataL10ns[i].getAttribute('data-l10n-id')
+              );
+            }
+          }
+          SettingsCache.saveSettingsCache();
+          window.performance.mark('navigationLoaded');
+          window.performance.mark('navigationInteractive');
+        });
         this.loadAlameda();
-        (function() {
-          try {
-            window.api = window.api || {}; window.api.l10n = navigator.mozL10n || window.l10n; var L = window.l10n || { once: function(cb) { cb(); }, get: function() { return ''; } };
-            L.once(function l10nDone() {
-              var codeNode = document.querySelector('.current');
-              if (!codeNode) return;
-              var dataL10ns = codeNode.querySelectorAll('[data-l10n-id]');
-              for (var i = 0; i < dataL10ns.length; i++) {
-                try {
-                  if (dataL10ns[i].getAttribute('data-l10n-args')) {
-                    dataL10ns[i].textContent = L.get(
-                      dataL10ns[i].getAttribute('data-l10n-id'),
-                      JSON.parse(dataL10ns[i].getAttribute('data-l10n-args'))
-                    );
-                  } else {
-                    dataL10ns[i].textContent = L.get(
-                      dataL10ns[i].getAttribute('data-l10n-id')
-                    );
-                  }
-                } catch(e) {}
-              }
-              SettingsCache.saveSettingsCache();
-              window.performance.mark('navigationLoaded');
-              window.performance.mark('navigationInteractive');
-            });
-          } catch(e) {}
-        })();
       });
     },
 
@@ -181,20 +171,11 @@
       }
       this.started = true;
       if (!ActivityHandler.currentActivity) {
-        let _directPanel = 'root';
-        try {
-          if (window.parent && window.parent._pendingStHash) {
-            _directPanel = window.parent._pendingStHash.replace('#', '');
-            window.parent._pendingStHash = null;
-          }
-        } catch(e) {}
-        this._directPanel = _directPanel;
-        
         window.addEventListener('navigation-map-init', () => {
-          NavigationMap.currentSection = '#' + _directPanel;
+          NavigationMap.currentSection = '#root';
           NavigationMap.menuReset();
         });
-        this.showInitialPanel(_directPanel);
+        this.showInitialPanel('root');
         const el = document.getElementById('airplane_mode_switch');
         if (el) {
           el.classList.add('focus');
