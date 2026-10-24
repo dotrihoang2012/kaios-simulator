@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -6336,7 +6336,7 @@ document.addEventListener('keydown', e => {
     if (e.key === 'ArrowDown') { showArrowPress('down'); nav('down'); return; }
     if (e.key === 'Enter')     { showOkPress(); pressOK();            return; }
     if (e.key === 'F1')        { softLeft();                          return; }
-    if (e.key === 'F2')        { pressRight();                        return; }
+    if (e.key === 'F2')        { return; } // RSK disabled in power menu
     if (e.key === 'Escape' || e.key === 'Backspace' || e.key === 'F8') { closeSleepMenu(); return; }
     return;
   }
