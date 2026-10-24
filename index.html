@@ -2650,6 +2650,7 @@ function pressEnd() {
     });
     return;
   }
+  if (isSleepOpen()) { closeSleepMenu(); return; }
   if (isStOpen() || window._stOpening) { if (window._stOpening) { window._stOpening = false; document.getElementById('bw-settings-splash')?.remove(); } stKey('Backspace'); return; }
   if (isSysDialogOpen()) { closeDialog(false); return; }
   if (isAppDialogOpen()) { _appConfirmClose(); return; }
