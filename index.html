@@ -4692,7 +4692,7 @@ function pressRight() {
   if (booting || inputLocked) return;
   if (typeof SimKeyboard !== 'undefined' && SimKeyboard.active) { if (SimKeyboard.handleKeydown('F2')) return; }
   if (_splashTimer) { pressBack(); return; }
-  if (isSleepOpen())       { closeSleepMenu();                return; }
+  if (isSleepOpen())       { return; } // RSK disabled in power menu
   if (view === 'lock')     { return; }
   if (isSysDialogOpen())   { if (!_sdCenterOk) closeDialog(true); return; }
   if (isRenameOpen())      { _renameConfirm();               return; }
