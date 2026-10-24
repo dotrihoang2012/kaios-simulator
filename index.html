@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -6,7 +6,7 @@
   <title>Kaiosrt</title>
   <link rel="icon" type="image/png" href="./favicon.png">
   <style>
-    /* ── KaiOS fonts from kaiosrt ── */
+    /* â”€â”€ KaiOS fonts from kaiosrt â”€â”€ */
     @font-face { font-family:'Open Sans'; src:url('./kaiosrt/fonts/OpenSans-Light.ttf');    font-weight:300; }
     @font-face { font-family:'Open Sans'; src:url('./kaiosrt/fonts/OpenSans-Regular.ttf'); font-weight:400; }
     @font-face { font-family:'Open Sans'; src:url('./kaiosrt/fonts/OpenSans-Semibold.ttf');font-weight:600; }
@@ -30,7 +30,7 @@
       font-feature-settings:'liga', 'calt', 'dlig';
     }
 
-    /* ── KaiOS CSS variables ── */
+    /* â”€â”€ KaiOS CSS variables â”€â”€ */
     :root {
       --statusbar-height: 2.6rem;
       --softkeybar-height: 3rem;
@@ -60,9 +60,9 @@
       font-weight: 400;
     }
 
-    /* ══════════════════════════════════
-       PHONE SHELL — matches kaiosrt shell
-       ══════════════════════════════════ */
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+       PHONE SHELL â€” matches kaiosrt shell
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     #simulator {
       display: flex;
       flex-direction: column;
@@ -70,9 +70,9 @@
       background: #000;
     }
 
-    /* ══════════════════════════════════
-       SCREEN — 240×320, 10px font
-       ══════════════════════════════════ */
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+       SCREEN â€” 240Ã—320, 10px font
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     #screen {
       width: 240px;
       height: 320px;
@@ -84,7 +84,7 @@
       font-family: 'Open Sans', Arial, 'NotoColorEmoji', sans-serif;
     }
 
-    /* wallpaper — image on top, purple gradient as fallback underneath */
+    /* wallpaper â€” image on top, purple gradient as fallback underneath */
     .wallpaper {
       position: absolute;
       inset: 0;
@@ -94,7 +94,7 @@
         linear-gradient(160deg, #2a0361 0%, #1a0245 40%, #0d0130 100%);
     }
 
-    /* ── Status bar — KaiOS exact ── */
+    /* â”€â”€ Status bar â€” KaiOS exact â”€â”€ */
     .statusbar {
       position: absolute;
       top: 0; left: 0; right: 0;
@@ -131,7 +131,7 @@
     }
     .sb-time { font-size: 1.4rem; line-height: 1; }
 
-    /* ── Soft key bar ── */
+    /* â”€â”€ Soft key bar â”€â”€ */
     .skbar {
       position: absolute;
       bottom: 0; left: 0; right: 0;
@@ -161,10 +161,10 @@
     .sk:last-child  { text-align: right; font-weight: 600; }
     .sk:nth-child(2) { font-size: 1.6rem; font-weight: 700; text-transform: uppercase; text-align: center; }
 
-    /* ══════════════════════════════════
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        VIEW: HOME (wallpaper + clock)
-       — matches KaiOS ClockComponent style
-       ══════════════════════════════════ */
+       â€” matches KaiOS ClockComponent style
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     /* matches launcher #main-view + ClockComponent positioning exactly */
     #view-home {
       position: absolute;
@@ -178,7 +178,7 @@
       padding-right: 1.2rem;
       padding-left: 1.3rem;
     }
-    /* ClockComponent — matches KaiOS launcher */
+    /* ClockComponent â€” matches KaiOS launcher */
     .clock-wrap {
       min-width: 80%;
       margin-left: auto;
@@ -217,7 +217,7 @@
       justify-content: center;
       overflow: visible;
     }
-    /* gaia-icons ligatures need text-transform:none — clock-wrap has uppercase */
+    /* gaia-icons ligatures need text-transform:none â€” clock-wrap has uppercase */
     .clockDigi--time::before {
       font-family: 'gaia-icons';
       content: attr(data-icon);
@@ -261,7 +261,7 @@
       font-weight: 700;
     }
 
-    /* Sidemenu — launcher .Sidemenu / .sidemenuItem__icon */
+    /* Sidemenu â€” launcher .Sidemenu / .sidemenuItem__icon */
     .sidemenu {
       position: absolute;
       inset: 0;           /* full screen coverage so names position correctly */
@@ -317,9 +317,9 @@
       opacity: 0;
     }
 
-    /* ══════════════════════════════════
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        VIEW: APP LIST
-       ══════════════════════════════════ */
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     #view-apps {
       position: absolute;
       inset: 0;
@@ -334,7 +334,7 @@
       background: rgba(0,0,0,0.85);
       z-index: 0;
     }
-    /* focused app name — top, 5.5rem area, fixed */
+    /* focused app name â€” top, 5.5rem area, fixed */
     .app-title {
       position: absolute;
       top: var(--statusbar-height); left: 0; right: 0;
@@ -349,7 +349,7 @@
       pointer-events: none;
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
-    /* app grid — exact KaiOS sizing */
+    /* app grid â€” exact KaiOS sizing */
     .app-wall-wrap {
       position: absolute; inset: 0;
       padding-top: calc(var(--statusbar-height) + 5.5rem);
@@ -368,13 +368,13 @@
       gap: 0.55rem;
       justify-content: center;
     }
-    /* tile = 6.2×6.2rem */
+    /* tile = 6.2Ã—6.2rem */
     .app-tile {
       width: 6.2rem; height: 6.2rem;
       display: flex; align-items: center; justify-content: center;
       cursor: pointer; position: relative;
     }
-    /* icon = 5.6×5.6rem — KaiOS: visibility hidden, ::after shows background-image */
+    /* icon = 5.6Ã—5.6rem â€” KaiOS: visibility hidden, ::after shows background-image */
     .app-icon {
       position: relative;
       width: 5.6rem; height: 5.6rem;
@@ -438,7 +438,7 @@
       box-shadow: 0 2px 4px rgba(0,0,0,.5);
       z-index: 9;
     }
-    /* pagination dots — vertical, right side */
+    /* pagination dots â€” vertical, right side */
     .pagination {
       position: absolute;
       top: 0; bottom: 0; right: 0;
@@ -483,7 +483,7 @@
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
 
-    /* SINGLE VIEW — matches KaiOS launcher source */
+    /* SINGLE VIEW â€” matches KaiOS launcher source */
     #view-apps.view-single .app-wall-wrap {
       padding: 0;
     }
@@ -524,7 +524,7 @@
       text-align: center; color: #fff; font-weight: 700;
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
-    /* Preview icons: 5.6rem, left: 1rem (translateX(-8.2rem) scale(0.5) from center=12rem → left edge=1rem) */
+    /* Preview icons: 5.6rem, left: 1rem (translateX(-8.2rem) scale(0.5) from center=12rem â†’ left edge=1rem) */
     .sm-adj-icon {
       position: absolute;
       left: 1rem;
@@ -534,9 +534,9 @@
       background-position: center;
       opacity: 0.15;
     }
-    /* prev center = 16 - 7.6 = 8.4rem → top = 8.4 - 2.8 = 5.6rem */
+    /* prev center = 16 - 7.6 = 8.4rem â†’ top = 8.4 - 2.8 = 5.6rem */
     .sm-prev { top: 5.6rem; }
-    /* next center = 16 + 7.6 = 23.6rem → top = 23.6 - 2.8 = 20.8rem */
+    /* next center = 16 + 7.6 = 23.6rem â†’ top = 23.6 - 2.8 = 20.8rem */
     .sm-next { top: 20.8rem; }
 
     /* MOVE MODE */
@@ -544,9 +544,9 @@
       background-color: #e65000; opacity: 0.85;
     }
 
-    /* ══════════════════════════════════
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        VIEW: OPEN APP
-       ══════════════════════════════════ */
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     #view-open-app {
       position: absolute; inset: 0;
       z-index: 20;
@@ -607,7 +607,7 @@
     .oa-name { font-size: 1.8rem; color: #333; }
     .oa-sub  { font-size: 1.1rem; color: #999; }
     .oa-skbar { height: var(--softkeybar-height); background: #e6e6e6; border-top: 1px solid #ccc; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; flex-shrink: 0; }
-    /* ── BROWSER APP ──────────────────────────────────────── */
+    /* â”€â”€ BROWSER APP â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     .statusbar.bw-sb { background: #fff; color: #333; }
     #bw-webview-wrap { position:absolute; top:var(--statusbar-height); bottom:0; left:0; right:0; z-index:40; display:none; flex-direction:column; background:#fff; }
     #bw-webview-wrap.visible { display:flex; }
@@ -670,7 +670,7 @@
     #bw-options-menu .bw-om-sk-c { font-weight:700; text-align:center; font-size:1.6rem; text-transform:uppercase; letter-spacing:0.05em; }
     #bw-options-menu .bw-om-sk-l { text-align:left; }
     #bw-options-menu .bw-om-sk-r { text-align:right; display:flex; align-items:center; justify-content:flex-end; padding-right:0.6rem; }
-    /* Share panel — same structure as #option-menu */
+    /* Share panel â€” same structure as #option-menu */
     #bw-share-menu { display:none; position:absolute; top:var(--statusbar-height); bottom:0; left:0; right:0; z-index:70; flex-direction:column; justify-content:flex-end; }
     #bw-share-menu.visible { display:flex; }
     #bw-share-bg { position:absolute; inset:0; background:rgba(0,0,0,0.85); }
@@ -682,13 +682,13 @@
     #bw-share-sk span { font-size:1.4rem; color:#323232; padding:0 0.5rem; font-family:'Open Sans',Arial,sans-serif; font-weight:600; }
     #bw-share-sk span:nth-child(2) { text-align:center; font-size:1.6rem; font-weight:700; text-transform:uppercase; }
     #bw-share-sk span:last-child { text-align:right; }
-    /* ── REAL Settings app (Gaia in a webview, settings-host on :9080) ── */
+    /* â”€â”€ REAL Settings app (Gaia in a webview, settings-host on :9080) â”€â”€ */
     #st-wrap { display:none; position:absolute; top:var(--statusbar-height); left:0; right:0; bottom:0; z-index:44; background:#fff; }
     #st-wrap.visible { display:block; }
     #st-wrap webview, #st-wrap iframe { width:100%; height:100%; border:none; }
 
     /* Media volume overlay */
-    /* Media volume overlay — exact same structure as #vol-toast */
+    /* Media volume overlay â€” exact same structure as #vol-toast */
     #bw-vol-ov { display:none; position:absolute; inset:0; z-index:100001; flex-direction:column; align-items:center; background:rgba(0,0,0,0.85); pointer-events:none; }
     #bw-vol-ov.visible { display:flex; }
     #bw-vol-title { position:absolute; top:4rem; left:2rem; right:2rem; font-size:2.4rem; font-weight:700; color:#fff; text-align:left; line-height:1.2; text-transform:uppercase; z-index:1; }
@@ -731,7 +731,7 @@
     #bw-hist-dialog-sk { height:var(--softkeybar-height); background:#e6e6e6; display:grid; grid-template-columns:1fr auto 1fr; align-items:center; padding:0 0.8rem; }
     #bw-hist-dialog-sk span:first-child { text-align:left; font-size:1.4rem; font-weight:600; color:#323232; cursor:pointer; }
     #bw-hist-dialog-sk span:last-child { text-align:right; font-size:1.4rem; font-weight:600; color:#323232; cursor:pointer; }
-    /* Tips badge — mirrors #bw-nav .bw-btn style */
+    /* Tips badge â€” mirrors #bw-nav .bw-btn style */
     #bw-tips-badge { display:none; position:absolute; bottom:4rem; right:1rem; background:#fff; border-radius:1.2rem; height:2.4rem; padding:0 0.15rem 0 0.8rem; font-size:1.3rem; font-weight:600; color:#000; align-items:center; gap:0.4rem; z-index:50; box-shadow:0 0.2rem 0.4rem 0 rgba(0,0,0,0.5); pointer-events:none; }
     #bw-tips-badge.visible { display:flex; }
     @keyframes bounceInRight {
@@ -753,7 +753,7 @@
     .bw-pin-menu-item.focused { background:var(--color-purple); color:#fff; }
     #bw-pin-menu .bw-pin-menu-skbar { position:absolute; bottom:0; left:0; right:0; height:3rem; background:#000; display:grid; grid-template-columns:1fr auto 1fr; align-items:center; }
     #bw-pin-menu .bw-pin-menu-skbar span:nth-child(2) { font-weight:700; text-align:center; font-size:1.6rem; text-transform:uppercase; letter-spacing:0.05em; color:#fff; cursor:pointer; }
-    /* Pin to Top Sites picker (step 2) — from system #browser-pin-container */
+    /* Pin to Top Sites picker (step 2) â€” from system #browser-pin-container */
     #bw-pin-container { position:absolute; top:var(--statusbar-height); bottom:0; left:0; right:0; background:rgba(0,0,0,0.9); z-index:60; display:none; }
     #bw-pin-container.visible { display:block; }
     #bw-pin-container .bw-pin-content { position:absolute; left:0; right:0; bottom:0; background:#fff; }
@@ -856,7 +856,7 @@
     .bw-tile-badge { display: inline-flex; align-items: center; justify-content: center; width: 1.8rem; height: 1.8rem; border-radius: 50%; background: #e6e6e6; font-size: 1.1rem; color: #323232; font-style: normal; }
     .bw-tile.focused .bw-tile-badge { background: #fff; color: #323232; }
     #bw-recommended { flex: none; height: 5.8rem; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #aaa; text-align: center; padding: 1rem 2rem; border-top: 1px solid #e6e6e6; }
-    /* ── FOLDER VIEW ─────────────────────────────────── */
+    /* â”€â”€ FOLDER VIEW â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     .oa-header.folder-hdr { background: #0d0d0d; }
     .oa-body.folder-mode { background: #0d0d0d; padding: 0.8rem 0.8rem calc(var(--softkeybar-height) + 0.8rem) 0.8rem; align-items: stretch; justify-content: flex-start; gap: 0; }
     .oa-body.folder-mode > .oa-icon,
@@ -867,7 +867,7 @@
     .oa-sk:first-child { text-align: left; }
     .oa-sk:last-child  { text-align: right; }
 
-    /* ── Lock screen ── */
+    /* â”€â”€ Lock screen â”€â”€ */
     #view-lock {
       position: absolute; inset: 0; z-index: 10002;
       display: flex; flex-direction: column;
@@ -920,7 +920,7 @@
       font-size: 1.5rem; color: rgba(255,255,255,0.9);
     }
     #lock-unlock i { font-size: 1.6rem; }
-    /* Lockscreen's OWN status bar + softkey bar — fully separate from the global ones */
+    /* Lockscreen's OWN status bar + softkey bar â€” fully separate from the global ones */
     #view-lock #lock-statusbar { position: absolute; top: 0; left: 0; right: 0; background: transparent; color: #fff; z-index: 2; }
     #view-lock #lock-statusbar .sb-icon, #view-lock #lock-statusbar .sb-time, #view-lock #lock-statusbar .sb-carrier { color: #fff; }
     #lock-skbar {
@@ -937,7 +937,7 @@
     }
     #lock-skbar #lock-sk-c i { font-size: 1.4rem; font-style: normal; }
 
-    /* ── Sleep menu (hold power) ── */
+    /* â”€â”€ Sleep menu (hold power) â”€â”€ */
     #power-menu {
       position: absolute; top: 0; left: 0; right: 0; bottom: 0;
       z-index: 99998; background: rgba(0,0,0,0.88);
@@ -954,7 +954,7 @@
     }
     .sleep-item.focused { background: #8000ff; }
 
-    /* ── System generic dialog — bottom sheet that slides UP; scrim fades in (matches system app) ── */
+    /* â”€â”€ System generic dialog â€” bottom sheet that slides UP; scrim fades in (matches system app) â”€â”€ */
     #sys-dialog { position:absolute; inset:0; z-index:10000; visibility:hidden; }
     #sys-dialog.visible { visibility:visible; }
     /* Scrim + panel are ONE sliding unit (like gaia-confirm's :host), so the dim
@@ -973,7 +973,7 @@
     #sys-dialog-content progress::-webkit-progress-bar { background:#a0a0a0; border-radius:0.5rem; }
     #sys-dialog-content progress::-webkit-progress-value { background:#8000ff; border-radius:0.5rem; }
     #sys-dialog-sk { position:absolute; left:0; right:0; bottom:0; height:var(--softkeybar-height); background:#cccccc; display:grid; grid-template-columns:1fr auto 1fr; align-items:center; padding:0 0.8rem; }
-    /* Softkey bar never slides — it appears instantly on open and vanishes the
+    /* Softkey bar never slides â€” it appears instantly on open and vanishes the
        moment the dialog starts closing (matching the real Settings behaviour). */
     #sys-dialog.closing #sys-dialog-sk { display:none; }
     #sys-dialog-sk span:first-child { text-align:left; font-size:1.4rem; font-weight:600; color:#323232; cursor:pointer; }
@@ -982,10 +982,10 @@
     #sys-dialog.dark #sys-dialog-sk { background:rgba(0,0,0,0.88); }
     #sys-dialog.dark #sys-dialog-sk span { color:#fff; }
 
-    /* ── System toast — top banner, slides down + fades in; hide = slide up slowly, fade fast ── */
+    /* â”€â”€ System toast â€” top banner, slides down + fades in; hide = slide up slowly, fade fast â”€â”€ */
     #sys-toast { position:absolute; top:0; left:0; right:0; min-height:5rem; background:#323232; color:#fff; text-align:center; font-size:1.5rem; line-height:1.35; padding:0.8rem 1.4rem; box-sizing:border-box; z-index:100001; pointer-events:none; display:flex; align-items:center; justify-content:center; white-space:normal; word-break:break-word; visibility:hidden; opacity:0; transform:translateY(-100%); transition:opacity 0.18s ease, transform 0s linear 0.18s, visibility 0s linear 0.18s; }
     #sys-toast.visible { visibility:visible; opacity:1; transform:translateY(0); transition:transform 0.45s ease, opacity 0.45s ease; }
-    /* ── Volume mode toast (hold #) ── */
+    /* â”€â”€ Volume mode toast (hold #) â”€â”€ */
     #vol-toast {
       display: none; position: absolute; inset: 0; z-index: 100000;
       flex-direction: column; align-items: center;
@@ -1019,7 +1019,7 @@
       margin-top: 1.2rem; font-size: 1.8rem; color: #fff;
     }
 
-    /* ── Instant Settings (ArrowUp from home) ── */
+    /* â”€â”€ Instant Settings (ArrowUp from home) â”€â”€ */
     #view-is {
       position: absolute; inset: 0;
       z-index: 30;
@@ -1119,7 +1119,7 @@
     .is-tile.active.focused .is-icon::before { color: #fff; }
     .is-tile.disabled { opacity: 0.35; pointer-events: none; }
 
-    /* ── Dialer ── */
+    /* â”€â”€ Dialer â”€â”€ */
     #view-dialer {
       position: absolute; inset: 0;
       z-index: 30;
@@ -1154,7 +1154,7 @@
     }
     .dialer-hint { font-size: 1.3rem; color: rgba(255,255,255,.3); }
 
-    /* ── Option menu (SoftRight in apps) ── */
+    /* â”€â”€ Option menu (SoftRight in apps) â”€â”€ */
     #option-menu {
       position: absolute;
       top: 0; left: 0; right: 0;
@@ -1194,7 +1194,7 @@
     }
     .om-item.focused { background: #8000ff; color: #fff; }
 
-    /* ── Boot logo — initlogo.css ── */
+    /* â”€â”€ Boot logo â€” initlogo.css â”€â”€ */
     #os-logo {
       position: absolute;
       inset: 0;
@@ -1224,10 +1224,10 @@
     }
     #poweroff-splash.fade { opacity: 1; }
 
-    /* ══════════════════════════════════
-       CONTROLS — exact kaiosrt shell.html layout
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+       CONTROLS â€” exact kaiosrt shell.html layout
        uses real PNG images from key/ folder
-       ══════════════════════════════════ */
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     #controls {
       background: #fff;
       width: 240px;
@@ -1254,7 +1254,7 @@
     }
     #funcpad-box .anchor:active { opacity: 0.55; }
 
-    /* ── left / right side columns: LSK+Call / RSK+Endcall ── */
+    /* â”€â”€ left / right side columns: LSK+Call / RSK+Endcall â”€â”€ */
     .side { display: flex; flex-direction: column; }
     .side .anchor {
       width: 56px; height: 56px;
@@ -1266,7 +1266,7 @@
     }
     .side .anchor img { width: 35px; height: 35px; pointer-events: none; }
 
-    /* ── center CSK: 117×117 at 6.5px rem scale ── */
+    /* â”€â”€ center CSK: 117Ã—117 at 6.5px rem scale â”€â”€ */
     #funcpad-center {
       width: 117px; height: 117px;
       margin: 0 5px;
@@ -1279,7 +1279,7 @@
       pointer-events: none;
       z-index: 2;
     }
-    /* transparent click zones — z-index 1 so pressed states render behind CSK_key.png */
+    /* transparent click zones â€” z-index 1 so pressed states render behind CSK_key.png */
     #csk-u-anchor, #csk-d-anchor,
     #csk-l-anchor, #csk-r-anchor,
     #csk-anchor {
@@ -1313,7 +1313,7 @@
     #csk-arrow-overlay.dir-down  { transform: rotate(180deg); opacity: 1; }
     #csk-arrow-overlay.dir-left  { transform: rotate(270deg); opacity: 1; }
 
-    /* ── numpad: image bg + transparent click grid ── */
+    /* â”€â”€ numpad: image bg + transparent click grid â”€â”€ */
     #numpad {
       position: relative;
       width: 240px;
@@ -1346,9 +1346,9 @@
       background: url('./key/keypad_number_press.png') center/100% 100% no-repeat;
     }
 
-    /* ══════════════════════════════════
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        INFO PANEL
-       ══════════════════════════════════ */
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     .info {
       width: 220px;
       color: #aaa;
@@ -1362,9 +1362,9 @@
     .kbd { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); border-radius: 4px; padding: 1px 6px; font-size: 10px; font-family: monospace; color: #ddd; white-space: nowrap; }
     .state-lbl { display: none; }
 
-    /* ══════════════════════════════════
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        KEYBOARD SYSTEM
-       ══════════════════════════════════ */
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     /* Mode indicator lives INSIDE the statusbar, top-left after carrier */
     #kb-mode { display: none; font-size: 1.2rem; font-weight: 600; color: #000; margin-left: 0.4rem; text-transform: none; }
     #kb-mode.visible { display: inline; }
@@ -1392,7 +1392,7 @@
     #kb-candidates.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
     .kb-cand-item { display: flex; flex-direction: row; justify-content: flex-start; align-items: center; box-sizing: border-box; height: 100%; width: max-content; padding: 0 1rem; color: #323232; font-size: 1.7rem; font-variant-numeric: normal; word-break: keep-all; }
     .kb-cand-item.current { color: #fff; background-color: #8000ff; }
-    /* ═══════ APP ANIMATIONS ═══════ */
+    /* â•â•â•â•â•â•â• APP ANIMATIONS â•â•â•â•â•â•â• */
     @keyframes openApp {
       0%   { transform: scale(0.7); opacity: 0;}
       50%  { opacity: 1; }
@@ -1447,7 +1447,7 @@
 </head>
 <body>
 
-<!-- ═══════ SIMULATOR ═══════ -->
+<!-- â•â•â•â•â•â•â• SIMULATOR â•â•â•â•â•â•â• -->
 <div id="simulator">
 
   <!-- SCREEN -->
@@ -1868,7 +1868,7 @@ JAN 1</div>
     <!-- Power-off splash -->
     <div id="poweroff-splash"></div>
 
-    <!-- Boot logo — matches system #os-logo / initlogo.css -->
+    <!-- Boot logo â€” matches system #os-logo / initlogo.css -->
     <div id="os-logo">
       <img src="./kaiosrt/gaia/profile/webapps/system/resources/branding/initlogo.png">
     </div>
@@ -1892,7 +1892,7 @@ JAN 1</div>
     </div>
   </div><!-- /screen -->
 
-  <!-- CONTROLS — exact kaiosrt shell.html structure, PNG images from key/ -->
+  <!-- CONTROLS â€” exact kaiosrt shell.html structure, PNG images from key/ -->
   <div id="controls">
 
     <!-- funcpad: left-side (LSK+Call) | center CSK | right-side (RSK+Endcall) -->
@@ -1959,13 +1959,13 @@ JAN 1</div>
   </div><!-- /controls -->
 </div><!-- /simulator -->
 
-<!-- ═══════ INFO PANEL ═══════ -->
+<!-- â•â•â•â•â•â•â• INFO PANEL â•â•â•â•â•â•â• -->
 <div class="info">
   <div class="state-lbl" id="state-lbl" style="display:none"></div>
 </div>
 
 <script>
-// ── App icons — flat-design SVG on rounded-square bg + real PNGs ──
+// â”€â”€ App icons â€” flat-design SVG on rounded-square bg + real PNGs â”€â”€
 const ICO = {
   phone:    "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 56'><rect width='56' height='56' rx='12' fill='%2300c853'/><path fill='white' d='M36 34.5c-.8-.8-4.2-3.5-5-3.5-.5 0-1.2.4-2.5 1.8-.4.4-.9.5-1.4.3-1.5-.7-4.4-3.6-5.1-5.1-.2-.5-.1-1 .3-1.4C23.7 25.3 24 24.6 24 24c0-.8-2.7-4.2-3.5-5-.5-.5-1-.5-1.5 0l-2 2C15.5 22.5 16 26 18 29c2.2 3.2 5.8 6.8 9 9 3 2 6.5 2.5 8-1l2-2c.5-.5.5-1 0-1.5z'/></svg>",
   messages: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 56'><rect width='56' height='56' rx='12' fill='%231565c0'/><path fill='white' d='M11 17h34v21H29.5l-9 7v-7H11z'/><rect x='17' y='24' width='22' height='2.5' rx='1' fill='%231565c0'/><rect x='17' y='30' width='15' height='2.5' rx='1' fill='%231565c0'/></svg>",
@@ -1996,7 +1996,7 @@ const ICO = {
 };
 
 
-// ── Apps ──
+// â”€â”€ Apps â”€â”€
 const LAUNCHER_IMG = './kaiosrt/gaia/profile/webapps/installed/launcher/style/images/';
 const WEB_SHORTCUT_ICON = LAUNCHER_IMG + 'web_shortcut_56.png';
 const APPS = [
@@ -2019,9 +2019,9 @@ const APPS = [
 ];
 const SM_APPS = APPS.filter(a => a.type !== 'folder');
 
-// ════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //  STATE
-// ════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 const PER      = 9;
 const LIST_PER = 4;
 let view     = 'home';   // 'home' | 'sidemenu' | 'apps' | 'app-open'
@@ -2031,8 +2031,8 @@ let page     = 0;        // current page in app grid
 let openApp  = null;     // currently open app object
 let fromApps   = false;  // came from app grid before app-open?
 let sleepFocus = 0;      // 0=Lock, 1=Restart, 2=Power off
-let inputLocked = false; // true after shutdown/restart — blocks all navigation
-let booting    = true;  // true during boot animation — blocks all navigation
+let inputLocked = false; // true after shutdown/restart â€” blocks all navigation
+let booting    = true;  // true during boot animation â€” blocks all navigation
 let lockFromView = 'home';
 let appViewMode = 'grid'; // 'grid' | 'list' | 'single'
 let listFocus       = 0;  // absolute app index for list/single view
@@ -2040,10 +2040,10 @@ let listWindowStart = 0;  // top of visible 4-item window in list mode
 let isMoving    = false;
 let _moveOrigApps = null;
 
-// ── Browser app state ──────────────────────
-// Electron: proxy.js auto-starts local server port 8899 và cập nhật BW_WEB_PROXY
-// GitHub Pages: dùng Deno Deploy (IP sạch, không bị Google/site chặn như Cloudflare).
-// Cloudflare worker giữ làm fallback tự động khi Deno lỗi.
+// â”€â”€ Browser app state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Electron: proxy.js auto-starts local server port 8899 vÃ  cáº­p nháº­t BW_WEB_PROXY
+// GitHub Pages: dÃ¹ng Deno Deploy (IP sáº¡ch, khÃ´ng bá»‹ Google/site cháº·n nhÆ° Cloudflare).
+// Cloudflare worker giá»¯ lÃ m fallback tá»± Ä‘á»™ng khi Deno lá»—i.
 var BW_WEB_PROXY = 'https://rigid-tapir-7342.dotrihoang2012.deno.net';
 var BW_WEB_PROXY_FALLBACK = 'https://kaios-proxy.dotrihoang2012.workers.dev';
 
@@ -2059,7 +2059,7 @@ const BW_TILES = [
   { icon: BW_ICON_PATH + 'ic_default.png',          label: ''                },
   { icon: BW_ICON_PATH + 'ic_default.png',          label: ''                },
 ];
-let bwFocus     = 0; // 0–8 flat index into BW_TILES
+let bwFocus     = 0; // 0â€“8 flat index into BW_TILES
 let folderFocus = 0; // focused index inside open folder
 
 const totalPages = () => Math.ceil(APPS.length / PER);
@@ -2067,9 +2067,9 @@ const curApp = () => appViewMode === 'grid'
   ? (APPS[page * PER + focus] || null)
   : (APPS[listFocus] || null);
 
-// ════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //  CLOCK
-// ════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 const DAYS = ['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY'];
 const MONS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 function pad(n) { return String(n).padStart(2, '0'); }
@@ -2116,9 +2116,9 @@ function tick() {
 tick();
 setInterval(tick, 5000);
 
-// ════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //  HELPERS
-// ════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function lbl(t) { document.getElementById('state-lbl').textContent = t; }
 
 function setSK(l, c, r, dark) {
@@ -2145,25 +2145,25 @@ function setSK(l, c, r, dark) {
   }
 }
 
-// ════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //  SIDEMENU
 //  matches launcher .Sidemenu / .sidemenuItem
-// ════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 // vertical gap-counts per total item count (launcher nth-of-type selectors)
 const SM_GAPS = {
   1:[0], 2:[-0.5,0.5], 3:[-1,0,1], 4:[-1.5,-0.5,0.5,1.5],
   5:[-2,-1,0,1,2],     6:[-2.5,-1.5,-0.5,0.5,1.5,2.5]
 };
-// closed: offset-y = (5.6rem × 0.71429 + 0.6rem) × gap-count = 4.6rem × gap-count
+// closed: offset-y = (5.6rem Ã— 0.71429 + 0.6rem) Ã— gap-count = 4.6rem Ã— gap-count
 const SM_STEP = 4.6;
 // open: transform per |distance| from focused item (launcher panel-sidemenu--opened)
 const SM_POS = [
-  { s:1,       x:1,  y:0    },   // dist 0 — focused
-  { s:0.89286, x:2,  y:5.9  },   // dist ±1
-  { s:0.78571, x:4,  y:10.8 },   // dist ±2
-  { s:0.64286, x:7,  y:15   },   // dist ±3
-  { s:0.64286, x:11, y:18.8 },   // dist ±4+
+  { s:1,       x:1,  y:0    },   // dist 0 â€” focused
+  { s:0.89286, x:2,  y:5.9  },   // dist Â±1
+  { s:0.78571, x:4,  y:10.8 },   // dist Â±2
+  { s:0.64286, x:7,  y:15   },   // dist Â±3
+  { s:0.64286, x:11, y:18.8 },   // dist Â±4+
 ];
 
 function buildSidemenu() {
@@ -2206,9 +2206,9 @@ function renderSidemenu() {
   });
 }
 
-// ════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //  VIEW TRANSITIONS
-// ════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function goHome() {
   if (window._stClosingToBrowser) return; // Prevent goHome during Settings fade out back to Browser
   if (isAppDialogOpen()) _appConfirmClose();
@@ -2256,8 +2256,8 @@ function showApps() {
   else buildGrid();
 }
 
-// ── REAL Settings app: the static Gaia settings bundle (web-settings/, built
-// by settings-host/build-web.mjs) — no localhost server. Electron gets a
+// â”€â”€ REAL Settings app: the static Gaia settings bundle (web-settings/, built
+// by settings-host/build-web.mjs) â€” no localhost server. Electron gets a
 // <webview> (file:// + disablewebsecurity so the app's XHR loads work) with
 // trusted key forwarding via sendInputEvent; the browser build (github.io)
 // gets a same-origin <iframe> and synthetic KeyboardEvents. The frame stays
@@ -2265,7 +2265,7 @@ function showApps() {
 const ST_URL = new URL('web-settings/settings/index.html', location.href).href;
 function isStOpen() { return (view === 'app-open' && openApp?.id === 'settings') || (document.getElementById('st-wrap')?.classList.contains('visible')); }
 let _stFails = 0;
-// Gaia's NavigationMap navigates from `document.querySelector('.focus')` —
+// Gaia's NavigationMap navigates from `document.querySelector('.focus')` â€”
 // without a focused menu item the key handler can't move between rows and
 // the app appears frozen. Settings itself never auto-focuses its first menu
 // item (panel code adds .focus on activate), so we do it ourselves once the
@@ -2330,7 +2330,7 @@ function stBuildWebview() {
       stCloseSettings();
       wrap.remove();
       showDialog({ header: 'Settings', cancel: '',
-        content: 'Không mở được app Settings (web-settings/). Chạy "node settings-host/build-web.mjs" để build bundle rồi mở lại.' });
+        content: 'KhÃ´ng má»Ÿ Ä‘Æ°á»£c app Settings (web-settings/). Cháº¡y "node settings-host/build-web.mjs" Ä‘á»ƒ build bundle rá»“i má»Ÿ láº¡i.' });
     });
     wv.addEventListener('did-finish-load', () => { _stFails = 0; stFocusFirst(wv); });
     wv.addEventListener('close', () => stCloseSettings());
@@ -2524,7 +2524,7 @@ function stKey(code) {
     return;
   }
   // Browser build: prefer __stInjectKey (baked into settings HTML by build-web.mjs
-  // — creates KeyboardEvent in iframe realm for Gaia navigation_handler.js).
+  // â€” creates KeyboardEvent in iframe realm for Gaia navigation_handler.js).
   // Fall back to direct DOM manipulation when Gaia's NavigationMap hasn't
   // initialised the nav properties (--nav-up/--nav-down/data-nav-id still null)
   // or the injected bridge hasn't been deployed yet.
@@ -2567,15 +2567,15 @@ function stKey(code) {
     } else {
       // __stInjectKey bridge not available (engine init errors may have
       // prevented the baked-in script from running). Inject it now via
-      // contentWindow.eval() — same-origin on GitHub Pages so this works.
+      // contentWindow.eval() â€” same-origin on GitHub Pages so this works.
       var win = wv.contentWindow, doc = wv.contentDocument;
       if (!doc) return;
       try {
         win.eval('(' + function _bridge(k) {
           var t = document.querySelector('.focus') || document.activeElement || document.body;
           if (k === 'Enter') {
-            // Click the <a> inside focused <li> — this triggers Gaia's
-            // PanelUtils.handleLinkClick → Settings.setCurrentPanel(href).
+            // Click the <a> inside focused <li> â€” this triggers Gaia's
+            // PanelUtils.handleLinkClick â†’ Settings.setCurrentPanel(href).
             // Also try clicking <li> itself as a fallback.
             var a = t.querySelector('a[href], a.menu-item');
             if (!a && t.tagName === 'A') a = t;
@@ -2670,6 +2670,7 @@ function pressEnd() {
   }
   
   if (view === 'dialer') { dialerBack(); return; }
+  if (view === 'instant-settings') { closeIS(); return; }
   
   // Always jump to home from any other screen
   if (view !== 'home' && view !== 'lock') goHome();
@@ -2836,7 +2837,7 @@ function buildBrowserView() {
 
   document.getElementById('statusbar').classList.add('bw-sb');
   _setBwSK();
-  lbl('Browser — ' + (BW_TILES[bwFocus]?.label || 'Internet'));
+  lbl('Browser â€” ' + (BW_TILES[bwFocus]?.label || 'Internet'));
 }
 
 let _bwDialogConfirm = null;
@@ -2865,7 +2866,7 @@ function closeBwDialog() {
 
 const isElectron = navigator.userAgent.includes('Electron');
 
-// On non-Electron (github.io), swap <webview> → <iframe>
+// On non-Electron (github.io), swap <webview> â†’ <iframe>
 (function() {
   if (isElectron) return;
   const wv = document.getElementById('bw-iframe');
@@ -2897,7 +2898,7 @@ function _bwUrlChanged(url) {
   const _wasInitial = _bwNavInitial;
   _bwNavInitial = false;
   if (url === bwCurrentUrl) return;
-  if (_wasInitial) { /* redirect of the first load — not a navigation step */ }
+  if (_wasInitial) { /* redirect of the first load â€” not a navigation step */ }
   else if (_bwNavExpect === 'back')    { _bwNavDepth = Math.max(0, _bwNavDepth - 1); _bwNavFwdCount++; }
   else if (_bwNavExpect === 'forward') { _bwNavDepth++; _bwNavFwdCount = Math.max(0, _bwNavFwdCount - 1); }
   else                                 { _bwNavDepth++; _bwNavFwdCount = 0; }
@@ -2948,11 +2949,11 @@ let bwLastUrl = '';
 let bwSearchText = '', bwSearchCursor = 0;
 let bwSearchFocus = 0; // 0=bar, 1=first suggestion, 2=second...
 
-// ── System generic dialog ──
+// â”€â”€ System generic dialog â”€â”€
 let _sdOk = null, _sdCancel = null, _sdCenterOk = false;
 function isSysDialogOpen() { return document.getElementById('sys-dialog').classList.contains('visible'); }
 // showDialog({ header, content, sub, cancel='Cancel', ok='OK', onOk, onCancel, dark })
-// No cancel → the OK button sits in the CENTER (single-action dialog).
+// No cancel â†’ the OK button sits in the CENTER (single-action dialog).
 function showDialog(o) {
   o = o || {};
   document.getElementById('sys-dialog-hdr').textContent = o.header || '';
@@ -3060,7 +3061,7 @@ function _bwFreezePage(freeze) {
       try { f.executeJavaScript('(function(){try{if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();}catch(e){}})()').catch(()=>{}); } catch(e) {}
     }
   } else {
-    // In web mode the physical mouse stays disabled — only the virtual cursor drives the page
+    // In web mode the physical mouse stays disabled â€” only the virtual cursor drives the page
     f.style.pointerEvents = (bwMode === 'web') ? 'none' : '';
     if (bwMode === 'web' && !_bwScrollMode) _bwCursorShow();
   }
@@ -3141,7 +3142,7 @@ function _bwMenuVoice() {
   }
 }
 
-// ── Share panel ──
+// â”€â”€ Share panel â”€â”€
 let _bwShareFocus = 0;
 function isBwShareOpen() { return document.getElementById('bw-share-menu').classList.contains('visible'); }
 function _bwShareOpen() {
@@ -3166,7 +3167,7 @@ function _bwShareNav(dir) {
 }
 function _bwShareSelect() { _bwShareClose(); }
 
-// ── Media Volume ──
+// â”€â”€ Media Volume â”€â”€
 let _mediaVolIdx = 8;
 const MEDIA_VOL_MAX = 15;
 let _bwVolTimer = null;
@@ -3196,7 +3197,7 @@ function _bwVolRender() {
     num.style.display  = 'none';
     label.textContent  = 'Silent';
   } else {
-    // level 1 → 7rem, level 15 → 21rem (tăng đều 1rem/nấc, luôn lớn hơn silent 6rem)
+    // level 1 â†’ 7rem, level 15 â†’ 21rem (tÄƒng Ä‘á»u 1rem/náº¥c, luÃ´n lá»›n hÆ¡n silent 6rem)
     const size = (_mediaVolIdx + 6) + 'rem';
     circle.style.width = circle.style.height = size;
     icon.style.display = 'none';
@@ -3212,10 +3213,10 @@ function _bwVolAdj(delta) {
   _bwVolRender();
 }
 
-// ── Tips badge ──
+// â”€â”€ Tips badge â”€â”€
 let _bwTipsVisible = true;
 let _bwTipsBadgeTimer = null;
-// Show with system-app bounceInRight entrance, auto-hide after 10s (như browser_window_buttons.js)
+// Show with system-app bounceInRight entrance, auto-hide after 10s (nhÆ° browser_window_buttons.js)
 function _bwTipsBadgeShow() {
   if (!_bwTipsVisible) return;
   const b = document.getElementById('bw-tips-badge');
@@ -3242,7 +3243,7 @@ function _bwTipsHide() {
   document.querySelectorAll('.bw-om-list-item')[2].querySelector('span').textContent = 'Show shortcuts tips';
 }
 
-// ── Pin To (web mode): step 1 "Pin to" menu → step 2 "Select a spot" picker ──
+// â”€â”€ Pin To (web mode): step 1 "Pin to" menu â†’ step 2 "Select a spot" picker â”€â”€
 let _bwPinMode = null; // null | 'menu' | 'picker'
 let _bwPinData = null, _bwPinMenuFocus = 0, _bwPinFocus = 3;
 const _BW_PIN_FIRST = 3, _BW_PIN_LAST = 8; // pinnable tile range; number badge = idx + 1
@@ -3364,7 +3365,7 @@ function _bwPinCloseAll() {
   _bwMenuInjectOverlay(false);
 }
 
-// ── Shortcut Keys Overlay ──
+// â”€â”€ Shortcut Keys Overlay â”€â”€
 let _bwSCPage = 0;
 const _BW_SC_TITLES = ['Shortcut Keys', 'Go to Top/End', 'Zoom', 'Switch Mode'];
 function isBwSCOpen() { return document.getElementById('bw-sc-overlay').classList.contains('visible'); }
@@ -3448,7 +3449,7 @@ function _bwSCPan(dir) {
   img.style.transform = `translate(${_bwSCX}px, ${_bwSCY}px)`;
 }
 
-// ── Browser History ──
+// â”€â”€ Browser History â”€â”€
 let bwHistory = JSON.parse(localStorage.getItem('_bwHistory') || '[]');
 let _bwHistFocus = 0;
 let _bwHistFlat = [];
@@ -3502,13 +3503,13 @@ function _bwHistRender() {
   list.style.display = '';
   empty.classList.remove('visible');
   _bwHistRestoreSK();
-  // Time buckets: TODAY / YESTERDAY / LAST 7 DAYS / THIS MONTH / theo tháng (12 tháng) / LAST YEAR / theo năm
+  // Time buckets: TODAY / YESTERDAY / LAST 7 DAYS / THIS MONTH / theo thÃ¡ng (12 thÃ¡ng) / LAST YEAR / theo nÄƒm
   const _t0 = new Date(); _t0.setHours(0,0,0,0);
   const todayStart      = _t0.getTime();
   const yesterdayStart  = todayStart - 86400e3;
-  const last7Start      = todayStart - 518400e3; // 6 ngày trước đầu hôm nay
+  const last7Start      = todayStart - 518400e3; // 6 ngÃ y trÆ°á»›c Ä‘áº§u hÃ´m nay
   const monthStart      = new Date(_t0.getFullYear(), _t0.getMonth(), 1).getTime();
-  const monthlyStart    = new Date(_t0.getFullYear(), _t0.getMonth() - 11, 1).getTime(); // 12 tháng gần nhất
+  const monthlyStart    = new Date(_t0.getFullYear(), _t0.getMonth() - 11, 1).getTime(); // 12 thÃ¡ng gáº§n nháº¥t
   const lastYearStart   = new Date(_t0.getFullYear() - 1, 0, 1).getTime();
   const groups = new Map();
   bwHistory.forEach(h => {
@@ -3559,7 +3560,7 @@ function _bwHistUpdateFocus() {
   });
   const f = document.querySelector('#bw-hist-list .bw-hist-item.focused');
   if (!f) return;
-  // Nếu ngay trên item là header nhóm (TODAY...) thì cuộn cả header vào tầm nhìn
+  // Náº¿u ngay trÃªn item lÃ  header nhÃ³m (TODAY...) thÃ¬ cuá»™n cáº£ header vÃ o táº§m nhÃ¬n
   const prev = f.previousElementSibling;
   if (prev && prev.classList.contains('bw-hist-section')) prev.scrollIntoView({ block:'nearest' });
   else f.scrollIntoView({ block:'nearest' });
@@ -3770,7 +3771,7 @@ function _bwDomain(url) {
 
 function _bwLoadWebFallback(url, iframe, onLoad) {
   if (!BW_WEB_PROXY) {
-    iframe.srcdoc = `<!DOCTYPE html><html><body style="font-family:'Open Sans',sans-serif;text-align:center;padding:1.5rem;color:#555;margin-top:2rem;font-size:10px"><div style="font-size:3rem;margin-bottom:1rem">🔒</div><p style="font-size:1.5rem;color:#333;font-weight:600;margin:0 0 0.8rem">Cần Proxy Server</p><p style="font-size:1.2rem;color:#666;margin:0 0 1.5rem;line-height:1.6">Deploy <b>worker.js</b> lên Cloudflare Workers rồi điền URL vào <b>BW_WEB_PROXY</b></p><a href="${url}" target="_blank" style="display:inline-block;padding:0.6rem 1.2rem;background:#8000ff;color:#fff;border-radius:2rem;font-size:1.2rem;text-decoration:none">Mở trong trình duyệt</a></body></html>`;
+    iframe.srcdoc = `<!DOCTYPE html><html><body style="font-family:'Open Sans',sans-serif;text-align:center;padding:1.5rem;color:#555;margin-top:2rem;font-size:10px"><div style="font-size:3rem;margin-bottom:1rem">ðŸ”’</div><p style="font-size:1.5rem;color:#333;font-weight:600;margin:0 0 0.8rem">Cáº§n Proxy Server</p><p style="font-size:1.2rem;color:#666;margin:0 0 1.5rem;line-height:1.6">Deploy <b>worker.js</b> lÃªn Cloudflare Workers rá»“i Ä‘iá»n URL vÃ o <b>BW_WEB_PROXY</b></p><a href="${url}" target="_blank" style="display:inline-block;padding:0.6rem 1.2rem;background:#8000ff;color:#fff;border-radius:2rem;font-size:1.2rem;text-decoration:none">Má»Ÿ trong trÃ¬nh duyá»‡t</a></body></html>`;
     if (onLoad) onLoad();
     return;
   }
@@ -3800,7 +3801,7 @@ function openBwWebView(url) {
     let title = '';
     try { if (iframe.tagName === 'WEBVIEW') title = iframe.getTitle() || '';
           else title = iframe.contentDocument?.title || ''; } catch(e) {}
-    // Only overwrite when we truly read a title — cross-origin pages already
+    // Only overwrite when we truly read a title â€” cross-origin pages already
     // reported theirs via the injected bw-title message; don't clobber it.
     if (title) document.getElementById('bw-url-title').textContent = title;
     _bwHistSave(url, title || _bwDomain(url));
@@ -3851,14 +3852,14 @@ function _bwCloseWebviewCommon() {
   });
 }
 
-// Return từ browser home về web mode — hỗ trợ cả trang search results lẫn URL thường
+// Return tá»« browser home vá» web mode â€” há»— trá»£ cáº£ trang search results láº«n URL thÆ°á»ng
 function _bwReturnToWeb() {
   if (!bwLastUrl) return;
   if (bwLastUrl.startsWith('search:')) _bwSearchWeb(bwLastUrl.slice(7));
   else openBwWebView(bwLastUrl);
 }
 
-// Home nav button: saves URL và chuyển về browser home
+// Home nav button: saves URL vÃ  chuyá»ƒn vá» browser home
 function _bwNavHome() {
   if (bwCurrentUrl) bwLastUrl = bwCurrentUrl;
   _bwCloseWebviewCommon();
@@ -3920,7 +3921,7 @@ function _minimizeBrowser() {
   });
 }
 
-// Back/End key: đóng và về đúng màn hình (browser home nếu là browser app, main home nếu là URL app)
+// Back/End key: Ä‘Ã³ng vÃ  vá» Ä‘Ãºng mÃ n hÃ¬nh (browser home náº¿u lÃ  browser app, main home náº¿u lÃ  URL app)
 function closeBwWebView() {
   if (bwCurrentUrl) bwLastUrl = bwCurrentUrl;
   _bwCloseWebviewCommon();
@@ -3981,7 +3982,7 @@ function _bwResetZoomStyles() {
   f._baseH = null;
 }
 
-// Scroll to top/bottom of the page — works on webview, same-origin iframe (srcdoc), and proxied pages
+// Scroll to top/bottom of the page â€” works on webview, same-origin iframe (srcdoc), and proxied pages
 function _bwScrollTo(pos) {
   const wv = document.getElementById('bw-iframe');
   if (!wv) return;
@@ -4013,16 +4014,16 @@ function _bwExitScrollMode() {
   document.getElementById('bw-scroll-ind').classList.remove('visible');
 }
 
-// ── Virtual cursor (KaiOS-style pointer in web mode) ──
+// â”€â”€ Virtual cursor (KaiOS-style pointer in web mode) â”€â”€
 // The cursor lives INSIDE the page (fixed-position img) so it always paints on
-// top of page content — Electron <webview> otherwise composites over any parent DOM.
+// top of page content â€” Electron <webview> otherwise composites over any parent DOM.
 const CUR_DATA_URI = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAGqADAAQAAAABAAAAGgAAAABMybYKAAACM0lEQVRIDa3Uv4saURAH8DsPjSIIaSxCuEKIBotYWMRCm1icTWzO6mxCbCyuC8Q/IATSpbESIW0CVhYHQkBsbPwDFIIgHAcBRdf9Hc/dyXeOGJZlY3Z1Fx7umzczH95jfScnDg8RvXMI+x8CxM+1/51tHVmZz+fiZrOp25b8nTKUSCRosVgo2+32jb/dLd0YwpSSySQtl0vGrizL/r3uIMbS6TStVisFsUv/hD+drBBjmUyG1us1Y699xewQY9lsliRJYuzCN8wJYiyXy5GMB+uvfMH+BTFWKBRIURTG8kdj+yDGisUiqaoqIe/lUdj/IMZKpRJjInKzB2NuIMbK5TIf4xr5Lw7C3EKMVSoVE5iAmrRnzAvEWLVaNYAtUffME+YVCgaD1Gg0DFzCP1GbcI3tg0KhEA0GA302mwm4B2U0/2UYxlbTNNE0zR+o/YbxyBVmhwKBAKVSqYeLlo+q0+nIaP4ZeU8xoq6aOiVZIT6WbrerDIdDmREe+XyeRFG8dar1FNtB4XCY+v2+jKY3OBrBuqvpdMr/oeOuIoZisRiNRiMZF+lXTM90Xf/UbDb13a7q9bopCMKNpx3Ykxkaj8cikBZeT3kdv+f4hNVIJPJwfNFolG8GDfEn9nrXcxTz89FegB18r9Vqfz+KVquFE9U+2PNcz4G8d0pG/GIymYhYo3g8Tu12+x5f3x3iAaf8g2NoeIrju+v1ehJ2ouIj+YLY84Mb7itE47cYDYzH+/Lsa78BgVUCjf/Bb48AAAAASUVORK5CYII=';
 const CUR_PTR_URI = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA4ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMDY3IDc5LjE1Nzc0NywgMjAxNS8wMy8zMC0yMzo0MDo0MiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDoxZTdiZmZmMy02NWViLTQ5YzQtODRiYi1kZTNmZmExZDU4Y2QiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RkUzOENENjU1NUI2MTFFNjhBQTY5MTE4NjE1REVCOEUiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RkUzOENENjQ1NUI2MTFFNjhBQTY5MTE4NjE1REVCOEUiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTUgKE1hY2ludG9zaCkiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDozY2M3NzUwMy01YTM5LTQ1YzYtOWVhMS1iZTlmOTEzZWIwYzMiIHN0UmVmOmRvY3VtZW50SUQ9ImFkb2JlOmRvY2lkOnBob3Rvc2hvcDowNmI1YTA1Mi05ZGJjLTExNzktODBmMi1mMzIzZWQxYjUwZjMiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5Zp5DDAAABuElEQVR42syWMWvCQBTHk5ai2MXNTUq+hh9DcNOlg9AvYMfuHTK1Q6CDe+lisFBcpBU7iGAKdnNKwUINpkFIcXh9F/rkTK+5M7XSP/zNweXul3e+9xJNk+sMfY8G9CP6nJ8EACWrQNhdkMvlgMY8bFugKJJOpwNM/X4fuMg2AukSENBmJF1fLdHjc0na03akJNDhrkAHuwLJ5KAvfgOvoa/Rr5TOvLgUJ7+gn9EWOqua3jXBRmsgwzBgOBzCaDSCfD4vArOSKMtAUd1YlgXT6RR83/8GGgwGq3Gz2QTXdWE8HkcFnclkeGA5CSQ8KhX1er3oapomgew/AZHm8zmB/KTOIOwEqtUf7x64Tv9XnSFSsVjcCkh6dKk2VTg6j/3MZrPUkDAMafiRdHSsjrRWq5Ua5Hne2kP/pGMWMav+xWIBadRutym9b/n0jkd0hb6bTCZavV5PFVG32107nSQZ6Hf2VI1GY6NogiCAQqFAEZVUvhlK1CWq1SrgHyyFLJdLqFQqwmOTZTGDBWyhbdtSkOM4BHlDH236FXQqem1IfCl6H+1LQA9f9ZBlTUJy7xP6Bjc9EU1+CjAAHiLfZiALOxAAAAAASUVORK5CYII=';
 let _curX = 0, _curY = 0, _curActive = false, _curInit = false;
 const _CUR_STEP = 6, _CUR_EDGE = 4;
 function _bwCursorReset() { _curInit = false; }
 function _bwCursorDims() {
-  // Visible web area (screen px) — NOT the iframe's own clientWidth, which balloons
+  // Visible web area (screen px) â€” NOT the iframe's own clientWidth, which balloons
   // when zoomed out via CSS transform (width:(100/zoom)%). _curX/_curY live in screen px.
   const wrap = document.getElementById('bw-webview-wrap');
   const tb = document.getElementById('bw-topbar');
@@ -4048,7 +4049,7 @@ function _bwCursorPush(show) {
     const js = _bwCursorHelperJS() + `window.__bwc(${cx},${cy},${show?'true':'false'},${sz});`;
     try { wv.executeJavaScript(js).catch(()=>{}); } catch(e) {}
   } else {
-    // Same-origin (search results srcdoc) → run helper directly; else postMessage to proxied page
+    // Same-origin (search results srcdoc) â†’ run helper directly; else postMessage to proxied page
     let done = false;
     try {
       const w = wv.contentWindow;
@@ -4079,9 +4080,9 @@ function _bwCursorHide() {
 function _bwCursorRender() { _bwCursorPush(true); }
 function _bwCursorMove(dir) {
   const { W, H } = _bwCursorDims();
-  const CUR_SZ = 26;                 // cursor image size — keep it fully on-screen
+  const CUR_SZ = 26;                 // cursor image size â€” keep it fully on-screen
   const MAXX = W - CUR_SZ, MAXY = H - CUR_SZ;
-  // Step scales with zoom: zoomed out → slower, zoomed in → faster (cursor size unchanged)
+  // Step scales with zoom: zoomed out â†’ slower, zoomed in â†’ faster (cursor size unchanged)
   const step = Math.max(2, Math.round(_CUR_STEP * bwZoom));
   let scroll = null;
   if (dir === 'left')  { _curX -= step; if (_curX <= _CUR_EDGE) { _curX = _CUR_EDGE; scroll = 'left';  } }
@@ -4140,7 +4141,7 @@ function _bwScrollBy(dir) {
     if (!done) { try { wv.contentWindow.postMessage({type:'bw-scroll-by', dx, dy}, '*'); } catch(e){} }
   }
 }
-// D-pad / arrow in web mode: scroll mode → scroll page, else move virtual cursor
+// D-pad / arrow in web mode: scroll mode â†’ scroll page, else move virtual cursor
 function _bwWebArrow(dir) {
   if (_bwScrollMode) { _bwScrollBy(dir); return; }
   if (!_curActive) _bwCursorShow();
@@ -4162,7 +4163,7 @@ function bwSearchGo() {
   if (_bwIsSearch(text)) {
     // Electron loads real Google natively; the proxied web build loads
     // DuckDuckGo's plain-HTML results (a real engine page that renders through
-    // the proxy — Google blocks proxied requests with a bot challenge).
+    // the proxy â€” Google blocks proxied requests with a bot challenge).
     openBwWebView(isElectron
       ? 'https://www.google.com/search?q=' + encodeURIComponent(text)
       : 'https://html.duckduckgo.com/html/?q=' + encodeURIComponent(text));
@@ -4203,7 +4204,7 @@ function _fetchSuggestions(text) {
         return { nav: false, text: s };
       });
     } catch(e) { items = []; }
-    // Engine didn't return a domain but the typed text looks like one — synthesize it
+    // Engine didn't return a domain but the typed text looks like one â€” synthesize it
     if (!items.some(s => s.nav) && text.trim() && !_bwIsSearch(text.trim())) {
       const url = _bwUrlFromText(text.trim());
       items.unshift({ nav: true, url, title: _bwNavTitleFromUrl(url) });
@@ -4269,7 +4270,7 @@ function openBwSearch() {
   document.querySelector('.skbar').style.display = '';
   document.getElementById('bw-tips-badge').classList.remove('visible');
   renderBwSearch();
-  lbl('Browser — Search');
+  lbl('Browser â€” Search');
   if (typeof SimKeyboard !== 'undefined') {
     SimKeyboard.activate({
       type: (ch) => bwSearchType(ch),
@@ -4394,7 +4395,7 @@ function buildFolderView(app) {
   body.appendChild(ico);
 
   setSK('', 'Select', 'Options', false);
-  lbl('Folder — ' + (app.name || ''));
+  lbl('Folder â€” ' + (app.name || ''));
 }
 
 function navFolder(dir) {
@@ -4404,9 +4405,9 @@ function navFolder(dir) {
   if (dir === 'right' || dir === 'down') folderFocus = (folderFocus + 1) % n;
 }
 
-// ════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //  APP GRID
-// ════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // Web-app (bookmark) icon = web_shortcut frame + centered favicon overlay
 function _applyAppIcon(icoEl, app) {
   icoEl.style.backgroundImage = `url("${app.icon}")`;
@@ -4445,16 +4446,16 @@ function buildGrid(keepFocus) {
   }
   if (isMoving) {
     setSK('', 'Done', 'Cancel', false);
-    lbl('Move — ' + (curApp()?.name || ''));
+    lbl('Move â€” ' + (curApp()?.name || ''));
   } else {
     setSK('', 'Select', 'Options', false);
-    lbl('Apps — ' + (curApp()?.name || ''));
+    lbl('Apps â€” ' + (curApp()?.name || ''));
   }
 }
 
-// ════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //  NAVIGATION
-// ════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function nav(dir) {
   if (booting || inputLocked || _splashTimer) return;
   if (typeof SimKeyboard !== 'undefined' && SimKeyboard.active) {
@@ -4465,7 +4466,7 @@ function nav(dir) {
     if (dir === 'up' || dir === 'down') bwSearchNav(dir);
     return;
   }
-  // Sleep/power menu is a top-level modal — it takes priority over everything
+  // Sleep/power menu is a top-level modal â€” it takes priority over everything
   if (isSleepOpen()) {
     const maxFocus = view === 'lock' ? 1 : 2;
     if (dir === 'up')   { sleepFocus = Math.max(0, sleepFocus - 1); updateSleepFocus(); }
@@ -4501,11 +4502,11 @@ function nav(dir) {
         document.getElementById('view-home').classList.add('sidemenu-open');
         renderSidemenu();
         setSK('', 'Select', '', false);
-        lbl('Sidemenu — ' + SM_APPS[smFocus].name);
+        lbl('Sidemenu â€” ' + SM_APPS[smFocus].name);
       } else if (dir === 'up') {
         openIS();
       }
-      // down → nothing (Cards app), right → nothing
+      // down â†’ nothing (Cards app), right â†’ nothing
       break;
 
     case 'sidemenu':
@@ -4513,7 +4514,7 @@ function nav(dir) {
       if (dir === 'down')  smFocus = Math.min(SM_APPS.length - 1, smFocus + 1);
       if (dir === 'right') { goHome(); break; }
       renderSidemenu();
-      lbl('Sidemenu — ' + SM_APPS[smFocus].name);
+      lbl('Sidemenu â€” ' + SM_APPS[smFocus].name);
       break;
 
     case 'instant-settings': {
@@ -4541,7 +4542,7 @@ function nav(dir) {
             [APPS[listFocus], APPS[newIdx]] = [APPS[newIdx], APPS[listFocus]];
             listFocus = newIdx;
             buildList();
-            lbl('Move — ' + (curApp()?.name || ''));
+            lbl('Move â€” ' + (curApp()?.name || ''));
           }
         };
         if (dir === 'up')   swap(listFocus - 1);
@@ -4579,7 +4580,7 @@ function nav(dir) {
             [APPS[absIdx], APPS[newAbs]] = [APPS[newAbs], APPS[absIdx]];
             focus = newFocus;
             buildGrid();
-            lbl('Move — ' + (curApp()?.name || ''));
+            lbl('Move â€” ' + (curApp()?.name || ''));
           }
         };
         const pageLen = Math.min(PER, APPS.length - page * PER);
@@ -4594,7 +4595,7 @@ function nav(dir) {
         const absIdx = page * PER + focus;
         const total = APPS.length;
         if (dir === 'left' || dir === 'right') {
-          // flat circular — like list view
+          // flat circular â€” like list view
           const newAbs = dir === 'right'
             ? (absIdx + 1) % total
             : (absIdx - 1 + total) % total;
@@ -4673,9 +4674,9 @@ function pressOK() {
   if (view === 'browser-search') { if (bwSearchText) bwSearchGo(); return; }
   if (view === 'instant-settings') {
     if (IS_TILES[isFocus].type === 'volume') {
-      if (volIdx >= 2) { savedVolIdx = volIdx; volIdx = 1; }  // volume → vibrate
-      else if (volIdx === 1) { volIdx = 0; }                  // vibrate → silent
-      else { volIdx = savedVolIdx; }                          // silent → volume
+      if (volIdx >= 2) { savedVolIdx = volIdx; volIdx = 1; }  // volume â†’ vibrate
+      else if (volIdx === 1) { volIdx = 0; }                  // vibrate â†’ silent
+      else { volIdx = savedVolIdx; }                          // silent â†’ volume
       updateSbIcons(); renderIS();
     } else {
       toggleIS(isFocus);
@@ -4778,7 +4779,7 @@ function pressBack() {
         view = 'apps';
         if (appViewMode === 'list')        buildList();
         else if (appViewMode === 'single') buildSingle();
-        else { setSK('', 'Select', 'Options', false); lbl('Apps — ' + (curApp()?.name || '')); }
+        else { setSK('', 'Select', 'Options', false); lbl('Apps â€” ' + (curApp()?.name || '')); }
       } else {
         goHome();
       }
@@ -4820,7 +4821,7 @@ function pressBack() {
         view = 'apps';
         if (appViewMode === 'list')        buildList();
         else if (appViewMode === 'single') buildSingle();
-        else { setSK('', 'Select', 'Options', false); lbl('Apps — ' + (curApp()?.name || '')); }
+        else { setSK('', 'Select', 'Options', false); lbl('Apps â€” ' + (curApp()?.name || '')); }
       } else {
         goHome();
       }
@@ -4860,10 +4861,10 @@ function softLeft() {
   if (view === 'dialer')           { return; }
 }
 
-// ════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //  OPTION MENU  (SoftRight in apps view)
 //  matches launcher: Move + Uninstall (if removable)
-// ════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 let omFocus = 0;
 let omItems = [];
 
@@ -4914,7 +4915,7 @@ function openDialerOM() {
   buildOMPanel('Options');
 }
 
-// ── Pinned web app: Unpin / Rename ──
+// â”€â”€ Pinned web app: Unpin / Rename â”€â”€
 let _appDialogCb = null;
 function isAppDialogOpen() { return _appDialogCb !== null; }
 function _appConfirmOpen(header, content, okLabel, onOk) {
@@ -4956,7 +4957,7 @@ function _webAppUnpin(app) {
   });
 }
 
-// Rename dialog — editable title with selection, URL shown below
+// Rename dialog â€” editable title with selection, URL shown below
 let _renameApp = null, _renameText = '', _renameSelAll = false, _renameCursor = 0;
 function isRenameOpen() { return _renameApp !== null; }
 function _webAppRename(app) {
@@ -5046,7 +5047,7 @@ function closeOM() {
     lbl('Dialer');
   } else {
     setSK('', 'Select', 'Options', false);
-    lbl('Apps — ' + (curApp()?.name || ''));
+    lbl('Apps â€” ' + (curApp()?.name || ''));
   }
 }
 function switchAppView(mode) {
@@ -5092,10 +5093,10 @@ function buildList() {
   document.getElementById('pagination').innerHTML = '';
   if (isMoving) {
     setSK('', 'Done', 'Cancel', false);
-    lbl('Move — ' + (curApp()?.name || ''));
+    lbl('Move â€” ' + (curApp()?.name || ''));
   } else {
     setSK('', 'Select', 'Options', false);
-    lbl('Apps — ' + (curApp()?.name || ''));
+    lbl('Apps â€” ' + (curApp()?.name || ''));
   }
 }
 function buildSingle() {
@@ -5140,7 +5141,7 @@ function buildSingle() {
   document.getElementById('app-title').textContent = '';
   document.getElementById('pagination').innerHTML = '';
   setSK('', 'Select', 'Options', false);
-  lbl('Apps — ' + (app.name || ''));
+  lbl('Apps â€” ' + (app.name || ''));
 }
 function rebuildCurrentView() {
   const bar = document.querySelector('.skbar');
@@ -5154,7 +5155,7 @@ function enterMoveMode() {
   _moveOrigApps = [...APPS];
   rebuildCurrentView();
   setSK('', 'Done', 'Cancel', false);
-  lbl('Move — ' + (curApp()?.name || ''));
+  lbl('Move â€” ' + (curApp()?.name || ''));
 }
 function exitMoveMode(cancel) {
   isMoving = false;
@@ -5179,7 +5180,7 @@ function navOM(dir) {
   renderOM();
 }
 
-// ── Stub overlay (Notices / Contacts) ──
+// â”€â”€ Stub overlay (Notices / Contacts) â”€â”€
 let _prevView = 'home';
 function showStub(title, type) {
   _prevView = view;
@@ -5216,10 +5217,10 @@ function closeStub() {
   }
 }
 
-// ════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //  INSTANT SETTINGS  (ArrowUp from home)
 //  layout: 3-col grid, slide down from top
-// ════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 const _skey = 'kaios.settings.v2';
 let _ov = {}; try { _ov = JSON.parse(localStorage.getItem(_skey) || '{}'); _ov['wifi.enabled'] = false; _ov['bluetooth.enabled'] = false; localStorage.setItem(_skey, JSON.stringify(_ov)); } catch(e){}
 const IS_TILES = [
@@ -5319,7 +5320,7 @@ const sbBt = document.getElementById('sb-bluetooth');
   if (bt.active) {
     if (window._btDisconnectTimer) { clearTimeout(window._btDisconnectTimer); window._btDisconnectTimer = null; }
     if (sbBt.style.display === '') {
-      // already visible — do nothing
+      // already visible â€” do nothing
     } else if (!window._btConnectTimer) {
       window._btConnectTimer = setTimeout(() => {
         sbBt.style.display = '';
@@ -5361,9 +5362,9 @@ window.addEventListener('storage', (e) => {
     else if (tile.type === 'brightness') t.classList.add('active');
     else t.classList.remove('active');
   });
-  // volume bar — clamp thumb inside track
+  // volume bar â€” clamp thumb inside track
   const volVal = VOL_STEPS[volIdx];
-  // silent(0) và vibrate(1) về 0%; level 1(volIdx=2) tới 15(volIdx=16) chiếm 1/15 tới 100%
+  // silent(0) vÃ  vibrate(1) vá» 0%; level 1(volIdx=2) tá»›i 15(volIdx=16) chiáº¿m 1/15 tá»›i 100%
   const barPct = volIdx <= 1 ? 0 : ((volIdx - 1) / (VOL_STEPS.length - 2)) * 100;
   const fill  = document.querySelector('.is-vol-fill');
   const thumb = document.querySelector('.is-vol-thumb');
@@ -5449,9 +5450,9 @@ function closeIS() {
   lbl('Home screen');
 }
 
-// ════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //  DIALER  (number key from home / apps)
-// ════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 let dialerNum  = '';
 let dialerFrom = 'home'; // view to return to on close
 
@@ -5521,12 +5522,12 @@ function pressNum(k) {
   else if (view === 'dialer') dialerKey(k);
 }
 
-// # long-press (1s) → toggle vibrate/silent
+// # long-press (1s) â†’ toggle vibrate/silent
 let _hashTimer = null, _hashToastTimer = null;
 function toggleVolMode() {
-  if (volIdx >= 2) volIdx = 1;       // có âm → rung
-  else if (volIdx === 1) volIdx = 0; // rung → im lặng
-  else volIdx = 1;                   // im lặng → rung
+  if (volIdx >= 2) volIdx = 1;       // cÃ³ Ã¢m â†’ rung
+  else if (volIdx === 1) volIdx = 0; // rung â†’ im láº·ng
+  else volIdx = 1;                   // im láº·ng â†’ rung
   const toast = document.getElementById('vol-toast');
   document.getElementById('vol-toast-icon').dataset.icon = volIdx === 1 ? 'vibrate-32px' : 'mute-32px';
   document.getElementById('vol-toast-label').textContent  = volIdx === 1 ? 'Vibrate Only' : 'Silent';
@@ -5559,7 +5560,7 @@ function toggleVolMode() {
   });
 })();
 
-// * long-press (1s) → +
+// * long-press (1s) â†’ +
 let _starTimer = null;
 function showArrowPress(dir) {
   document.getElementById('csk-arrow-overlay').className = 'dir-' + dir;
@@ -5606,10 +5607,10 @@ function dialerBack() {
   } else closeDialer();
 }
 
-// ════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 //  SLEEP MENU (hold end/power key)
 //  LSK = Restart, RSK = Power off, End key = close
-// ════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 let _powerTimer = null;
 let _powerOnTimer = null;
 function startPowerOn()  {
@@ -5726,7 +5727,7 @@ function doLock() {
   const wrap = document.getElementById('bw-webview-wrap');
   _lockPrevWebviewDisplay = wrap ? wrap.style.display : null;
   if (wrap) wrap.style.display = 'none';
-  // Snapshot the FULL state of the global bars, then hide them — the lock screen
+  // Snapshot the FULL state of the global bars, then hide them â€” the lock screen
   // has its own. Restored verbatim on unlock so nothing leaks (className + styles).
   const gsb = document.getElementById('statusbar'), gsk = document.querySelector('.skbar');
   _lockSbSnap = { cls: gsb.className, css: gsb.style.cssText };
@@ -5739,7 +5740,7 @@ function doLock() {
   view = 'lock';
   lbl('Lock screen');
 }
-const lockScreen = doLock; // alias — call this to lock the device
+const lockScreen = doLock; // alias â€” call this to lock the device
 function doUnlock() {
   document.getElementById('view-lock').classList.remove('visible');
   // Restore the global bars EXACTLY as they were before locking (no leftover state)
@@ -5758,7 +5759,7 @@ function doUnlock() {
     if (view === 'browser-search') renderBwSearch();
   }
   if (view === 'home') lbl('Home screen');
-  else if (view === 'apps') lbl('Apps — ' + (curApp()?.name || ''));
+  else if (view === 'apps') lbl('Apps â€” ' + (curApp()?.name || ''));
 }
 function tickLock(silent = false) {
   const now = new Date();
@@ -5812,7 +5813,7 @@ function doPowerOff() {
   });
 }
 
-// End key = power button: short press → goHome(), long press (500ms) → sleep menu
+// End key = power button: short press â†’ goHome(), long press (500ms) â†’ sleep menu
 (function() {
   const btn = document.getElementById('endcall-anchor');
   btn.addEventListener('mousedown', e => {
@@ -5840,7 +5841,7 @@ function doPowerOff() {
   });
 })();
 
-// ── Keyboard System ──
+// â”€â”€ Keyboard System â”€â”€
 const SimKeyboard = {
   active: false,
   mode: 'Abc',
@@ -5864,9 +5865,9 @@ const SimKeyboard = {
     '9': ['w', 'x', 'y', 'z', '9'],
     '0': [' ', '0']
   },
-  symbols: ['.', ',', '@', '!', '?', '-', ':', '&', "'", '(', ')', '#', '+', '=', '/', '¡', '¿', '*', ';', '$', '"', '<', '>', '%', '^', '_', '\\', '~', '`', '|', '[', ']', '©', '{', '}', '®', '£', '¥', '€'],
-  emojis: ['😃','😄','😆','😅','😂','😉','😇','😍','😷','🤮','😎','🙁','😨','😰','😭','😱','😡','💋','👋','👌','🤘','👍','🙏','🤷','🐶','🐱','🦄','🐷','🐸','🐟','🐌','🦋','🌸','🌹','🌴','🍀','🍋','🍎','🍒','🍓','🎂','🍰','☕','🍾','🍷','🍺','🥂','🔪','🌎','🚗','🚀','🌙','🌞','⭐','🎁','🏆','💍','🎵','❤️','💯'],
-  recentEmojis: ['😃', '😂', '😡', '👍', '❤️', '💯'],
+  symbols: ['.', ',', '@', '!', '?', '-', ':', '&', "'", '(', ')', '#', '+', '=', '/', 'Â¡', 'Â¿', '*', ';', '$', '"', '<', '>', '%', '^', '_', '\\', '~', '`', '|', '[', ']', 'Â©', '{', '}', 'Â®', 'Â£', 'Â¥', 'â‚¬'],
+  emojis: ['ðŸ˜ƒ','ðŸ˜„','ðŸ˜†','ðŸ˜…','ðŸ˜‚','ðŸ˜‰','ðŸ˜‡','ðŸ˜','ðŸ˜·','ðŸ¤®','ðŸ˜Ž','ðŸ™','ðŸ˜¨','ðŸ˜°','ðŸ˜­','ðŸ˜±','ðŸ˜¡','ðŸ’‹','ðŸ‘‹','ðŸ‘Œ','ðŸ¤˜','ðŸ‘','ðŸ™','ðŸ¤·','ðŸ¶','ðŸ±','ðŸ¦„','ðŸ·','ðŸ¸','ðŸŸ','ðŸŒ','ðŸ¦‹','ðŸŒ¸','ðŸŒ¹','ðŸŒ´','ðŸ€','ðŸ‹','ðŸŽ','ðŸ’','ðŸ“','ðŸŽ‚','ðŸ°','â˜•','ðŸ¾','ðŸ·','ðŸº','ðŸ¥‚','ðŸ”ª','ðŸŒŽ','ðŸš—','ðŸš€','ðŸŒ™','ðŸŒž','â­','ðŸŽ','ðŸ†','ðŸ’','ðŸŽµ','â¤ï¸','ðŸ’¯'],
+  recentEmojis: ['ðŸ˜ƒ', 'ðŸ˜‚', 'ðŸ˜¡', 'ðŸ‘', 'â¤ï¸', 'ðŸ’¯'],
   
   activate(target) {
       this.target = target;
@@ -6035,7 +6036,7 @@ const SimKeyboard = {
       recentBar.appendChild(rEl);
     }
     
-    const lsk = this.isEmoji ? 'Symbols' : '<span class="emoji-font">😀❤️👍</span>';
+    const lsk = this.isEmoji ? 'Symbols' : '<span class="emoji-font">ðŸ˜€â¤ï¸ðŸ‘</span>';
     setSK(lsk, 'SELECT', `${page + 1}/${totalPages}`, false);
       const bar = document.querySelector('.skbar');
       bar.style.backgroundColor = '#e6e6e6';
@@ -6285,7 +6286,7 @@ document.addEventListener('focusout', e => {
   }
 });
 
-// ── Keyboard ──
+// â”€â”€ Keyboard â”€â”€
 document.addEventListener('keydown', e => {
   if (inputLocked || booting || _splashTimer) {
     if (e.key === 'Escape' || e.key === 'Backspace') { cancelPowerOn(); pressBack(); return; }
@@ -6326,7 +6327,7 @@ document.addEventListener('keydown', e => {
     if (e.key.length === 1 || e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'Backspace') return;
   }
 
-  // Sleep/power menu is a top-level modal — capture ALL keys before anything else
+  // Sleep/power menu is a top-level modal â€” capture ALL keys before anything else
   if (isSleepOpen()) {
     e.preventDefault();
     if (e.key === 'ArrowUp')   { showArrowPress('up');   nav('up');   return; }
@@ -6337,14 +6338,14 @@ document.addEventListener('keydown', e => {
     if (e.key === 'Escape' || e.key === 'Backspace' || e.key === 'F8') { closeSleepMenu(); return; }
     return;
   }
-  // Lock screen is a modal — capture keys before any preserved overlay handling
+  // Lock screen is a modal â€” capture keys before any preserved overlay handling
   if (view === 'lock') {
     e.preventDefault();
     if (e.key === 'Enter') { showOkPress(); doUnlock(); return; }  // OK unlocks
     if (e.key === 'F8')    { openSleepMenu();            return; }  // power menu on lock
     return;   // everything else does nothing while locked
   }
-  // System dialog is a modal — OK (center or RSK) + End/Back dismiss; rest ignored
+  // System dialog is a modal â€” OK (center or RSK) + End/Back dismiss; rest ignored
   if (isSysDialogOpen()) {
     e.preventDefault();
     if (e.key === 'Enter')  { if (_sdCenterOk)  closeDialog(true);  return; }
@@ -6374,14 +6375,14 @@ document.addEventListener('keydown', e => {
     stKeyFromEvent(e);
     return;
   }
-  // Number keys → dialer
+  // Number keys â†’ dialer
   if (/^[0-9#+]$/.test(e.key) && (view === 'home' || view === 'apps') && !isOMOpen() && !isAppDialogOpen()) {
     e.preventDefault(); showNumPress(e.key); openDialer(e.key); return;
   }
   if (/^[0-9#+]$/.test(e.key) && view === 'dialer') {
     e.preventDefault(); showNumPress(e.key); dialerKey(e.key); return;
   }
-  // * key — long press handled in keyup
+  // * key â€” long press handled in keyup
   if (e.key === '*' && (view === 'home' || view === 'apps' || view === 'dialer') && !isAppDialogOpen()) {
     e.preventDefault();
     showNumPress('*');
@@ -6480,7 +6481,7 @@ document.addEventListener('keyup', e => {
   if (/^[0-9#+*]$/.test(e.key)) { hideNumPress(e.key); }
 });
 
-// ── Init ──
+// â”€â”€ Init â”€â”€
 buildSidemenu();
 goHome();
 updateSbIcons();
@@ -6488,7 +6489,7 @@ updateSbIcons();
 // Boot logo: show initlogo.png, then fade out (matches system InitLogoHandler)
 (function() {
   const logo = document.getElementById('os-logo');
-  // add .hide after a tick — triggers the CSS transition (1s fade, 2s delay)
+  // add .hide after a tick â€” triggers the CSS transition (1s fade, 2s delay)
   requestAnimationFrame(() => {
     requestAnimationFrame(() => { logo.classList.add('hide'); });
   });
