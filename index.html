@@ -2671,6 +2671,7 @@ function pressEnd() {
   
   if (view === 'dialer') { dialerBack(); return; }
   if (view === 'instant-settings') { closeIS(); return; }
+  if (view === 'stub') { closeStub(); return; }
   
   // Always jump to home from any other screen
   if (view !== 'home' && view !== 'lock') goHome();
