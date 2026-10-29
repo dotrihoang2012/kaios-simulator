@@ -6,58 +6,68 @@ define('panels/developer_hud/panel',['require','modules/settings_panel'],functio
     const DEVTOOLS_OVERLAY = 'devtools.overlay';
     const HUD_APPMEMORY = 'hud.appmemory';
     let elements = null;
+    let overlayEnabled = false;
+    let appMemoryEnabled = false;
+
+    function syncHudState() {
+      if (!elements) return;
+      [].forEach.call(elements.widgets, widget => {
+        widget.classList.toggle('disabled', !overlayEnabled);
+      });
+      const lis = elements.widgets[0].getElementsByTagName('li');
+      [].forEach.call(lis, li => {
+        const isMemorySubItem = !!li.querySelector('.memory-item');
+        const enabled = isMemorySubItem ? (overlayEnabled && appMemoryEnabled) : overlayEnabled;
+        if (!enabled) {
+          li.setAttribute('aria-disabled', true);
+          li.classList.add('none-select');
+        } else {
+          li.removeAttribute('aria-disabled');
+          li.classList.remove('none-select');
+        }
+        const input = li.querySelector('input');
+        if (input) input.disabled = !enabled;
+        const select = li.querySelector('select');
+        if (select) select.disabled = !enabled;
+      });
+      if (window.ListFocusHelper && elements.panel) {
+        ListFocusHelper.updateSoftkey(elements.panel);
+      }
+    }
 
     function handleChange(value, key) {
       if (key === DEVTOOLS_OVERLAY) {
-        [].forEach.call(elements.widgets, widget => {
-          widget.classList.toggle('disabled', !value);
-        });
-        const lis = elements.widgets[0].getElementsByTagName('li');
-        [].forEach.call(lis, li => {
-          if (!value) {
-            li.setAttribute('aria-disabled', true);
-          } else {
-            li.removeAttribute('aria-disabled');
-          }
-        });
-        const inputs = elements.widgets[0].getElementsByTagName('input');
-        [].forEach.call(inputs, input => {
-          input.disabled = !value;
-        });
-        const selects = elements.widgets[0].getElementsByTagName('select');
-        [].forEach.call(selects, select => {
-          select.disabled = !value;
-        });
+        overlayEnabled = value === true || value === 'true';
       } else if (key === HUD_APPMEMORY) {
-        [].forEach.call(elements.items, item => {
-          const li = item.parentElement.parentElement;
-          const input = item.parentElement.querySelector('input');
-          if (!value) {
-            li.setAttribute('aria-disabled', true);
-            input.disabled = true;
-          } else {
-            li.removeAttribute('aria-disabled');
-            input.disabled = false;
-          }
-        });
+        appMemoryEnabled = value === true || value === 'true';
       }
+      syncHudState();
     }
 
     return SettingsPanel({
       onInit(panel) {
         elements = {
+          panel,
+          listElements: panel.querySelectorAll('li'),
           widgets: panel.querySelectorAll('.hud-widgets'),
           items: panel.querySelectorAll('.memory-item')
         };
       },
-      onBeforeShow() {
+      onBeforeShow(panel) {
         SettingsSoftkey.init(SoftParams.defaultSelect);
         SettingsSoftkey.show();
+        if (window.ListFocusHelper && elements && elements.listElements) {
+          ListFocusHelper.addEventListener(elements.listElements);
+          ListFocusHelper.updateSoftkey(panel);
+        }
         SettingsDBCache.observe(DEVTOOLS_OVERLAY, false, handleChange);
         SettingsDBCache.observe(HUD_APPMEMORY, false, handleChange);
       },
       onBeforeHide() {
         SettingsSoftkey.hide();
+        if (window.ListFocusHelper && elements && elements.listElements) {
+          ListFocusHelper.removeEventListener(elements.listElements);
+        }
         SettingsDBCache.unobserve(DEVTOOLS_OVERLAY, handleChange);
         SettingsDBCache.unobserve(HUD_APPMEMORY, handleChange);
       }

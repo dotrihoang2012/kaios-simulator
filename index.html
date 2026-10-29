@@ -633,6 +633,26 @@
     .oa-icon { width: 7rem; height: 7rem; border-radius: 22%; display: flex; align-items: center; justify-content: center; font-size: 3.2rem; box-shadow: 0 .4rem 1.6rem rgba(0,0,0,.2); }
     .oa-name { font-size: 1.8rem; color: #333; }
     .oa-sub  { font-size: 1.1rem; color: #999; }
+
+    /* Developer HUD (matches system/style/devtools/developer_hud.css) */
+    .developer-hud {
+      z-index: 100005;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      justify-content: flex-end;
+    }
+    .developer-hud > .widgets {
+      width: 100%;
+      height: 30px;
+      opacity: 0.6;
+    }
     .oa-skbar { height: var(--softkeybar-height); background: #e6e6e6; border-top: 1px solid #ccc; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; flex-shrink: 0; }
     /* ── BROWSER APP ──────────────────────────────────────── */
     .statusbar.bw-sb { background: #fff; color: #333; }
@@ -2064,6 +2084,10 @@ JAN 1</div>
     </div>
 
     <div id="kb-candidates"></div>
+    <!-- Developer HUD Overlay -->
+    <div id="developer-hud" class="developer-hud" style="display:none">
+      <canvas class="widgets" id="developer-hud-canvas" width="240" height="30"></canvas>
+    </div>
     <!-- Soft key bar -->
     <div class="skbar">
       <button class="sk" id="sk-l" onclick="softLeft()"></button>
@@ -7079,11 +7103,340 @@ updateSbIcons();
       sbHac.style.display = hacMode ? '' : 'none';
     }
     if (typeof _lockSyncStatusbar === 'function') _lockSyncStatusbar();
+    if (typeof syncDeveloperHud === 'function') syncDeveloperHud(settings);
     
     const isHour12 = settings['locale.hour12'] === true || settings['locale.hour12'] === 'true';
     if (window.__simHour12 !== isHour12) {
       window.__simHour12 = isHour12;
       if (typeof tick === 'function') tick();
+    }
+  }
+
+  // -- Developer HUD Controller (matches system/js/devtools/developer_hud.js) --
+  const _hudState = {
+    fps: 60,
+    ttl: 118,
+    warnings: 0,
+    errors: 0,
+    security: 0,
+    reflows: 12,
+    sysReflows: 8,
+    jank: 2,
+    lastJankSpike: 0,
+    lastJankSpikeTime: 0,
+    settings: {},
+    active: false,
+    rafId: null,
+    jankTimer: null,
+    lastFrameTime: performance.now(),
+    frameCount: 0,
+    lastTransitionStart: performance.now(),
+    hookedStWindow: null,
+    stObserver: null
+  };
+
+  function _hudBool(v) {
+    return v === true || v === 'true';
+  }
+
+  function _hudFormatMemory(bytes) {
+    const prefix = ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
+    let i = 0;
+    for (; bytes > 1024 && i < prefix.length; ++i) {
+      bytes /= 1024;
+    }
+    return (Math.round(bytes * 100) / 100) + ' ' + prefix[i] + 'B';
+  }
+
+  // Hook console warnings/errors to feed Developer HUD counters
+  (function() {
+    const origWarn = console.warn;
+    const origErr = console.error;
+    console.warn = function() {
+      _hudState.warnings++;
+      if (_hudState.active) _hudRender();
+      return origWarn.apply(console, arguments);
+    };
+    console.error = function() {
+      _hudState.errors++;
+      if (_hudState.active) _hudRender();
+      return origErr.apply(console, arguments);
+    };
+    window.addEventListener('error', function() {
+      _hudState.errors++;
+      if (_hudState.active) _hudRender();
+    });
+    window.addEventListener('securitypolicyviolation', function() {
+      _hudState.security++;
+      if (_hudState.active) _hudRender();
+    });
+  })();
+
+  function _hudHookSettingsFrame() {
+    try {
+      const wv = document.getElementById('st-webview');
+      const cw = wv && wv.contentWindow;
+      const cd = wv && wv.contentDocument;
+      if (cw && _hudState.hookedStWindow !== cw) {
+        _hudState.hookedStWindow = cw;
+        const origW = cw.console.warn;
+        const origE = cw.console.error;
+        cw.console.warn = function() {
+          _hudState.warnings++;
+          if (_hudState.active) _hudRender();
+          return origW.apply(cw.console, arguments);
+        };
+        cw.console.error = function() {
+          _hudState.errors++;
+          if (_hudState.active) _hudRender();
+          return origE.apply(cw.console, arguments);
+        };
+        cw.addEventListener('panelready', function() {
+          const now = performance.now();
+          const dt = Math.round(now - (_hudState.lastTransitionStart || (now - 95)));
+          _hudState.ttl = Math.max(32, Math.min(480, dt));
+          _hudState.reflows += 2;
+          if (_hudState.active) _hudRender();
+        });
+        cw.addEventListener('keydown', function() {
+          _hudState.lastTransitionStart = performance.now();
+        }, true);
+      }
+      if (cd && cd.body && !_hudState.stObserver) {
+        _hudState.stObserver = new MutationObserver(function(mutations) {
+          for (let i = 0; i < mutations.length; i++) {
+            if (mutations[i].target && mutations[i].target.id === 'developer-hud-canvas') continue;
+            _hudState.reflows++;
+            break;
+          }
+          if (_hudState.active) _hudRender();
+        });
+        _hudState.stObserver.observe(cd.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'hidden'] });
+      }
+    } catch (e) {}
+  }
+
+  // Observe simulator screen DOM changes for Reflows and TTL
+  (function() {
+    const screenEl = document.getElementById('screen');
+    if (!screenEl || typeof MutationObserver === 'undefined') return;
+    let lastNavTime = performance.now();
+    document.addEventListener('keydown', function() {
+      lastNavTime = performance.now();
+      _hudState.lastTransitionStart = lastNavTime;
+    }, true);
+    const obs = new MutationObserver(function(mutations) {
+      let counted = false;
+      for (let i = 0; i < mutations.length; i++) {
+        const t = mutations[i].target;
+        if (!t || t.id === 'developer-hud' || t.id === 'developer-hud-canvas') continue;
+        if (!counted) {
+          _hudState.sysReflows++;
+          counted = true;
+        }
+        if (t.id && t.id.startsWith('view-')) {
+          const dt = Math.round(performance.now() - lastNavTime);
+          if (dt > 5 && dt < 1000) _hudState.ttl = Math.max(28, dt);
+        }
+      }
+      if (counted && _hudState.active) _hudRender();
+    });
+    obs.observe(screenEl, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+  })();
+
+  function _hudComputeMemory(s) {
+    const sysEnabled = _hudBool(s['devtools.overlay.system']);
+    let domCount = 450;
+    try {
+      const wv = document.getElementById('st-webview');
+      if (wv && wv.contentDocument) {
+        domCount = wv.contentDocument.getElementsByTagName('*').length;
+      } else {
+        domCount = document.getElementsByTagName('*').length;
+      }
+    } catch (e) {}
+    const ussBytes = (16.8 * 1024 * 1024) + (domCount * 2048) + (sysEnabled ? 4.5 * 1024 * 1024 : 0);
+    let appBytes = (7.4 * 1024 * 1024) + (sysEnabled ? 2.8 * 1024 * 1024 : 0);
+    if (_hudBool(s['hud.jsobjects'])) appBytes += 2.35 * 1024 * 1024;
+    if (_hudBool(s['hud.jsstrings'])) appBytes += 1.48 * 1024 * 1024;
+    if (_hudBool(s['hud.jsother']))   appBytes += 1.05 * 1024 * 1024;
+    if (_hudBool(s['hud.dom']))       appBytes += Math.max(1.2 * 1024 * 1024, domCount * 2400);
+    if (_hudBool(s['hud.style']))     appBytes += 1.32 * 1024 * 1024;
+    if (_hudBool(s['hud.other']))     appBytes += 0.88 * 1024 * 1024;
+    return { ussBytes, appBytes };
+  }
+
+  function _hudRender() {
+    const hudEl = document.getElementById('developer-hud');
+    const canvas = document.getElementById('developer-hud-canvas');
+    if (!hudEl || !canvas) return;
+    const s = _hudState.settings || {};
+
+    const leftWidgets = [];
+    if (_hudBool(s['debug.fps.enabled'])) {
+      leftWidgets.push({ name: 'fps', color: 'fuchsia', value: String(_hudState.fps) });
+    }
+    if (_hudBool(s['debug.ttl.enabled'])) {
+      leftWidgets.push({ name: 'ttl', color: 'darkgreen', value: _hudState.ttl + 'ms' });
+    }
+
+    const rightWidgets = [];
+    if (_hudBool(s['devtools.overlay'])) {
+      const sysEnabled = _hudBool(s['devtools.overlay.system']);
+      if (_hudBool(s['hud.warnings'])) {
+        rightWidgets.push({ name: 'warnings', color: 'orange', value: String(_hudState.warnings) });
+      }
+      if (_hudBool(s['hud.errors'])) {
+        rightWidgets.push({ name: 'errors', color: 'red', value: String(_hudState.errors) });
+      }
+      if (_hudBool(s['hud.security'])) {
+        rightWidgets.push({ name: 'security', color: 'black', value: String(_hudState.security) });
+      }
+      if (_hudBool(s['hud.reflows'])) {
+        const totalReflows = _hudState.reflows + (sysEnabled ? _hudState.sysReflows : 0);
+        rightWidgets.push({ name: 'reflows', color: 'purple', value: String(totalReflows) });
+      }
+      if (_hudBool(s['hud.jank'])) {
+        const now = performance.now();
+        const jankVal = (now - _hudState.lastJankSpikeTime < 2000 && _hudState.lastJankSpike > 0)
+          ? _hudState.lastJankSpike
+          : _hudState.jank;
+        rightWidgets.push({ name: 'jank', color: 'cornflowerblue', value: jankVal + 'ms' });
+      }
+      const mem = (_hudBool(s['hud.uss']) || _hudBool(s['hud.appmemory'])) ? _hudComputeMemory(s) : null;
+      if (_hudBool(s['hud.uss']) && mem) {
+        rightWidgets.push({ name: 'uss', color: 'dimgrey', value: _hudFormatMemory(mem.ussBytes) });
+      }
+      if (_hudBool(s['hud.appmemory']) && mem) {
+        rightWidgets.push({ name: 'memory', color: 'lightslategrey', value: _hudFormatMemory(mem.appBytes) });
+      }
+    }
+
+    if (leftWidgets.length === 0 && rightWidgets.length === 0) {
+      hudEl.style.display = 'none';
+      return;
+    }
+
+    hudEl.style.display = 'flex';
+    const width = 240;
+    const rowH = 30;
+    const ctx = canvas.getContext('2d');
+    ctx.font = '18px sans-serif';
+
+    // Measure and lay out widgets in rows of height 30px
+    const drawList = [];
+    let leftX = 0;
+    for (let i = 0; i < leftWidgets.length; i++) {
+      const w = leftWidgets[i];
+      const tw = ctx.measureText(w.value).width;
+      const ww = Math.max(30, tw) + 10;
+      drawList.push({ x: leftX, y: 0, w: ww, h: rowH, tw, color: w.color, value: w.value });
+      leftX += ww;
+    }
+
+    let row = 0;
+    let rightX = width;
+    let minLeftOnRow = leftX;
+    for (let i = rightWidgets.length - 1; i >= 0; i--) {
+      const w = rightWidgets[i];
+      const tw = ctx.measureText(w.value).width;
+      const ww = Math.max(30, tw) + 10;
+      if (rightX - ww < minLeftOnRow && rightX < width) {
+        row++;
+        rightX = width;
+        minLeftOnRow = 0;
+      }
+      rightX -= ww;
+      drawList.push({ x: rightX, y: row * rowH, w: ww, h: rowH, tw, color: w.color, value: w.value });
+    }
+
+    const totalH = (row + 1) * rowH;
+    if (canvas.width !== width) canvas.width = width;
+    if (canvas.height !== totalH) {
+      canvas.height = totalH;
+      canvas.style.height = totalH + 'px';
+    } else {
+      ctx.clearRect(0, 0, width, totalH);
+    }
+
+    ctx.font = '18px sans-serif';
+    ctx.textBaseline = 'top';
+    for (let i = 0; i < drawList.length; i++) {
+      const item = drawList[i];
+      ctx.fillStyle = item.color;
+      ctx.fillRect(item.x, item.y, item.w, item.h);
+      ctx.fillStyle = 'white';
+      ctx.fillText(item.value, item.x + (item.w - item.tw) / 2, item.y + item.h / 4);
+    }
+
+    if (_hudBool(s['devtools.overlay']) && _hudBool(s['hud.logging'])) {
+      const summary = rightWidgets.map(function(w) { return w.name + '=' + w.value; }).join(', ');
+      if (summary && _hudState._lastLog !== summary) {
+        _hudState._lastLog = summary;
+        console.info('[DeveloperHUD]', summary);
+      }
+    }
+  }
+
+  function _hudStartLoops() {
+    if (!_hudState.rafId) {
+      _hudState.lastFrameTime = performance.now();
+      _hudState.frameCount = 0;
+      const tickFps = function(now) {
+        if (!_hudState.active) {
+          _hudState.rafId = null;
+          return;
+        }
+        _hudState.frameCount++;
+        const elapsed = now - _hudState.lastFrameTime;
+        if (elapsed >= 500) {
+          const nextFps = Math.min(60, Math.max(1, Math.round((_hudState.frameCount * 1000) / elapsed)));
+          _hudState.frameCount = 0;
+          _hudState.lastFrameTime = now;
+          _hudHookSettingsFrame();
+          if (nextFps !== _hudState.fps || _hudBool(_hudState.settings['debug.fps.enabled'])) {
+            _hudState.fps = nextFps;
+            _hudRender();
+          }
+        }
+        _hudState.rafId = requestAnimationFrame(tickFps);
+      };
+      _hudState.rafId = requestAnimationFrame(tickFps);
+    }
+    if (!_hudState.jankTimer) {
+      let lastTick = performance.now();
+      _hudState.jankTimer = setInterval(function() {
+        if (!_hudState.active) {
+          clearInterval(_hudState.jankTimer);
+          _hudState.jankTimer = null;
+          return;
+        }
+        const now = performance.now();
+        const lag = Math.max(1, Math.round(now - lastTick - 100));
+        lastTick = now;
+        const threshold = parseInt(_hudState.settings['devtools.eventlooplag.threshold'], 10) || 100;
+        _hudState.jank = lag;
+        if (lag >= threshold) {
+          _hudState.lastJankSpike = lag;
+          _hudState.lastJankSpikeTime = now;
+        }
+        if (_hudBool(_hudState.settings['devtools.overlay']) && _hudBool(_hudState.settings['hud.jank'])) {
+          _hudRender();
+        }
+      }, 100);
+    }
+  }
+
+  function syncDeveloperHud(settings) {
+    _hudState.settings = settings || {};
+    const anyEnabled = _hudBool(_hudState.settings['debug.fps.enabled']) ||
+      _hudBool(_hudState.settings['debug.ttl.enabled']) ||
+      _hudBool(_hudState.settings['devtools.overlay']);
+    _hudState.active = anyEnabled;
+    _hudHookSettingsFrame();
+    _hudRender();
+    if (anyEnabled) {
+      _hudStartLoops();
     }
   }
   

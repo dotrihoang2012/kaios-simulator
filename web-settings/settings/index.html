@@ -338,6 +338,13 @@ window.__KAIOS_L10N_ENUS = [{"$i":"softkey-options","$v":"Options"},{"$i":"stopp
     // Developer → the "DevTools via Wi-Fi" row is gated on this (data-show-name);
     // make it visible so the full Developer Tools group shows.
     'devtools.remote.wifi.visible': true,
+    'debug.fps.enabled': false, 'debug.ttl.enabled': false,
+    'devtools.overlay': false, 'hud.logging': false, 'devtools.overlay.system': false,
+    'hud.warnings': false, 'hud.errors': false, 'hud.security': false,
+    'hud.reflows': false, 'hud.jank': false, 'devtools.eventlooplag.threshold': 100,
+    'hud.uss': false, 'hud.appmemory': false,
+    'hud.jsobjects': false, 'hud.jsstrings': false, 'hud.jsother': false,
+    'hud.dom': false, 'hud.style': false, 'hud.other': false,
     'deviceinfo.software': 'KaiOS 3.0', 'deviceinfo.os': '3.0',
     // More information → "Software tag" (its row hides when this is unset).
     'deviceinfo.software_tag': 'B2G OS',
@@ -1060,7 +1067,7 @@ window.__KAIOS_L10N_ENUS = [{"$i":"softkey-options","$v":"Options"},{"$i":"stopp
   // listeners attach, so the event never fires for it. Reconcile here.
   function hideSoftkeyOnNoneSelect() {
     var el = document.querySelector('.focus');
-    if (!el || !el.classList.contains('none-select')) return;
+    if (!el || (!el.classList.contains('none-select') && el.getAttribute('aria-disabled') !== 'true')) return;
     // KaiOS-account info rows are none-select yet DO carry softkeys
     // (SELECT | Options with Change password / Sign out) — leave them alone.
     if (el.closest && el.closest('#kaios_account_login')) return;
@@ -1186,7 +1193,9 @@ window.__KAIOS_L10N_ENUS = [{"$i":"softkey-options","$v":"Options"},{"$i":"stopp
       // the label's visible edge; a small inset lands the swatch there and the
       // label clips it. Push it past the label edge (~2.4rem from span origin)
       // into the gutter before the text, and make it a clear little bar.
-      'label.pack-checkbox>span.color-preview:before{inset-inline-start:2.4rem!important;margin:0!important;top:50%!important;margin-top:-.9rem!important;height:1.8rem!important;width:.8rem!important;border-radius:.15rem}';
+      'label.pack-checkbox>span.color-preview:before{inset-inline-start:2.4rem!important;margin:0!important;top:50%!important;margin-top:-.9rem!important;height:1.8rem!important;width:.8rem!important;border-radius:.15rem}' +
+      'label.pack-checkbox>span.color-preview.memory-item{padding-inline-start:5.2rem!important}' +
+      'label.pack-checkbox>span.color-preview.memory-item:before{inset-inline-start:3.6rem!important}';
     document.head.appendChild(style);
     startRangeFillLoop();
 

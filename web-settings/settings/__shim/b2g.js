@@ -167,6 +167,13 @@
     // Developer → the "DevTools via Wi-Fi" row is gated on this (data-show-name);
     // make it visible so the full Developer Tools group shows.
     'devtools.remote.wifi.visible': true,
+    'debug.fps.enabled': false, 'debug.ttl.enabled': false,
+    'devtools.overlay': false, 'hud.logging': false, 'devtools.overlay.system': false,
+    'hud.warnings': false, 'hud.errors': false, 'hud.security': false,
+    'hud.reflows': false, 'hud.jank': false, 'devtools.eventlooplag.threshold': 100,
+    'hud.uss': false, 'hud.appmemory': false,
+    'hud.jsobjects': false, 'hud.jsstrings': false, 'hud.jsother': false,
+    'hud.dom': false, 'hud.style': false, 'hud.other': false,
     'deviceinfo.software': 'KaiOS 3.0', 'deviceinfo.os': '3.0',
     // More information → "Software tag" (its row hides when this is unset).
     'deviceinfo.software_tag': 'B2G OS',
