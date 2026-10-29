@@ -334,6 +334,15 @@
       transition: opacity 0.12s ease;
     }
     #view-apps.open { opacity: 1; pointer-events: auto; }
+    /* Real system: .appWindow.homescreen > .chrome { height: statusbar-height; background: linear-gradient(rgba(0,0,0,.4), transparent) } */
+    #view-home::after, #view-apps::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: var(--statusbar-height);
+      background: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0));
+      z-index: 6;
+      pointer-events: none;
+    }
     .apps-overlay {
       position: absolute; inset: 0;
       background: rgba(0,0,0,0.85);
