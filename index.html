@@ -504,13 +504,14 @@
       left: 50%; top: 10.4rem;
       transform: translateX(-50%);
       cursor: pointer;
+      color: #842dff;
     }
     .sm-main-wrap::before {
       content: "";
       position: absolute;
       inset: -0.6rem;
       border-radius: 32.14%;
-      background-color: var(--highlight-color);
+      background-color: currentColor;
     }
     /* Icon fills wrapper, clips to rounded square, paints on top of ::before */
     .sm-main-icon {
@@ -2026,16 +2027,16 @@ const ICO = {
 const LAUNCHER_IMG = './kaiosrt/gaia/profile/webapps/installed/launcher/style/images/';
 const WEB_SHORTCUT_ICON = LAUNCHER_IMG + 'web_shortcut_56.png';
 const APPS = [
-  { id:'settings',  name:'Settings',  icon: ICO.settings },
+  { id:'settings',  name:'Settings',  icon: ICO.settings, focusColor: '#696be5' },
   { id:'browser',   name:'Internet',  icon: ICO.browser  },
   { id:'google',    name:'Google',    icon: ICO.google,   url: 'https://www.google.com' },
-  { id:'games',     name:'Games',     icon: LAUNCHER_IMG + 'folder_games_56.png',
+  { id:'games',     name:'Games',     icon: LAUNCHER_IMG + 'folder_games_56.png', focusColor: '#842dff',
     type:'folder', apps:[
       { name:'Solitaire',   icon: LAUNCHER_IMG + 'default_app_56.png' },
       { name:'Chess',       icon: LAUNCHER_IMG + 'default_app_56.png' },
       { name:'Snake',       icon: LAUNCHER_IMG + 'default_app_56.png' },
   ]},
-  { id:'utilities', name:'Utilities', icon: LAUNCHER_IMG + 'folder_utilities_56.png',
+  { id:'utilities', name:'Utilities', icon: LAUNCHER_IMG + 'folder_utilities_56.png', focusColor: '#f87832',
     type:'folder', apps:[
       { name:'Calculator',  icon: ICO.calc  },
       { name:'Calendar',    icon: ICO.alarm },
@@ -4440,6 +4441,8 @@ function navFolder(dir) {
 // Web-app (bookmark) icon = web_shortcut frame + centered favicon overlay
 function _applyAppIcon(icoEl, app) {
   icoEl.style.backgroundImage = `url("${app.icon}")`;
+  const themeColor = app.focusColor || (app.webapp ? '#20AFCC' : '');
+  if (themeColor) icoEl.style.color = themeColor;
   if (app.webapp && app.favicon) {
     icoEl.classList.add('webapp-icon');
     const fv = document.createElement('div');
@@ -5188,6 +5191,8 @@ function buildSingle() {
   // main icon: wrapper carries positioning + purple ::before, inner div is the icon
   const wrap = document.createElement('div');
   wrap.className = 'sm-main-wrap';
+  const themeColor = app.focusColor || (app.webapp ? '#20AFCC' : '');
+  if (themeColor) wrap.style.color = themeColor;
   wrap.onclick = () => openAppView();
   const mainIco = document.createElement('div');
   mainIco.className = 'sm-main-icon';
