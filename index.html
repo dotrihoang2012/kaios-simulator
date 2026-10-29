@@ -6683,14 +6683,6 @@ updateSbIcons();
       }
     }
     
-    const screen = document.getElementById('screen');
-    if (screen) {
-      let brightness = settings['screen.brightness'];
-      if (typeof brightness !== 'number') brightness = 1.0;
-      const filterVal = 0.4 + (brightness * 0.6); 
-      screen.style.filter = 'brightness(' + filterVal + ')';
-    }
-    
     const isHour12 = settings['locale.hour12'] === true || settings['locale.hour12'] === 'true';
     if (window.__simHour12 !== isHour12) {
       window.__simHour12 = isHour12;
