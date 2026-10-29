@@ -6036,7 +6036,7 @@ function enterLockPasscodeMode() {
   const skc = document.getElementById('lock-sk-c');
   const skr = document.getElementById('lock-sk-r');
   if (skl) skl.textContent = 'Emergency';
-  if (skc) skc.style.display = 'none';
+  if (skc) skc.style.visibility = 'hidden';
   if (skr) skr.textContent = 'Camera';
   const pv = document.getElementById('passcode-view');
   const infoEl = document.getElementById('lock-passcode-info');
@@ -6074,7 +6074,7 @@ function exitLockPasscodeMode() {
   const skc = document.getElementById('lock-sk-c');
   const skr = document.getElementById('lock-sk-r');
   if (skl) skl.textContent = '';
-  if (skc) skc.style.display = '';
+  if (skc) skc.style.visibility = '';
   if (skr) skr.textContent = '';
 }
 function handleLockPasscodeBackspace() {
