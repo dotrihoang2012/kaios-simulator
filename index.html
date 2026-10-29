@@ -1803,7 +1803,7 @@ JAN 1</div>
           </div>
         </div>
         <div class="bw-om-skbar">
-          <span class="bw-om-sk-l" onclick="_bwMenuClose(true)">Cancel</span>
+          <span class="bw-om-sk-l" onclick="_bwMenuClose(true)"></span>
           <span class="bw-om-sk-c" onclick="_bwMenuSelect()">SELECT</span>
           <span class="bw-om-sk-r" id="bw-om-sk-r" onclick="_bwMenuVoice()"></span>
         </div>
@@ -2912,9 +2912,10 @@ function pressEnd() {
   // Instant minimize (Go Home) for any open app
   if (view === 'app-open') {
     _bwCleanupAllOverlays();
-    if (bwMode === 'web' && document.getElementById('bw-iframe')) {
-      handleBwBack('END KEY');
-      return;
+    _bwClearBackToast();
+    if (bwMode === 'web') {
+      if (bwCurrentUrl) bwLastUrl = bwCurrentUrl;
+      _bwCloseWebviewCommon();
     }
     animateCloseApp('view-open-app', () => {
       if (fromApps) { returnToOrigin(); }
@@ -4221,6 +4222,20 @@ function _bwNavHome() {
 let _bwBackToastTimer = null;
 let _bwBackToastCount = 0;
 
+function _bwClearBackToast() {
+  if (_bwBackToastTimer) {
+    clearTimeout(_bwBackToastTimer);
+    _bwBackToastTimer = null;
+  }
+  _bwBackToastCount = 0;
+  if (_toastTimer) {
+    clearTimeout(_toastTimer);
+    _toastTimer = null;
+  }
+  const el = document.getElementById('sys-toast');
+  if (el) el.classList.remove('visible');
+}
+
 function handleBwBack(keyName = 'BACK') {
   const wv = document.getElementById('bw-iframe');
   
@@ -4238,6 +4253,15 @@ function handleBwBack(keyName = 'BACK') {
     } catch(e) {}
   }
   
+  // Reached start of webpage history:
+  // For Browser app, return directly to browser home screen (browser mode chính) without any minimize toast!
+  if (openApp?.id === 'browser') {
+    _bwClearBackToast();
+    closeBwWebView();
+    return;
+  }
+  
+  // For standalone webapp (openApp.url), leaving page means minimizing/exiting to launcher
   if (_bwBackToastCount === 0) {
     _bwBackToastCount = 1;
     showToast(`Press ${keyName} again to minimize browser.`);
@@ -4245,13 +4269,8 @@ function handleBwBack(keyName = 'BACK') {
       _bwBackToastCount = 0;
     }, 3000);
   } else {
-    clearTimeout(_bwBackToastTimer);
-    _bwBackToastCount = 0;
-    if (openApp?.url) {
-      animateCloseApp('view-open-app', () => { closeBwWebView(); });
-    } else {
-      closeBwWebView();
-    }
+    _bwClearBackToast();
+    animateCloseApp('view-open-app', () => { closeBwWebView(); });
   }
 }
 
@@ -4267,6 +4286,7 @@ function _minimizeBrowser() {
 
 // Back/End key: đóng và về đúng màn hình (browser home nếu là browser app, main home nếu là URL app)
 function closeBwWebView() {
+  _bwClearBackToast();
   if (bwCurrentUrl) bwLastUrl = bwCurrentUrl;
   _bwCloseWebviewCommon();
   if (openApp?.id === 'browser') {
@@ -5209,6 +5229,23 @@ function pressBack() {
   if (view === 'sidemenu')         { goHome();          return; }
   if (view === 'stub')             { closeStub();       return; }
   if (view === 'app-open') {
+    if (openApp?.id === 'browser' && bwMode === 'home') {
+      if (_bwBackToastCount === 0) {
+        _bwBackToastCount = 1;
+        showToast('Press BACK again to minimize browser.');
+        _bwBackToastTimer = setTimeout(() => {
+          _bwBackToastCount = 0;
+        }, 3000);
+        return;
+      } else {
+        _bwClearBackToast();
+        animateCloseApp('view-open-app', () => {
+          if (fromApps) { returnToOrigin(); }
+          else { view = 'home'; goHome(); }
+        });
+        return;
+      }
+    }
     animateCloseApp('view-open-app', () => {
       const _sb = document.getElementById('statusbar');
       _sb.classList.remove('bw-sb');
