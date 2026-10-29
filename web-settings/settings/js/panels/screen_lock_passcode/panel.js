@@ -279,7 +279,7 @@ define('panels/screen_lock_passcode/panel',['require','modules/settings_panel'],
         handleDigitsClasses(true, 'correct');
         codeInfo.errorTimes = 0;
         SettingsDBCache.saveSettings({
-          WRONG_CODE_INFO: {
+          [WRONG_CODE_INFO]: {
             errorTimes: 0
           }
         });

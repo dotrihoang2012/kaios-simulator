@@ -39,6 +39,9 @@ define('panels/screen_lock/panel',['require','modules/settings_panel'],function(
 
     function updatePasscode(enabled) {
       elements.panel.dataset.passcodeEnabled = enabled;
+      if (elements.passcodeEdit) {
+        elements.passcodeEdit.classList.toggle('hidden', !enabled);
+      }
     }
 
     return SettingsPanel({

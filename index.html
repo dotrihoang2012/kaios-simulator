@@ -969,19 +969,92 @@
     /* Lockscreen's OWN status bar + softkey bar — fully separate from the global ones */
     #view-lock #lock-statusbar { position: absolute; top: 0; left: 0; right: 0; background: transparent; color: #fff; z-index: 2; }
     #view-lock #lock-statusbar .sb-icon, #view-lock #lock-statusbar .sb-time, #view-lock #lock-statusbar .sb-carrier { color: #fff; }
+    #lock-bottom {
+      position: absolute;
+      bottom: var(--softkeybar-height);
+      left: 0;
+      width: 100%;
+      height: 27%;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2;
+    }
+    #view-lock.passcode-mode #lock-bottom {
+      display: flex;
+    }
+    #passcode-view {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      color: var(--color-gs00, #fff);
+      width: 100%;
+    }
+    #passcode-view .info-text {
+      height: 3rem;
+      font-size: 1.4rem !important;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      margin: 0.6rem 0;
+      word-wrap: break-word;
+      text-align: center;
+      width: 100%;
+    }
+    #passcode-view .codes {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    #passcode-view .codes .code {
+      border-radius: 0.2rem;
+      margin: 0 0.5rem;
+      width: 3.6rem;
+      height: 3.6rem;
+      background-color: rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #passcode-view .codes .code .dot {
+      display: none;
+      border-radius: 0.3rem;
+      width: 0.6rem;
+      height: 0.6rem;
+      background-color: white;
+    }
+    #passcode-view .codes .code.dotted .dot {
+      display: block;
+    }
+    #passcode-view.error .info-text {
+      color: var(--color-red, #fb2c43);
+    }
+    #passcode-view.error .codes .code .dot {
+      background-color: var(--color-red, #fb2c43);
+    }
     #lock-skbar {
       position: absolute; bottom: 0; left: 0; right: 0;
       height: var(--softkeybar-height);
       background: transparent;
-      display: flex; align-items: center; justify-content: center;
+      display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+      padding: 0 0.5rem;
+      box-sizing: border-box;
       z-index: 2;
     }
+    #lock-skbar #lock-sk-l {
+      font-size: 1.4rem; font-weight: 600; color: #fff; text-align: left;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
     #lock-skbar #lock-sk-c {
-      display: inline-flex; align-items: center; gap: 0.4rem;
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
       font-size: 1.5rem; font-weight: 600; color: #fff;
       cursor: pointer;
     }
     #lock-skbar #lock-sk-c i { font-size: 1.4rem; font-style: normal; }
+    #lock-skbar #lock-sk-r {
+      font-size: 1.4rem; font-weight: 600; color: #fff; text-align: right;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
 
     /* ── Sleep menu (hold power) ── */
     #power-menu {
@@ -1859,7 +1932,18 @@ JAN 1</div>
         <hr id="lock-divider">
         <div id="lock-date">MON, JAN 1</div>
       </div>
-      <div id="lock-skbar"><span id="lock-sk-c" onclick="doUnlock()"><i data-icon="lock"></i>Unlock</span></div>
+      <div id="lock-bottom">
+        <div id="passcode-view">
+          <div class="secondary info-text" id="lock-passcode-info">Please enter 4 digits code</div>
+          <div class="codes" id="lock-passcode-codes">
+            <div class="code"><div class="dot"></div></div>
+            <div class="code"><div class="dot"></div></div>
+            <div class="code"><div class="dot"></div></div>
+            <div class="code"><div class="dot"></div></div>
+          </div>
+        </div>
+      </div>
+      <div id="lock-skbar"><span id="lock-sk-l"></span><span id="lock-sk-c" onclick="doUnlock()"><i data-icon="lock"></i>Unlock</span><span id="lock-sk-r"></span></div>
     </div>
 
     <!-- System generic dialog (bottom sheet, slides up) -->
@@ -2697,6 +2781,7 @@ function pressEnd() {
     return;
   }
   if (isSleepOpen()) { closeSleepMenu(); return; }
+  if (view === 'lock') { if (_lockMode === 'passcode') exitLockPasscodeMode(); return; }
   if (isStOpen() || window._stOpening) { if (window._stOpening) { window._stOpening = false; document.getElementById('bw-settings-splash')?.remove(); } stKey('Backspace'); return; }
   if (isSysDialogOpen()) { closeDialog(false); return; }
   if (isAppDialogOpen()) { _appConfirmClose(); return; }
@@ -4876,7 +4961,7 @@ function pressBack() {
     return;
   }
   if (isSleepOpen())               { closeSleepMenu();  return; }
-  if (view === 'lock')             { return; }
+  if (view === 'lock')             { if (_lockMode === 'passcode') handleLockPasscodeBackspace(); return; }
   if (isSysDialogOpen())           { closeDialog(false); return; }
   if (isRenameOpen())              { _renameCancel();   return; }
   if (isAppDialogOpen())           { _appConfirmClose(); return; }
@@ -5648,7 +5733,11 @@ function dialerKey(k) {
 }
 function pressNum(k) {
   if (booting || inputLocked || _splashTimer) return;
-  if (isSleepOpen() || view === 'lock') return;
+  if (isSleepOpen()) return;
+  if (view === 'lock') {
+    if (_lockMode === 'passcode' && /^[0-9]$/.test(k)) handleLockPasscodeDigit(k);
+    return;
+  }
   // When keyboard is active, route number keys through SimKeyboard
   if (SimKeyboard.active && /^[0-9]$/.test(k)) {
     SimKeyboard.handleKeydown(k, false);
@@ -5861,9 +5950,208 @@ function _lockSyncStatusbar() {
 // Lock the device from any state: dismiss overlays, hide the webview (Electron
 // composites it over DOM z-index), give the lock screen its own status/softkey
 // bars (global ones hidden), and switch to 'lock'.
+let _lockMode = 'pocket';
+let _lockPassBuf = '';
+let _lockPassAcceptable = true;
+let _lockPassInvalid = false;
+let _lockPassValidating = false;
+let _lockErrorTimer = null;
+let _lockCooldownTimer = null;
+const _LOCK_COOLDOWN_MAP = [0, 0, 0, 0, 0, 0, 60, 180, 300, 600, 900];
+
+function _getLockSettingsOv() {
+  try { return JSON.parse(localStorage.getItem('kaios.settings.v2') || '{}'); } catch (e) { return {}; }
+}
+function _saveLockSettingsOv(patch) {
+  try {
+    const ov = _getLockSettingsOv();
+    Object.assign(ov, patch);
+    localStorage.setItem('kaios.settings.v2', JSON.stringify(ov));
+  } catch (e) {}
+}
+function isLockPasscodeEnabled() {
+  const ov = _getLockSettingsOv();
+  return !!(ov['lockscreen.passcode-lock.enabled'] && ov['lockscreen.enabled'] !== false);
+}
+function getStoredLockPasscode() {
+  const ov = _getLockSettingsOv();
+  return typeof ov['lockscreen.passcode-lock.code'] === 'string' && ov['lockscreen.passcode-lock.code'].length === 4
+    ? ov['lockscreen.passcode-lock.code']
+    : '0000';
+}
+function _renderLockDots(count) {
+  const codes = document.querySelectorAll('#lock-passcode-codes .code');
+  codes.forEach((el, idx) => el.classList.toggle('dotted', idx < count));
+}
+function _getLockCooldownSecs(times) {
+  const idx = Math.min(_LOCK_COOLDOWN_MAP.length - 1, times);
+  return _LOCK_COOLDOWN_MAP[idx] || 0;
+}
+function _updateLockCooldownText(errorTimes, retryTimestamp) {
+  const infoEl = document.getElementById('lock-passcode-info');
+  let left = 0;
+  const now = Date.now();
+  if (now >= retryTimestamp) {
+    left = Math.max(0, _getLockCooldownSecs(errorTimes) - Math.floor((now - retryTimestamp) / 1000));
+  }
+  const timeStr = new Date(2019, 9, 9, 9, Math.floor(left / 60), left % 60).toLocaleString('en-US', {
+    second: 'numeric',
+    minute: 'numeric'
+  });
+  if (infoEl) infoEl.textContent = 'Invalid code. Try in ' + timeStr + '.';
+  return left > 0;
+}
+function _startLockCooldown(errorTimes, retryTimestamp) {
+  const pv = document.getElementById('passcode-view');
+  const infoEl = document.getElementById('lock-passcode-info');
+  _lockPassAcceptable = false;
+  _lockPassInvalid = true;
+  _renderLockDots(4);
+  if (pv) pv.classList.add('error');
+  _updateLockCooldownText(errorTimes, retryTimestamp);
+  if (_lockCooldownTimer) clearInterval(_lockCooldownTimer);
+  _lockCooldownTimer = setInterval(() => {
+    const stillCooling = _updateLockCooldownText(errorTimes, retryTimestamp);
+    if (!stillCooling) {
+      clearInterval(_lockCooldownTimer);
+      _lockCooldownTimer = null;
+      _lockPassBuf = '';
+      _lockPassAcceptable = true;
+      _lockPassInvalid = false;
+      _renderLockDots(0);
+      if (pv) pv.classList.remove('error');
+      if (infoEl) infoEl.textContent = 'Please enter 4 digits code';
+    }
+  }, 1000);
+}
+function enterLockPasscodeMode() {
+  _lockMode = 'passcode';
+  _lockPassBuf = '';
+  _lockPassValidating = false;
+  if (_lockErrorTimer) { clearTimeout(_lockErrorTimer); _lockErrorTimer = null; }
+  if (_lockCooldownTimer) { clearInterval(_lockCooldownTimer); _lockCooldownTimer = null; }
+  const vl = document.getElementById('view-lock');
+  if (vl) vl.classList.add('passcode-mode');
+  const skl = document.getElementById('lock-sk-l');
+  const skc = document.getElementById('lock-sk-c');
+  const skr = document.getElementById('lock-sk-r');
+  if (skl) skl.textContent = 'Emergency';
+  if (skc) skc.style.display = 'none';
+  if (skr) skr.textContent = 'Camera';
+  const pv = document.getElementById('passcode-view');
+  const infoEl = document.getElementById('lock-passcode-info');
+  const ov = _getLockSettingsOv();
+  const wrongInfo = ov['lockscreen.wrong.code.info'];
+  if (wrongInfo && wrongInfo.errorTimes > 5 && wrongInfo.retryTimestamp) {
+    const left = Math.max(0, _getLockCooldownSecs(wrongInfo.errorTimes) - Math.floor((Date.now() - wrongInfo.retryTimestamp) / 1000));
+    if (left > 0) {
+      _startLockCooldown(wrongInfo.errorTimes, wrongInfo.retryTimestamp);
+      return;
+    }
+  }
+  _lockPassAcceptable = true;
+  _lockPassInvalid = false;
+  if (pv) pv.classList.remove('error');
+  if (infoEl) infoEl.textContent = 'Please enter 4 digits code';
+  _renderLockDots(0);
+}
+function exitLockPasscodeMode() {
+  _lockMode = 'pocket';
+  _lockPassBuf = '';
+  _lockPassAcceptable = true;
+  _lockPassInvalid = false;
+  _lockPassValidating = false;
+  if (_lockErrorTimer) { clearTimeout(_lockErrorTimer); _lockErrorTimer = null; }
+  if (_lockCooldownTimer) { clearInterval(_lockCooldownTimer); _lockCooldownTimer = null; }
+  const vl = document.getElementById('view-lock');
+  if (vl) vl.classList.remove('passcode-mode');
+  const pv = document.getElementById('passcode-view');
+  if (pv) pv.classList.remove('error');
+  const infoEl = document.getElementById('lock-passcode-info');
+  if (infoEl) infoEl.textContent = 'Please enter 4 digits code';
+  _renderLockDots(0);
+  const skl = document.getElementById('lock-sk-l');
+  const skc = document.getElementById('lock-sk-c');
+  const skr = document.getElementById('lock-sk-r');
+  if (skl) skl.textContent = '';
+  if (skc) skc.style.display = '';
+  if (skr) skr.textContent = '';
+}
+function handleLockPasscodeBackspace() {
+  if (_lockMode !== 'passcode' || !_lockPassAcceptable || _lockPassValidating || _lockPassInvalid) return;
+  if (_lockPassBuf.length > 0) {
+    _lockPassBuf = _lockPassBuf.slice(0, -1);
+    const pv = document.getElementById('passcode-view');
+    const infoEl = document.getElementById('lock-passcode-info');
+    if (pv) pv.classList.remove('error');
+    if (infoEl) infoEl.textContent = 'Please enter 4 digits code';
+    _renderLockDots(_lockPassBuf.length);
+  }
+}
+function handleLockPasscodeDigit(digit) {
+  if (_lockMode !== 'passcode' || !_lockPassAcceptable || _lockPassValidating) return;
+  const pv = document.getElementById('passcode-view');
+  const infoEl = document.getElementById('lock-passcode-info');
+  if (_lockPassInvalid) {
+    if (_lockErrorTimer) { clearTimeout(_lockErrorTimer); _lockErrorTimer = null; }
+    _lockPassInvalid = false;
+    _lockPassBuf = '';
+    if (pv) pv.classList.remove('error');
+    if (infoEl) infoEl.textContent = 'Please enter 4 digits code';
+    _renderLockDots(0);
+  }
+  if (_lockPassBuf.length < 4) {
+    _lockPassBuf += digit;
+    _renderLockDots(_lockPassBuf.length);
+    if (_lockPassBuf.length === 4) {
+      if (_lockPassBuf === getStoredLockPasscode()) {
+        _lockPassValidating = true;
+        _saveLockSettingsOv({ 'lockscreen.wrong.code.info': { errorTimes: 0 } });
+        setTimeout(() => {
+          _lockPassValidating = false;
+          finishUnlock();
+        }, 300);
+      } else {
+        const ov = _getLockSettingsOv();
+        const prev = (ov['lockscreen.wrong.code.info'] && ov['lockscreen.wrong.code.info'].errorTimes) || 0;
+        const errorTimes = prev + 1;
+        const retryTimestamp = Date.now();
+        _saveLockSettingsOv({ 'lockscreen.wrong.code.info': { errorTimes, retryTimestamp } });
+        if (pv) pv.classList.add('error');
+        _lockPassInvalid = true;
+        if (errorTimes > 5) {
+          _startLockCooldown(errorTimes, retryTimestamp);
+        } else {
+          _lockPassAcceptable = true;
+          if (infoEl) {
+            if (errorTimes >= 3 && errorTimes <= 5) {
+              const triesLeft = 6 - errorTimes;
+              infoEl.textContent = triesLeft === 1
+                ? 'Invalid code. 1 try left.'
+                : 'Invalid code. ' + triesLeft + ' tries left.';
+            } else {
+              infoEl.textContent = 'Invalid code. Please try again.';
+            }
+          }
+          if (_lockErrorTimer) clearTimeout(_lockErrorTimer);
+          _lockErrorTimer = setTimeout(() => {
+            _lockErrorTimer = null;
+            _lockPassBuf = '';
+            _lockPassInvalid = false;
+            if (pv) pv.classList.remove('error');
+            if (infoEl) infoEl.textContent = 'Please enter 4 digits code';
+            _renderLockDots(0);
+          }, 1500);
+        }
+      }
+    }
+  }
+}
+
 function doLock() {
   if (view === 'lock') return;
   closeSleepMenu();
+  exitLockPasscodeMode();
   // Hide the (Electron) webview which would otherwise paint over the lock screen.
   // Everything else (open overlays: options/share/volume/pin, cursor, freeze
   // state) is left untouched so it reappears exactly on unlock.
@@ -5885,6 +6173,17 @@ function doLock() {
 }
 const lockScreen = doLock; // alias — call this to lock the device
 function doUnlock() {
+  if (view !== 'lock') return;
+  if (_lockMode === 'pocket') {
+    if (isLockPasscodeEnabled()) {
+      enterLockPasscodeMode();
+      return;
+    }
+    finishUnlock();
+  }
+}
+function finishUnlock() {
+  exitLockPasscodeMode();
   document.getElementById('view-lock').classList.remove('visible');
   // Restore the global bars EXACTLY as they were before locking (no leftover state)
   const gsb = document.getElementById('statusbar'), gsk = document.querySelector('.skbar');
@@ -6439,6 +6738,31 @@ document.addEventListener('keydown', e => {
     return;
   }
   
+  // Sleep/power menu is a top-level modal — capture ALL keys before anything else
+  if (isSleepOpen()) {
+    e.preventDefault();
+    if (e.key === 'ArrowUp')   { showArrowPress('up');   nav('up');   return; }
+    if (e.key === 'ArrowDown') { showArrowPress('down'); nav('down'); return; }
+    if (e.key === 'Enter')     { showOkPress(); pressOK();            return; }
+    if (e.key === 'F1')        { softLeft();                          return; }
+    if (e.key === 'F2')        { return; } // RSK disabled in power menu
+    if (e.key === 'Escape' || e.key === 'Backspace' || e.key === 'F8') { closeSleepMenu(); return; }
+    return;
+  }
+  // Lock screen is a modal — capture keys before any preserved overlay handling
+  if (view === 'lock') {
+    e.preventDefault();
+    if (e.key === 'F8') { openSleepMenu(); return; } // power menu on lock
+    if (_lockMode === 'passcode') {
+      if (/^[0-9]$/.test(e.key)) { showNumPress(e.key); handleLockPasscodeDigit(e.key); return; }
+      if (e.key === 'Backspace') { handleLockPasscodeBackspace(); return; }
+      if (e.key === 'Escape')    { exitLockPasscodeMode(); return; }
+      return;
+    }
+    if (e.key === 'Enter') { showOkPress(); doUnlock(); return; } // OK unlocks
+    return; // everything else does nothing while locked
+  }
+
   if (SimKeyboard.active) {
     if (SimKeyboard.handleKeydown(e.key, e.repeat)) {
       e.preventDefault();
@@ -6470,25 +6794,6 @@ document.addEventListener('keydown', e => {
 
   if (isTextInput(ae)) {
     if (e.key.length === 1 || e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'Backspace') return;
-  }
-
-  // Sleep/power menu is a top-level modal — capture ALL keys before anything else
-  if (isSleepOpen()) {
-    e.preventDefault();
-    if (e.key === 'ArrowUp')   { showArrowPress('up');   nav('up');   return; }
-    if (e.key === 'ArrowDown') { showArrowPress('down'); nav('down'); return; }
-    if (e.key === 'Enter')     { showOkPress(); pressOK();            return; }
-    if (e.key === 'F1')        { softLeft();                          return; }
-    if (e.key === 'F2')        { return; } // RSK disabled in power menu
-    if (e.key === 'Escape' || e.key === 'Backspace' || e.key === 'F8') { closeSleepMenu(); return; }
-    return;
-  }
-  // Lock screen is a modal — capture keys before any preserved overlay handling
-  if (view === 'lock') {
-    e.preventDefault();
-    if (e.key === 'Enter') { showOkPress(); doUnlock(); return; }  // OK unlocks
-    if (e.key === 'F8')    { openSleepMenu();            return; }  // power menu on lock
-    return;   // everything else does nothing while locked
   }
   // System dialog is a modal — OK (center or RSK) + End/Back dismiss; rest ignored
   if (isSysDialogOpen()) {
