@@ -2781,7 +2781,7 @@ function pressEnd() {
     return;
   }
   if (isSleepOpen()) { closeSleepMenu(); return; }
-  if (view === 'lock') { if (_lockMode === 'passcode') exitLockPasscodeMode(); return; }
+  if (view === 'lock') { if (_lockMode === 'passcode') handleLockPasscodeBackspace(); return; }
   if (isStOpen() || window._stOpening) { if (window._stOpening) { window._stOpening = false; document.getElementById('bw-settings-splash')?.remove(); } stKey('Backspace'); return; }
   if (isSysDialogOpen()) { closeDialog(false); return; }
   if (isAppDialogOpen()) { _appConfirmClose(); return; }
@@ -6079,7 +6079,7 @@ function exitLockPasscodeMode() {
 }
 function handleLockPasscodeBackspace() {
   if (_lockMode !== 'passcode' || !_lockPassAcceptable || _lockPassValidating || _lockPassInvalid) return;
-  if (_lockPassBuf.length > 0) {
+  if (_lockPassBuf.length > 0 && _lockPassBuf.length <= 3) {
     _lockPassBuf = _lockPassBuf.slice(0, -1);
     const pv = document.getElementById('passcode-view');
     const infoEl = document.getElementById('lock-passcode-info');
@@ -6755,8 +6755,7 @@ document.addEventListener('keydown', e => {
     if (e.key === 'F8') { openSleepMenu(); return; } // power menu on lock
     if (_lockMode === 'passcode') {
       if (/^[0-9]$/.test(e.key)) { showNumPress(e.key); handleLockPasscodeDigit(e.key); return; }
-      if (e.key === 'Backspace') { handleLockPasscodeBackspace(); return; }
-      if (e.key === 'Escape')    { exitLockPasscodeMode(); return; }
+      if (e.key === 'Backspace' || e.key === 'Escape') { handleLockPasscodeBackspace(); return; }
       return;
     }
     if (e.key === 'Enter') { showOkPress(); doUnlock(); return; } // OK unlocks
