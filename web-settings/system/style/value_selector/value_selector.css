@@ -347,3 +347,11 @@ html[dir="rtl"] li[role="option"] label span::after {
     height: 5.8rem !important;
   }
 }
+
+html.large-text [role="dialog"][data-type="value-selector"] [role="listbox"] li label span {
+  font-size: 2.2rem;
+}
+
+html.large-text .value-selector-container li {
+  height: 5.8rem !important;
+}

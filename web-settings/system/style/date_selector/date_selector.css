@@ -357,3 +357,15 @@ html[dir="rtl"] [role="dialog"][data-type="date-selector"] .MDY .value-picker-da
     font-size: 2.2rem;
   }
 }
+
+html.large-text [role="dialog"][data-type="date-selector"] .picker-unit {
+  font-size: 2.2rem;
+}
+
+html.large-text [role="dialog"][data-type="date-selector"] .focus-indicator {
+  font-size: 1.8rem;
+}
+
+html.large-text [role="dialog"][data-type="date-selector"] .value-picker-date .focus-indicator {
+  font-size: 2.2rem;
+}

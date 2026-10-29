@@ -437,6 +437,14 @@ ul li.slider-container label {
     padding: 6px 1rem;
   }
 }
+html.large-text #about ul .deviceinfo-phone-num,
+html.large-text #about_more_info ul .list-imeis,
+html.large-text #about_more_info ul .list-meids,
+html.large-text #about_more_info ul .list-iccids,
+html.large-text #os-version-li {
+  height: auto;
+  padding: 6px 1rem;
+}
 .no-certificate-files {
   align-items: center;
   text-align: center;

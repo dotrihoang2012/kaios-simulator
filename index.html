@@ -1559,6 +1559,54 @@
     }
     #splash-screen.visible { display: flex; }
     #splash-icon { width: 5.6rem; height: 5.6rem; }
+
+    /* -- Accessibility: Invert colors & Large text -- */
+    #screen.invert-colors {
+      filter: invert(1);
+    }
+    #screen.invert-colors #poweroff-splash,
+    #screen.invert-colors #os-logo {
+      filter: invert(1);
+    }
+    #screen.large-text .app-title,
+    #screen.large-text .oa-header.folder-list-hdr h1 {
+      font-size: 2.8rem;
+    }
+    #screen.large-text .oa-header.folder-hdr,
+    #screen.large-text .om-header,
+    #screen.large-text .om-item,
+    #screen.large-text #sys-dialog-hdr,
+    #screen.large-text #sys-dialog-content,
+    #screen.large-text #sys-dialog-content .sys-dialog-sub,
+    #screen.large-text #sys-toast,
+    #screen.large-text #bw-om-title,
+    #screen.large-text .bw-om-list-item,
+    #screen.large-text #bw-hist-hdr,
+    #screen.large-text .bw-hist-title,
+    #screen.large-text #bw-hist-empty-text,
+    #screen.large-text #notification-dialog-no-notices .primary,
+    #screen.large-text .stub-header,
+    #screen.large-text .stub-empty,
+    #screen.large-text .kb-cand-item {
+      font-size: 2.2rem !important;
+    }
+    #screen.large-text .kb-sym-text {
+      font-size: 2.8rem;
+    }
+    #screen.large-text #rename-dialog-hdr,
+    #screen.large-text #rename-label,
+    #screen.large-text #rename-input,
+    #screen.large-text #rename-url,
+    #screen.large-text .sleep-item {
+      font-size: 2rem;
+    }
+    #screen.large-text .bw-hist-url,
+    #screen.large-text .is-subtitle {
+      font-size: 1.8rem;
+    }
+    #screen.large-text #bw-recommended {
+      font-size: 1.6rem;
+    }
   </style>
 
 
@@ -1580,6 +1628,8 @@
         <span id="kb-mode">Abc</span>
       </div>
       <div class="statusbar--right">
+        <span class="sb-icon" id="sb-hac" data-icon="accessibility-hac" style="display:none"></span>
+        <span class="sb-icon" id="sb-tty" data-icon="tty-mode" style="display:none"></span>
         <span class="sb-icon" id="sb-sound" data-icon="mute" style="display:none"></span>
         <span class="sb-icon" data-icon="bug"></span>
         <span class="sb-icon" id="sb-airplane" data-icon="airplane-mode" style="display:none"></span>
@@ -2414,6 +2464,10 @@ function stFocusFirst(wv) {
       if (ph) ph.style.display = 'none';
       doc.documentElement.style.setProperty('--statusbar-height', '0px');
       doc.documentElement.style.setProperty('--statusbar-softkeybar-height', '3rem');
+      try {
+        var _ov = JSON.parse(localStorage.getItem('kaios.settings.v2') || '{}');
+        doc.documentElement.classList.toggle('large-text', _ov['ui.prefers.text-size'] === 'large');
+      } catch (e) {}
 
       // If we already navigated to a specific panel, stop touching focus
       if (_navigated) return;
@@ -5533,6 +5587,19 @@ const sbBt = document.getElementById('sb-bluetooth');
   if (volIdx === 0)      { sbSound.setAttribute('data-icon', 'mute');    sbSound.style.display = ''; }
   else if (volIdx === 1) { sbSound.setAttribute('data-icon', 'vibrate'); sbSound.style.display = ''; }
   else sbSound.style.display = 'none';
+  try {
+    const _ov = JSON.parse(localStorage.getItem('kaios.settings.v2') || '{}');
+    const sbTty = document.getElementById('sb-tty');
+    if (sbTty) {
+      const ttyMode = _ov['tty.mode.enabled'];
+      sbTty.style.display = (ttyMode && ttyMode !== 'off') ? '' : 'none';
+    }
+    const sbHac = document.getElementById('sb-hac');
+    if (sbHac) {
+      const hacMode = _ov['accessibility.hac_mode'] === true || _ov['accessibility.hac_mode'] === 'true';
+      sbHac.style.display = hacMode ? '' : 'none';
+    }
+  } catch (e) {}
 }
 function syncVolToSettings() {
   const notifVol = volIdx <= 1 ? 0 : (volIdx - 1);
@@ -6986,6 +7053,32 @@ updateSbIcons();
         sbSound.style.display = 'none';
       }
     }
+
+    const screenEl = document.getElementById('screen');
+    if (screenEl) {
+      const isInvert = settings['accessibility.colors.invert'] === true || settings['accessibility.colors.invert'] === 'true';
+      screenEl.classList.toggle('invert-colors', isInvert);
+      const isLargeText = settings['ui.prefers.text-size'] === 'large';
+      screenEl.classList.toggle('large-text', isLargeText);
+      try {
+        const stWv = document.getElementById('st-webview');
+        if (stWv && stWv.contentDocument && stWv.contentDocument.documentElement) {
+          stWv.contentDocument.documentElement.classList.toggle('large-text', isLargeText);
+        }
+      } catch (e) {}
+    }
+
+    const sbTty = document.getElementById('sb-tty');
+    if (sbTty) {
+      const ttyMode = settings['tty.mode.enabled'];
+      sbTty.style.display = (ttyMode && ttyMode !== 'off') ? '' : 'none';
+    }
+    const sbHac = document.getElementById('sb-hac');
+    if (sbHac) {
+      const hacMode = settings['accessibility.hac_mode'] === true || settings['accessibility.hac_mode'] === 'true';
+      sbHac.style.display = hacMode ? '' : 'none';
+    }
+    if (typeof _lockSyncStatusbar === 'function') _lockSyncStatusbar();
     
     const isHour12 = settings['locale.hour12'] === true || settings['locale.hour12'] === 'true';
     if (window.__simHour12 !== isHour12) {

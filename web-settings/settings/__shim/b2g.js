@@ -202,7 +202,16 @@
   // A persisted null must not wipe out the wallpaper — the display panel does
   // value.indexOf() on it and crashes.
   if (!store['wallpaper.image']) store['wallpaper.image'] = DEFAULTS['wallpaper.image'];
+  function syncLargeText() {
+    try {
+      if (document && document.documentElement) {
+        document.documentElement.classList.toggle('large-text', store['ui.prefers.text-size'] === 'large');
+      }
+    } catch (e) {}
+  }
+  syncLargeText();
   function saveStore() {
+    syncLargeText();
     try { localStorage.setItem(SKEY, JSON.stringify(overrides)); } catch (e) {}
     try { if (window.parent && window.parent !== window && typeof window.parent.__onKaiSettingsSaved === 'function') window.parent.__onKaiSettingsSaved(overrides); } catch (e) {}
   }
@@ -218,6 +227,7 @@
           notify(k, store[k]);
         }
       });
+      syncLargeText();
     } catch (err) {}
   });
   var observers = {}; // key -> [cb]

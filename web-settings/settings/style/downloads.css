@@ -191,6 +191,9 @@
     height: auto;
   }
 }
+html.large-text #downloadList li {
+  height: auto;
+}
 #downloadList ul > li[data-state="downloading"] .pack-end {
   background-image: url('images/download_close.png');
   background-repeat: no-repeat;

@@ -58,6 +58,9 @@ li button {
     min-height: 4rem;
   }
 }
+html.large-text li button {
+  min-height: 4rem;
+}
 #rtt-select {
   -moz-padding-end: 0 !important;
 }

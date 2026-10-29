@@ -22,6 +22,13 @@ html, body {
     --gaia-header-height: 3.0rem;
   }
 }
+html.large-text {
+  --font-pass-code: 2.4rem;
+  --font-p-pri: 2.2rem;
+  --font-p-sec: 1.8rem;
+  --header-height: 3.5rem;
+  --gaia-header-height: 3.0rem;
+}
 gaia-header {
   align-items: center;
   height: var(--header-height, 2.8rem);
@@ -109,6 +116,10 @@ section[role="region"] header h2 {
     font-size: 1.8rem;
     line-height: 2.8rem;
   }
+}
+html.large-text section[role="region"] header h2 {
+  font-size: 1.8rem;
+  line-height: 2.8rem;
 }
 body[data-ready="true"]:not(.readout) section[role="region"] {
   transition: transform .1s ease, visibility .1s;
@@ -1168,6 +1179,15 @@ ul#bluetooth-paired-devices a, ul#bluetooth-devices a {
     display: none;
   }
 }
+html.large-text .more-description-msg1 {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-bottom: 0.5rem;
+}
+html.large-text .more-description-msg2 {
+  display: none;
+}
 .more-description {
   text-align: right;
   margin: 0 2.4rem 1rem 0;
@@ -1200,6 +1220,10 @@ ul#bluetooth-paired-devices a, ul#bluetooth-devices a {
     height: auto;
     padding: 0;
   }
+}
+html.large-text .wifi {
+  height: auto;
+  padding: 0;
 }
 #wifi_auth h1 {
   text-transform: none;
