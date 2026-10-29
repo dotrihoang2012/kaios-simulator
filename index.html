@@ -303,13 +303,18 @@
     #view-home.sidemenu-open .sidemenu-name               { display: flex; }
     #view-home.sidemenu-open .sidemenu-item.focused .sidemenu-name { opacity: 1; }
     /* dark gradient overlay when sidemenu opens (launcher .app-workspace::before) */
-    #view-home.sidemenu-open::before {
+    #view-home::before {
       content: '';
       position: absolute;
       inset: 0;
       background: linear-gradient(90deg, rgba(0,0,0,.4), transparent 80%);
       z-index: 5;
       pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s cubic-bezier(0.3, 0, 0.3, 1);
+    }
+    #view-home.sidemenu-open::before {
+      opacity: 1;
     }
     /* clock slides out right when sidemenu opens */
     #view-home.sidemenu-open .clock-wrap {
@@ -333,6 +338,7 @@
       position: absolute; inset: 0;
       background: rgba(0,0,0,0.85);
       z-index: 0;
+      transition: background-color 0.4s ease;
     }
     /* focused app name — top, 5.5rem area, fixed */
     .app-title {
@@ -399,7 +405,7 @@
       opacity: 0;
       z-index: -1;
       visibility: visible;
-      transition: opacity 0.1s ease;
+      transition: opacity 0.1s ease, box-shadow 0.4s ease;
     }
     .app-tile.focused .app-icon::before { opacity: 1; }
     /* web-app (bookmark) icon: favicon centered over the web_shortcut frame */
@@ -543,8 +549,8 @@
     #view-apps.is-moving .apps-overlay {
       background: var(--color-gs100, #000);
     }
-    .app-wall:not(.list-mode):not(.single-mode) .app-tile {
-      transition: opacity 0.4s;
+    .app-wall:not(.single-mode) .app-tile {
+      transition: opacity 0.4s ease;
     }
     .app-wall.is-moving .app-tile:not(.focused) {
       opacity: 0.3;
@@ -4447,18 +4453,31 @@ function buildGrid(keepFocus) {
   const wall  = document.getElementById('app-wall');
   document.getElementById('view-apps')?.classList.toggle('is-moving', isMoving);
   document.querySelectorAll('.single-previews').forEach(e => e.remove());
+  if (wall.dataset.mode !== 'grid') {
+    wall.innerHTML = '';
+    wall.dataset.mode = 'grid';
+  }
   wall.className = 'app-wall' + (isMoving ? ' is-moving' : '');
-  wall.innerHTML = '';
   const slice = APPS.slice(page * PER, (page + 1) * PER);
+  const activeTiles = new Set(slice.map(a => a._gridTile).filter(Boolean));
+  Array.from(wall.children).forEach(ch => {
+    if (!activeTiles.has(ch)) ch.remove();
+  });
   slice.forEach((app, i) => {
-    const tile = document.createElement('div');
-    tile.className = 'app-tile' + (i === focus ? ' focused' : '');
-    const ico = document.createElement('div');
-    ico.className = 'app-icon';
-    _applyAppIcon(ico, app);
-    tile.appendChild(ico);
+    let tile = app._gridTile;
+    if (!tile) {
+      tile = document.createElement('div');
+      tile.className = 'app-tile';
+      const ico = document.createElement('div');
+      ico.className = 'app-icon';
+      _applyAppIcon(ico, app);
+      tile.appendChild(ico);
+      app._gridTile = tile;
+    }
+    if (tile.parentNode !== wall) wall.appendChild(tile);
+    tile.style.order = i;
+    tile.classList.toggle('focused', i === focus);
     tile.onclick = () => { focus = i; openAppView(); };
-    wall.appendChild(tile);
   });
   document.getElementById('app-title').textContent = curApp()?.name || '';
   const pg = document.getElementById('pagination');
@@ -5109,23 +5128,36 @@ function buildList() {
   const wall = document.getElementById('app-wall');
   document.getElementById('view-apps')?.classList.toggle('is-moving', isMoving);
   document.querySelectorAll('.single-previews').forEach(e => e.remove());
+  if (wall.dataset.mode !== 'list') {
+    wall.innerHTML = '';
+    wall.dataset.mode = 'list';
+  }
   wall.className = 'app-wall list-mode' + (isMoving ? ' is-moving' : '');
-  wall.innerHTML = '';
   const slice = APPS.slice(listWindowStart, listWindowStart + LIST_PER);
+  const activeTiles = new Set(slice.map(a => a._listTile).filter(Boolean));
+  Array.from(wall.children).forEach(ch => {
+    if (!activeTiles.has(ch)) ch.remove();
+  });
   slice.forEach((app, i) => {
     const globalIdx = listWindowStart + i;
-    const tile = document.createElement('div');
-    tile.className = 'app-tile' + (globalIdx === listFocus ? ' focused' : '');
-    const ico = document.createElement('div');
-    ico.className = 'app-icon';
-    _applyAppIcon(ico, app);
-    const name = document.createElement('span');
-    name.className = 'app-tile-name';
-    name.textContent = app.name;
-    tile.appendChild(ico);
-    tile.appendChild(name);
+    let tile = app._listTile;
+    if (!tile) {
+      tile = document.createElement('div');
+      tile.className = 'app-tile';
+      const ico = document.createElement('div');
+      ico.className = 'app-icon';
+      _applyAppIcon(ico, app);
+      const name = document.createElement('span');
+      name.className = 'app-tile-name';
+      tile.appendChild(ico);
+      tile.appendChild(name);
+      app._listTile = tile;
+    }
+    tile.querySelector('.app-tile-name').textContent = app.name;
+    if (tile.parentNode !== wall) wall.appendChild(tile);
+    tile.style.order = i;
+    tile.classList.toggle('focused', globalIdx === listFocus);
     tile.onclick = () => { listFocus = globalIdx; openAppView(); };
-    wall.appendChild(tile);
   });
   document.getElementById('app-title').textContent = '';
   document.getElementById('pagination').innerHTML = '';
@@ -5139,6 +5171,7 @@ function buildList() {
 }
 function buildSingle() {
   const wall = document.getElementById('app-wall');
+  wall.dataset.mode = 'single';
   document.getElementById('view-apps')?.classList.toggle('is-moving', isMoving);
   wall.className = 'app-wall single-mode';
   wall.innerHTML = '';
