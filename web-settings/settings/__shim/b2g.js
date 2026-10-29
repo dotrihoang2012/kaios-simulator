@@ -202,7 +202,24 @@
   // A persisted null must not wipe out the wallpaper — the display panel does
   // value.indexOf() on it and crashes.
   if (!store['wallpaper.image']) store['wallpaper.image'] = DEFAULTS['wallpaper.image'];
-  function saveStore() { try { localStorage.setItem(SKEY, JSON.stringify(overrides)); } catch (e) {} }
+  function saveStore() {
+    try { localStorage.setItem(SKEY, JSON.stringify(overrides)); } catch (e) {}
+    try { if (window.parent && window.parent !== window && typeof window.parent.__onKaiSettingsSaved === 'function') window.parent.__onKaiSettingsSaved(overrides); } catch (e) {}
+  }
+  window.addEventListener('storage', function (e) {
+    if (e.key !== SKEY) return;
+    try {
+      var nextOv = JSON.parse(e.newValue || '{}');
+      overrides = nextOv;
+      var nextStore = Object.assign({}, DEFAULTS, overrides);
+      Object.keys(nextStore).forEach(function (k) {
+        if (store[k] !== nextStore[k]) {
+          store[k] = nextStore[k];
+          notify(k, store[k]);
+        }
+      });
+    } catch (err) {}
+  });
   var observers = {}; // key -> [cb]
   // Deliver observer callbacks ASYNCHRONOUSLY, like the real daemon (which does
   // an IPC round-trip). Several panels write a setting and only afterwards

@@ -4600,8 +4600,8 @@ function nav(dir) {
       if (f === regular) {
         // on volume tile
         if (dir === 'up') { f = regular - cols; }
-        else if (dir === 'left')  { volIdx = Math.max(0, volIdx - 1); renderIS(); return; }
-        else if (dir === 'right') { volIdx = Math.min(VOL_STEPS.length - 1, volIdx + 1); renderIS(); return; }
+        else if (dir === 'left')  { volIdx = Math.max(0, volIdx - 1); if (volIdx >= 2) savedVolIdx = volIdx; syncVolToSettings(); updateSbIcons(); renderIS(); return; }
+        else if (dir === 'right') { volIdx = Math.min(VOL_STEPS.length - 1, volIdx + 1); if (volIdx >= 2) savedVolIdx = volIdx; syncVolToSettings(); updateSbIcons(); renderIS(); return; }
       } else {
         if (dir === 'up')   { if (f >= cols) f -= cols; }
         if (dir === 'down') { if (f + cols < regular) f += cols; else f = regular; }
@@ -4766,7 +4766,7 @@ function pressOK() {
       if (volIdx >= 2) { savedVolIdx = volIdx; volIdx = 1; }  // volume → vibrate
       else if (volIdx === 1) { volIdx = 0; }                  // vibrate → silent
       else { volIdx = savedVolIdx; }                          // silent → volume
-      updateSbIcons(); renderIS();
+      syncVolToSettings(); updateSbIcons(); renderIS();
     } else {
       toggleIS(isFocus);
     }
@@ -5449,12 +5449,46 @@ const sbBt = document.getElementById('sb-bluetooth');
   else if (volIdx === 1) { sbSound.setAttribute('data-icon', 'vibrate'); sbSound.style.display = ''; }
   else sbSound.style.display = 'none';
 }
+function syncVolToSettings() {
+  const notifVol = volIdx <= 1 ? 0 : (volIdx - 1);
+  const vibEnabled = volIdx !== 0;
+  try {
+    const ov = JSON.parse(localStorage.getItem('kaios.settings.v2') || '{}');
+    ov['audio.volume.notification'] = notifVol;
+    ov['vibration.enabled'] = vibEnabled;
+    localStorage.setItem('kaios.settings.v2', JSON.stringify(ov));
+  } catch (e) {}
+  try {
+    const wv = document.getElementById('st-webview');
+    if (wv && wv.contentWindow && wv.contentWindow.__kaiSettings) {
+      wv.contentWindow.__kaiSettings.set([
+        { name: 'audio.volume.notification', value: notifVol },
+        { name: 'vibration.enabled', value: vibEnabled }
+      ]);
+    }
+  } catch (e) {}
+}
+function syncVolFromSettings(ov) {
+  if (!ov || typeof ov !== 'object') return;
+  const hasVol = typeof ov['audio.volume.notification'] === 'number';
+  const hasVib = typeof ov['vibration.enabled'] === 'boolean';
+  if (!hasVol && !hasVib) return;
+  const notifVol = hasVol ? ov['audio.volume.notification'] : (volIdx <= 1 ? 0 : volIdx - 1);
+  const vibEnabled = hasVib ? ov['vibration.enabled'] : (volIdx !== 0);
+  if (notifVol <= 0) {
+    volIdx = vibEnabled ? 1 : 0;
+  } else {
+    volIdx = Math.min(VOL_STEPS.length - 1, Math.max(2, notifVol + 1));
+    savedVolIdx = volIdx;
+  }
+}
 window.addEventListener('storage', (e) => {
     if (e.key === 'kaios.settings.v2') {
       try {
         const ov = JSON.parse(e.newValue || '{}');
         if (ov['wifi.enabled'] !== undefined) IS_TILES[3].active = ov['wifi.enabled'];
         if (ov['bluetooth.enabled'] !== undefined) IS_TILES[5].active = ov['bluetooth.enabled'];
+        syncVolFromSettings(ov);
         updateSbIcons();
         if (view === 'instant-settings') renderIS();
       } catch(err){}
@@ -5633,9 +5667,10 @@ function pressNum(k) {
 // # long-press (1s) → toggle vibrate/silent
 let _hashTimer = null, _hashToastTimer = null;
 function toggleVolMode() {
-  if (volIdx >= 2) volIdx = 1;       // có âm → rung
+  if (volIdx >= 2) { savedVolIdx = volIdx; volIdx = 1; } // có âm → rung
   else if (volIdx === 1) volIdx = 0; // rung → im lặng
   else volIdx = 1;                   // im lặng → rung
+  syncVolToSettings();
   const toast = document.getElementById('vol-toast');
   document.getElementById('vol-toast-icon').dataset.icon = volIdx === 1 ? 'vibrate-32px' : 'mute-32px';
   document.getElementById('vol-toast-label').textContent  = volIdx === 1 ? 'Vibrate Only' : 'Silent';
@@ -6418,11 +6453,13 @@ document.addEventListener('keydown', e => {
     try { doc = ae.contentDocument; ae = doc.activeElement; } catch(e) {}
   }
   
-  if (ae && ae.tagName !== 'INPUT' && ae.tagName !== 'TEXTAREA' && !ae.isContentEditable) {
+  const isTextInput = el => el && (el.tagName === 'TEXTAREA' || el.isContentEditable || (el.tagName === 'INPUT' && !['range', 'checkbox', 'radio', 'button', 'submit', 'reset', 'hidden'].includes((el.type || '').toLowerCase())));
+
+  if (ae && !isTextInput(ae)) {
     let focusEl = doc.querySelector('.focus');
     if (!focusEl && ae !== doc.body) focusEl = ae;
     if (focusEl) {
-      let inp = focusEl.querySelector('input, textarea');
+      let inp = Array.from(focusEl.querySelectorAll('input, textarea')).find(isTextInput);
       if (inp && (e.key.length === 1 || e.key === 'Backspace')) {
         inp.focus(); ae = inp;
       } else if (inp && e.key === 'Enter') {
@@ -6431,7 +6468,7 @@ document.addEventListener('keydown', e => {
     }
   }
 
-  if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA' || ae.isContentEditable)) {
+  if (isTextInput(ae)) {
     if (e.key.length === 1 || e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'Backspace') return;
   }
 
@@ -6624,18 +6661,23 @@ updateSbIcons();
   }
   
   function applySettings(settings) {
+    if (typeof syncVolFromSettings === 'function') syncVolFromSettings(settings);
     if (typeof IS_TILES !== 'undefined') {
       IS_TILES[3].active = settings['wifi.enabled'] === true;
       IS_TILES[5].active = settings['bluetooth.enabled'] === true;
       IS_TILES[2].active = settings['airplaneMode.status'] === 'enabled';
       if (typeof updateSbIcons === 'function') updateSbIcons();
+      if (typeof view !== 'undefined' && view === 'instant-settings' && typeof renderIS === 'function') renderIS();
     }
     
     const sbSound = document.getElementById('sb-sound');
     if (sbSound) {
-      if (settings['audio.volume.notification'] === 0) {
-        sbSound.style.display = 'flex';
-        sbSound.setAttribute('data-icon', settings['vibration.enabled'] ? 'vibration' : 'mute');
+      if (volIdx === 0) {
+        sbSound.style.display = '';
+        sbSound.setAttribute('data-icon', 'mute');
+      } else if (volIdx === 1) {
+        sbSound.style.display = '';
+        sbSound.setAttribute('data-icon', 'vibrate');
       } else {
         sbSound.style.display = 'none';
       }
@@ -6655,6 +6697,10 @@ updateSbIcons();
       if (typeof tick === 'function') tick();
     }
   }
+  
+  window.__onKaiSettingsSaved = function(ov) {
+    applySettings(ov || getSettings());
+  };
   
   applySettings(getSettings());
   

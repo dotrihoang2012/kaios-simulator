@@ -33,10 +33,9 @@ define([],function() { // eslint-disable-line
       this.toneKey = TONEKEYS[channelType];
 
       this.boundSetSliderValue = function boundSetSliderValue(value) {
-        if (value === this.previous) {
-          this.lock = false;
-        }
+        this.lock = false;
         this.volumeValue = value;
+        this.previous = value;
         this.setSliderValue(value);
         this.updateLabel();
       }.bind(this);
@@ -50,6 +49,7 @@ define([],function() { // eslint-disable-line
 
       if (this.channelType === 'notification') {
         this.onVibrationSet = function onVibrationSet(value) {
+          this.lock = false;
           this.isVibrate = value;
           this.preVibrate = value;
           this.updateLabel();
@@ -131,6 +131,9 @@ define([],function() { // eslint-disable-line
 
     getToneBlob: function getToneBlob(callback) {
       SettingsDBCache.getSetting(this.toneKey).then(value => {
+        if (!value || typeof value !== 'string') {
+          return;
+        }
         if (value.startsWith(AppOrigin.getProtocol())) {
           this.getToneByURL(value, blob => {
             callback(blob);
@@ -217,7 +220,7 @@ define([],function() { // eslint-disable-line
       retval.update = false;
       if (this.channelType === 'notification') {
         if (down) {
-          if (this.previous === 1 || this.previous === 0) {
+          if (this.previous === 1 || (this.previous === 0 && this.preVibrate)) {
             retval.isVibrate = this.previous === 1;
             retval.update = true;
           }
@@ -236,6 +239,7 @@ define([],function() { // eslint-disable-line
         : ['ArrowLeft', 'ArrowRight'];
       switch (directions.indexOf(event.key)) {
         case 0:
+          event.preventDefault();
           this.setVolume(true);
           if (this.volumeValue > 1) {
             this.getToneBlob(blob => {
@@ -244,6 +248,7 @@ define([],function() { // eslint-disable-line
           }
           break;
         case 1:
+          event.preventDefault();
           this.setVolume(false);
           this.getToneBlob(blob => {
             this.playTone(blob);
