@@ -2541,6 +2541,12 @@ function stBuildWebview() {
         content: 'Không mở được app Settings (web-settings/). Chạy "node settings-host/build-web.mjs" để build bundle rồi mở lại.' });
     });
     wv.addEventListener('did-finish-load', () => { _stFails = 0; stFocusFirst(wv); });
+    wv.addEventListener('console-message', (ev) => {
+      if (ev && typeof ev.message === 'string' && ev.message.indexOf('__ST_HERO__:') === 0) {
+        _stHeroActive = ev.message.slice(12) === '1';
+        stSyncStatusbar(_stHeroActive);
+      }
+    });
     wv.addEventListener('close', () => stCloseSettings());
   } else {
     wv = document.createElement('iframe');
@@ -2636,6 +2642,7 @@ function stOpenSettings(hash) {
   // Settings white theme (black icons/text on white background), like a
   // real KaiOS device. The iframe starts below it; the settings app's own
   // statusbar-placeholder is hidden from stFocusFirst to avoid a double bar.
+  _stHeroActive = false;
   const _sb = document.getElementById('statusbar');
   _sb.classList.add('bw-sb');
   _sb.style.background = '#fff';
@@ -2644,6 +2651,33 @@ function stOpenSettings(hash) {
   document.querySelector('.skbar').style.display = 'none'; // page brings its own
   // Position below the simulator status bar.
   wrap.style.top = '';
+  stSyncStatusbar(false);
+}
+let _stHeroActive = false;
+function stSyncStatusbar(forceHero) {
+  if (!isStOpen() || isSleepOpen()) return;
+  let isHero = typeof forceHero === 'boolean' ? forceHero : _stHeroActive;
+  try {
+    const wv = document.getElementById('st-webview');
+    const doc = wv && wv.contentDocument;
+    if (doc) {
+      const ka = doc.getElementById('kaios_account');
+      const hasModal = !!doc.querySelector('.fk-login:not([hidden]), .fk-select:not([hidden]), .fk-browser:not([hidden])');
+      isHero = !!(ka && ka.classList.contains('current') && !hasModal);
+      _stHeroActive = isHero;
+    }
+  } catch (e) {}
+  const _sb = document.getElementById('statusbar');
+  if (!_sb) return;
+  if (isHero) {
+    _sb.classList.remove('bw-sb');
+    _sb.style.background = 'url("./web-settings/settings/style/images/background.svg") center 0 / 24rem 32rem no-repeat';
+    _sb.style.color = '#fff';
+  } else {
+    _sb.classList.add('bw-sb');
+    _sb.style.background = '#fff';
+    _sb.style.color = '#000';
+  }
 }
 function stCloseSettings() {
   if (window._stClosing) return; // Prevent double trigger
@@ -3124,6 +3158,11 @@ function _bwUrlChanged(url) {
 // Cross-origin proxied pages post their title (+ real location) via the injected script
 window.addEventListener('message', e => {
   if (!e.data) return;
+  if (e.data.type === 'st-theme-statusbar') {
+    _stHeroActive = !!e.data.hero;
+    stSyncStatusbar(_stHeroActive);
+    return;
+  }
   if (e.data.type === 'bw-nav-start') {
     // Page is navigating away: show loading bar, hide the lock until the new page arrives
     if (bwMode === 'web') { _bwProgressStart(); document.getElementById('bw-ssl-icon').textContent = ''; }
@@ -5972,7 +6011,9 @@ function closeSleepMenu() {
   const _sb = document.getElementById('statusbar');
   _sb.classList.remove('pm-open');
   const _isStub = view === 'app-open' && !openApp?.url && openApp?.id !== 'browser' && openApp?.type !== 'folder';
-  if (_isStub) {
+  if (isStOpen()) {
+    stSyncStatusbar();
+  } else if (_isStub) {
     _sb.style.background = '#fff';
     _sb.style.color = '#000';
   } else if (view === 'browser-search' || view === 'browser-history' || (view === 'app-open' && (openApp?.id === 'browser' || openApp?.url))) {

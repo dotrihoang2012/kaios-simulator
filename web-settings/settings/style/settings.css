@@ -933,7 +933,8 @@ section#kaios_account {
   top: 0;
   background-image: url("images/background.svg");
   background-repeat: no-repeat;
-  background-position: center;
+  background-position: center -2.4rem;
+  background-size: 24rem 32rem;
 }
 section#kaios_account > gaia-header {
   display: none;
@@ -946,18 +947,18 @@ section#kaios_account > div > ul {
   background-color: unset;
 }
 .kaios-logo {
-  margin: 7.1rem 0 0 2rem;
+  margin: 4.7rem 0 0 2rem;
   width: 12rem;
   height: 3.1rem;
   background-image: url('images/logo.svg');
+  background-repeat: no-repeat;
 }
 .kaios-logo-account {
   width: 20rem;
   font-size: var(--font-p-pri);
   font-weight: 600;
   color: var(--color-gs00);
-  margin-left: 2rem;
-  margin-top: 0.7rem;
+  margin: 0.7rem 0 1.2rem 2rem;
 }
 section#kaios_account li.focus button {
   color: var(--color-gs90);
@@ -965,9 +966,32 @@ section#kaios_account li.focus button {
   border: unset;
 }
 section#kaios_account li button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--color-gs00);
   background-color: unset;
   border: unset;
+}
+@media (prefers-text-size: large) {
+  .kaios-logo {
+    margin-top: 3.5rem;
+  }
+  .kaios-logo-account {
+    margin-bottom: 0.8rem;
+  }
+  section#kaios_account li button {
+    margin-top: 0.8rem;
+  }
+}
+html.large-text .kaios-logo {
+  margin-top: 3.5rem;
+}
+html.large-text .kaios-logo-account {
+  margin-bottom: 0.8rem;
+}
+html.large-text section#kaios_account li button {
+  margin-top: 0.8rem;
 }
 #about_kaios_account div p {
   line-height: normal;

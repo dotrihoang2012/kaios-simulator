@@ -1096,6 +1096,18 @@ window.__KAIOS_L10N_ENUS = [{"$i":"softkey-options","$v":"Options"},{"$i":"stopp
       fixDeviceIdRows();
       clearBootSoftkeyLabel();
       hideSoftkeyOnNoneSelect();
+      var ka = document.getElementById('kaios_account');
+      var hasFk = !!document.querySelector('.fk-login:not([hidden]), .fk-select:not([hidden]), .fk-browser:not([hidden])');
+      var hero = !!(ka && ka.classList.contains('current') && !hasFk);
+      if (hero !== window.__lastKaiAccHero) {
+        window.__lastKaiAccHero = hero;
+        try {
+          if (window.parent && window.parent !== window) {
+            window.parent.postMessage({ type: 'st-theme-statusbar', hero: hero }, '*');
+          }
+        } catch (e) {}
+        try { console.info('__ST_HERO__:' + (hero ? '1' : '0')); } catch (e) {}
+      }
       requestAnimationFrame(tick);
     })();
   }
@@ -1167,7 +1179,7 @@ window.__KAIOS_L10N_ENUS = [{"$i":"softkey-options","$v":"Options"},{"$i":"stopp
       // in Account Info carry .hidden — display:block!important above was
       // overriding their display:none)
       'li.button.hidden{display:none!important}' +
-      'li>button{width:100%!important;max-width:100%!important;box-sizing:border-box!important;margin-left:0!important;margin-right:0!important}' +
+      'li>button{display:flex;align-items:center;justify-content:center;width:100%!important;max-width:100%!important;box-sizing:border-box!important;margin-left:0!important;margin-right:0!important}' +
       // Range sliders (volume, brightness): Gaia styles them with -moz-range-*
       // pseudo-elements that Chromium ignores, so they fall back to the default
       // browser slider. Re-create the KaiOS look with -webkit-slider-* : a thin
