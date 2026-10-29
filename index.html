@@ -2903,6 +2903,8 @@ function pressEnd() {
   }
   if (isSleepOpen()) { closeSleepMenu(); return; }
   if (view === 'lock') { if (_lockMode === 'passcode') handleLockPasscodeBackspace(); return; }
+  // Browser Share / Pin To panels are modal: End does nothing, only Cancel/Back closes them
+  if (isBwShareOpen() || _bwPinMode || isBwMenuOpen() || isBwSCOpen()) return;
   if (isStOpen() || window._stOpening) { if (window._stOpening) { window._stOpening = false; document.getElementById('bw-settings-splash')?.remove(); } stKey('Backspace'); return; }
   if (isSysDialogOpen()) { closeDialog(false); return; }
   if (isAppDialogOpen()) { _appConfirmClose(); return; }
