@@ -885,11 +885,30 @@
     #bw-recommended { flex: none; height: 5.8rem; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #aaa; text-align: center; padding: 1rem 2rem; border-top: 1px solid #e6e6e6; }
     /* ── FOLDER VIEW ─────────────────────────────────── */
     .oa-header.folder-hdr { background: #0d0d0d; }
+    .oa-header.folder-list-hdr {
+      height: calc(var(--statusbar-height) + 5.6rem);
+      padding: var(--statusbar-height) 0 0 0;
+      background: #2a0361;
+      display: block;
+    }
+    .oa-header.folder-list-hdr h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      text-align: center;
+      color: var(--color-gs00, #fff);
+      padding: 1rem 0;
+      margin: 0;
+    }
     .oa-body.folder-mode { background: #0d0d0d; padding: 0.8rem 0.8rem calc(var(--softkeybar-height) + 0.8rem) 0.8rem; align-items: stretch; justify-content: flex-start; gap: 0; }
+    .oa-body.folder-mode.folder-list-mode {
+      background: var(--color-gs100, #000);
+      padding: 0 0 var(--softkeybar-height) 0;
+    }
     .oa-body.folder-mode > .oa-icon,
     .oa-body.folder-mode > .oa-name,
     .oa-body.folder-mode > .oa-sub { display: none; }
     .folder-view-ico { flex: 1; background: #111; border: 0.2rem solid rgba(255,255,255,0.5); border-radius: 3rem; }
+    .folder-list-container { flex: 1; width: 100%; background: var(--color-gs00, #fff); }
     .oa-sk { font-size: 1.4rem; padding: 0 .5rem; line-height: var(--softkeybar-height); color: #323232; }
     .oa-sk:first-child { text-align: left; }
     .oa-sk:last-child  { text-align: right; }
@@ -2717,10 +2736,11 @@ function openAppView(app) {
   
   // Clean up any previous browser/folder content
   const body = document.getElementById('oa-body');
-  body.classList.remove('bw-mode', 'folder-mode');
+  body.classList.remove('bw-mode', 'folder-mode', 'folder-list-mode');
   body.querySelectorAll('.bw-el').forEach(e => e.remove());
   const hdr = document.getElementById('oa-header');
-  hdr.classList.remove('folder-hdr');
+  hdr.classList.remove('folder-hdr', 'folder-list-hdr');
+  hdr.innerHTML = '';
   hdr.style.display = '';
 
   const isFolder = app.type === 'folder';
@@ -4413,16 +4433,27 @@ function navBw(dir) {
 
 function buildFolderView(app) {
   const hdr = document.getElementById('oa-header');
-  hdr.style.display = '';
-  hdr.textContent = '';
-  hdr.classList.add('folder-hdr');
-
   const body = document.getElementById('oa-body');
+  hdr.style.display = '';
+  hdr.innerHTML = '';
   body.classList.add('folder-mode');
 
-  const ico = document.createElement('div');
-  ico.className = 'folder-view-ico bw-el';
-  body.appendChild(ico);
+  if (appViewMode !== 'grid') {
+    hdr.classList.add('folder-list-hdr');
+    const h1 = document.createElement('h1');
+    h1.textContent = app.name || '';
+    hdr.appendChild(h1);
+
+    body.classList.add('folder-list-mode');
+    const cont = document.createElement('div');
+    cont.className = 'folder-list-container bw-el';
+    body.appendChild(cont);
+  } else {
+    hdr.classList.add('folder-hdr');
+    const ico = document.createElement('div');
+    ico.className = 'folder-view-ico bw-el';
+    body.appendChild(ico);
+  }
 
   setSK('', 'Select', 'Options', false);
   lbl('Folder — ' + (app.name || ''));
