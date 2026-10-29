@@ -2896,8 +2896,8 @@ function pressEnd() {
     }
     animateCloseApp('splash-screen', () => {
       if (handled) return;
-      view = 'home';
-      goHome();
+      if (fromApps) { view = 'app-open'; returnToOrigin(); }
+      else { view = 'home'; goHome(); }
     });
     return;
   }
@@ -2916,8 +2916,8 @@ function pressEnd() {
       return;
     }
     animateCloseApp('view-open-app', () => {
-      view = 'home';
-      goHome();
+      if (fromApps) { returnToOrigin(); }
+      else { view = 'home'; goHome(); }
     });
     return;
   }
@@ -4177,8 +4177,7 @@ function _minimizeBrowser() {
     if (document.activeElement && document.activeElement !== document.body) {
       try { document.activeElement.blur(); } catch(e) {}
     }
-    view = 'home';
-    goHome();
+    returnToOrigin();
   });
 }
 
