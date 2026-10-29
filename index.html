@@ -3286,7 +3286,7 @@ const _BW_OM = [
     { label: 'Settings',        a: () => { _bwMenuClose(); stOpenSettingsFromBrowser(); } },
   ],
   [
-    { label: 'Quit',            a: () => { _bwMenuClose(); bwLastUrl=''; _bwCloseWebviewCommon(); goHome(); } },
+    { label: 'Quit',            a: () => { _bwMenuClose(); bwLastUrl=''; _bwCloseWebviewCommon(); returnToOrigin(); } },
     { label: 'Volume',          a: () => { _bwMenuClose(); _bwVolOpen(); } },
     { label: 'Hide shortcuts tips', a: () => { _bwMenuClose(); _bwTipsHide(); } },
   ]
@@ -4191,6 +4191,23 @@ function closeBwWebView() {
     document.getElementById('statusbar').classList.add('bw-sb');
     bwMode = 'home';
     buildBrowserView();
+  } else {
+    returnToOrigin();
+  }
+}
+
+// Leave an app via Back/Quit: return to the App Menu if launched from there, else Home.
+function returnToOrigin() {
+  if (fromApps && openApp && openApp.type !== 'folder') {
+    document.getElementById('view-open-app').classList.remove('visible');
+    const _sb = document.getElementById('statusbar');
+    _sb.classList.remove('bw-sb'); _sb.style.background = ''; _sb.style.color = '';
+    const bar = document.querySelector('.skbar');
+    bar.style.display = ''; bar.style.backgroundColor = ''; bar.style.backgroundImage = ''; bar.style.color = '';
+    view = 'apps';
+    if (appViewMode === 'list')        buildList();
+    else if (appViewMode === 'single') buildSingle();
+    else { setSK('', 'Select', 'Options', false); lbl('Apps — ' + (curApp()?.name || '')); }
   } else {
     goHome();
   }
