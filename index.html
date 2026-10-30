@@ -2423,6 +2423,7 @@ function renderSidemenu() {
 //  VIEW TRANSITIONS
 // ════════════════════════════════════════
 function goHome() {
+  _bwCleanupOverlays();
   if (window._stClosingToBrowser) return; // Prevent goHome during Settings fade out back to Browser
   if (isAppDialogOpen()) _appConfirmClose();
   if (isRenameOpen()) _renameCancel();
@@ -3328,6 +3329,13 @@ function _bwFreezePage(freeze) {
   }
 }
 
+function _bwCleanupOverlays() {
+  if (isBwMenuOpen()) _bwMenuClose();
+  if (isBwShareOpen()) _bwShareClose();
+  if (_bwPinMode) _bwPinCloseAll();
+  if (typeof isBwVolOpen==='function' && isBwVolOpen()) _bwVolClose();
+}
+
 function _bwMenuClose() {
   document.getElementById('bw-options-menu').classList.remove('visible');
   _bwFreezePage(false);
@@ -4087,6 +4095,7 @@ function openBwWebView(url) {
 }
 
 function _bwCloseWebviewCommon() {
+  _bwCleanupOverlays();
   document.getElementById('bw-tips-badge').classList.remove('visible');
   _bwExitScrollMode();
   _bwCursorHide();
@@ -4197,6 +4206,7 @@ function closeBwWebView() {
 
 // Leave an app via Back/Quit: return to the App Menu if launched from there, else Home.
 function returnToOrigin() {
+  _bwCleanupOverlays();
   if (fromApps && openApp && openApp.type !== 'folder') {
     document.getElementById('view-open-app').classList.remove('visible');
     const _sb = document.getElementById('statusbar');
