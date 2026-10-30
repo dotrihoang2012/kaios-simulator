@@ -1802,7 +1802,7 @@ JAN 1</div>
           </div>
         </div>
         <div class="bw-om-skbar">
-          <span class="bw-om-sk-l" onclick="_bwMenuClose()"></span>
+          <span class="bw-om-sk-l" onclick="_bwMenuClose(true)"></span>
           <span class="bw-om-sk-c" onclick="_bwMenuSelect()">SELECT</span>
           <span class="bw-om-sk-r" id="bw-om-sk-r" onclick="_bwMenuVoice()"></span>
         </div>
@@ -1834,14 +1834,14 @@ JAN 1</div>
 
     <!-- Browser Share Panel -->
     <div id="bw-share-menu">
-      <div id="bw-share-bg" onclick="_bwShareClose()"></div>
+      <div id="bw-share-bg" onclick="_bwShareCancel()"></div>
       <div id="bw-share-panel">
         <div id="bw-share-hdr">Share</div>
         <div class="bw-share-item" data-idx="0">Messages</div>
         <div class="bw-share-item" data-idx="1">E-Mail</div>
       </div>
       <div id="bw-share-sk">
-        <span onclick="_bwShareClose()">Cancel</span>
+        <span onclick="_bwShareCancel()">Cancel</span>
         <span onclick="_bwShareSelect()">SELECT</span>
         <span></span>
       </div>
@@ -3272,6 +3272,12 @@ function showToast(text) {
 }
 
 let _bwOmRow = 0, _bwOmCol = 0;
+let _bwSavedOm = null; // {row,col} kept while Share / Pin To is the chosen item, until Options is cancelled
+try { _bwSavedOm = JSON.parse(localStorage.getItem('kaios.bw.om.focus') || 'null'); } catch(e) {}
+function _bwSaveOm(row, col) {
+  _bwSavedOm = (row === null) ? null : { row, col };
+  try { _bwSavedOm ? localStorage.setItem('kaios.bw.om.focus', JSON.stringify(_bwSavedOm)) : localStorage.removeItem('kaios.bw.om.focus'); } catch(e) {}
+}
 const _BW_OM = [
   [
     { label: 'Search Internet', a: () => { _bwMenuClose(); openBwSearch(); } },
@@ -3297,7 +3303,8 @@ function isBwMenuOpen() {
 }
 
 function _bwMenuOpen() {
-  _bwOmRow = 0; _bwOmCol = 0;
+  if (_bwSavedOm && typeof _bwSavedOm.row === 'number') { _bwOmRow = _bwSavedOm.row; _bwOmCol = _bwSavedOm.col; }
+  else { _bwOmRow = 0; _bwOmCol = 0; }
   const om = document.getElementById('bw-options-menu');
   om.classList.add('visible');
   _bwFreezePage(true);
@@ -3328,7 +3335,8 @@ function _bwFreezePage(freeze) {
   }
 }
 
-function _bwMenuClose() {
+function _bwMenuClose(cancel) {
+  if (cancel === true) _bwSaveOm(null);
   document.getElementById('bw-options-menu').classList.remove('visible');
   _bwFreezePage(false);
   _bwMenuInjectOverlay(false);
@@ -3393,6 +3401,8 @@ function _bwMenuNav(dir) {
 }
 
 function _bwMenuSelect() {
+  if (_bwOmRow === 1 && (_bwOmCol === 1 || _bwOmCol === 2)) _bwSaveOm(_bwOmRow, _bwOmCol);
+  else _bwSaveOm(null);
   _BW_OM[_bwOmRow]?.[_bwOmCol]?.a();
 }
 
@@ -3426,6 +3436,7 @@ function _bwShareNav(dir) {
   if (dir === 'down') _bwShareFocus = Math.min(1, _bwShareFocus + 1);
   _bwShareRender();
 }
+function _bwShareCancel() { _bwShareClose(); _bwMenuOpen(); }
 function _bwShareSelect() { _bwShareClose(); }
 
 // ── Media Volume ──
@@ -3616,6 +3627,7 @@ function _bwPinConfirm() {
 }
 function _bwPinExit() {
   _bwPinCloseAll();
+  _bwMenuOpen();
 }
 function _bwPinCloseAll() {
   _bwPinMode = null;
@@ -5109,11 +5121,11 @@ function pressBack() {
   if (isAppDialogOpen())           { _appConfirmClose(); return; }
   if (isStOpen())                  { stKey('Backspace'); return; }
   if (isOMOpen())                  { closeOM();         return; }
-  if (isBwMenuOpen())              { _bwMenuClose();    return; }
+  if (isBwMenuOpen())              { _bwMenuClose(true); return; }
   if (isBwSCOpen())                { closeBwShortcut(); return; }
   if (_bwPinMode)                  { _bwPinExit();      return; }
   if (isBwHistOpen())              { if (_bwHistDialogOpen) { _bwHistDialogCancel(); return; } closeBwHistory(); return; }
-  if (isBwShareOpen())             { _bwShareClose();   return; }
+  if (isBwShareOpen())             { _bwShareCancel();  return; }
   if (isBwVolOpen())               { return; }
   if (view === 'browser-search')   { closeBwSearch();   return; }
   if (view === 'app-open' && openApp?.id === 'browser' && isBwDialogOpen()) { closeBwDialog(); return; }
@@ -5160,10 +5172,10 @@ function softLeft() {
   if (isAppDialogOpen())           { _appConfirmClose();                     return; }
   if (isStOpen())                  { stKey('F1');                            return; }
   if (isOMOpen())                  { closeOM();                              return; }
-  if (isBwMenuOpen())              { _bwMenuClose();                         return; }
+  if (isBwMenuOpen())              { _bwMenuClose(true);                     return; }
   if (isBwSCOpen())                { _bwSCPrev();                            return; }
   if (_bwPinMode)                  { if (_bwPinMode === 'picker') _bwPinExit(); return; }
-  if (isBwShareOpen())             { _bwShareClose();                        return; }
+  if (isBwShareOpen())             { _bwShareCancel();                       return; }
   if (isBwVolOpen())               { return; }
   if (isBwHistOpen())              { if (_bwHistDialogOpen) { _bwHistDialogCancel(); return; } closeBwHistory(); return; }
   if (view === 'home')             { showStub('Notices', 'notifications');   return; }
@@ -7005,7 +7017,7 @@ document.addEventListener('keydown', e => {
     if (e.key === 'ArrowDown')  { _bwMenuNav('down');  return; }
     if (e.key === 'Enter')      { _bwMenuSelect();     return; }
     if (e.key === 'F2')         { _bwMenuVoice();      return; }
-    if (e.key === 'Escape' || e.key === 'F1' || e.key === 'Backspace') { _bwMenuClose(); return; }
+    if (e.key === 'Escape' || e.key === 'F1' || e.key === 'Backspace') { _bwMenuClose(true); return; }
     return;
   }
   if (isBwSCOpen()) {
