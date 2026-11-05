@@ -4455,20 +4455,23 @@ function _bwActivateInputKeyboard(initialVal) {
       type: (ch) => {
         _bwInputText = _bwInputText.slice(0, _bwInputCursor) + ch + _bwInputText.slice(_bwInputCursor);
         _bwInputCursor += ch.length;
-        _bwSendInputOp('type', { ch, value: _bwInputText, cursor: _bwInputCursor });
+        _bwSendInputOp('move', 999999);
+        _bwSendInputOp('type', ch);
       },
       backspace: () => {
         if (_bwInputCursor > 0) {
           const res = deleteCharBeforeCursor(_bwInputText, _bwInputCursor);
+          const delCount = Array.from(_bwInputText.slice(res.cursor, _bwInputCursor)).length || 1;
           _bwInputText = res.text;
           _bwInputCursor = res.cursor;
-          _bwSendInputOp('bs', { value: _bwInputText, cursor: _bwInputCursor });
+          _bwSendInputOp('move', 999999);
+          for (let i = 0; i < delCount; i++) _bwSendInputOp('bs');
         }
       },
       getText: () => _bwInputText,
       moveCursor: (dir) => {
         _bwInputCursor = Math.max(0, Math.min(_bwInputText.length, _bwInputCursor + dir));
-        _bwSendInputOp('move', { dir, cursor: _bwInputCursor });
+        _bwSendInputOp('move', dir);
       }
     });
   }
