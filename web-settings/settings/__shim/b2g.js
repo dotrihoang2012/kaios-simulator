@@ -758,35 +758,34 @@
   document.addEventListener('focusin', function(e) {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
       if (window.parent && window.parent.SimKeyboard) {
+        var el = e.target;
+        var cursor = (el.value || '').length;
+        try { el.setSelectionRange(cursor, cursor); } catch (err) {}
         window.parent.SimKeyboard.activate({
           type: function(ch) {
-            var start = e.target.selectionStart;
-            var end = e.target.selectionEnd;
-            var val = e.target.value;
-            e.target.value = val.substring(0, start) + ch + val.substring(end);
-            e.target.selectionStart = e.target.selectionEnd = start + ch.length;
-            e.target.dispatchEvent(new Event('input', { bubbles: true }));
+            var val = el.value || '';
+            if (cursor > val.length) cursor = val.length;
+            if (cursor < 0) cursor = 0;
+            el.value = val.substring(0, cursor) + ch + val.substring(cursor);
+            cursor += ch.length;
+            try { el.setSelectionRange(cursor, cursor); } catch (err) {}
+            el.dispatchEvent(new Event('input', { bubbles: true }));
           },
           backspace: function() {
-            var start = e.target.selectionStart;
-            var end = e.target.selectionEnd;
-            var val = e.target.value;
-            if (start === end && start > 0) {
-              e.target.value = val.substring(0, start - 1) + val.substring(end);
-              e.target.selectionStart = e.target.selectionEnd = start - 1;
-            } else if (start !== end) {
-              e.target.value = val.substring(0, start) + val.substring(end);
-              e.target.selectionStart = e.target.selectionEnd = start;
+            var val = el.value || '';
+            if (cursor > val.length) cursor = val.length;
+            if (cursor > 0) {
+              el.value = val.substring(0, cursor - 1) + val.substring(cursor);
+              cursor -= 1;
+              try { el.setSelectionRange(cursor, cursor); } catch (err) {}
+              el.dispatchEvent(new Event('input', { bubbles: true }));
             }
-            e.target.dispatchEvent(new Event('input', { bubbles: true }));
           },
-          getText: function() { return e.target.value; },
+          getText: function() { return el.value || ''; },
           moveCursor: function(dir) {
-            var start = e.target.selectionStart;
-            var newVal = start + dir;
-            if (newVal < 0) newVal = 0;
-            if (newVal > e.target.value.length) newVal = e.target.value.length;
-            e.target.selectionStart = e.target.selectionEnd = newVal;
+            var val = el.value || '';
+            cursor = Math.max(0, Math.min(val.length, cursor + dir));
+            try { el.setSelectionRange(cursor, cursor); } catch (err) {}
           }
         });
       }
