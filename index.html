@@ -2886,7 +2886,11 @@ function stKeyFromEvent(e) {
 }
 function pressEnd() {
   if (booting || inputLocked) return;
-  if (typeof SimKeyboard !== 'undefined' && SimKeyboard.active) { if (SimKeyboard.handleKeydown('Backspace')) return; }
+  if (typeof SimKeyboard !== 'undefined' && SimKeyboard.active) {
+    if (SimKeyboard.handleKeydown('Backspace')) return;
+    if (_bwInputActive) { _bwDeactivateInputKeyboard(true); return; }
+  }
+  if (_bwInputActive) { _bwDeactivateInputKeyboard(true); return; }
   if (_splashTimer) {
     clearTimeout(_splashTimer);
     _splashTimer = null;
@@ -3182,8 +3186,17 @@ window.addEventListener('message', e => {
     return;
   }
   if (e.data.type === 'bw-nav-start') {
+    if (_bwInputActive) _bwDeactivateInputKeyboard(false);
     // Page is navigating away: show loading bar, hide the lock until the new page arrives
     if (bwMode === 'web') { _bwProgressStart(); document.getElementById('bw-ssl-icon').textContent = ''; }
+    return;
+  }
+  if (e.data.type === 'bw-input-focus') {
+    if (bwMode === 'web') _bwActivateInputKeyboard(String(e.data.value || ''));
+    return;
+  }
+  if (e.data.type === 'bw-input-val') {
+    if (_bwInputActive) _bwInputText = String(e.data.value || '');
     return;
   }
   if (e.data.type === 'bw-title') {
@@ -3205,6 +3218,7 @@ window.addEventListener('message', e => {
     wv.addEventListener('did-navigate', e => _bwUrlChanged(e.url));
     wv.addEventListener('did-navigate-in-page', e => { if (e.isMainFrame) _bwUrlChanged(e.url); });
     wv.addEventListener('did-start-loading', () => {
+      if (_bwInputActive) _bwDeactivateInputKeyboard(false);
       if (bwMode === 'web') { _bwProgressStart(); document.getElementById('bw-ssl-icon').textContent = ''; }
     });
     wv.addEventListener('did-stop-loading', () => {
@@ -3338,6 +3352,7 @@ function _bwFreezePage(freeze) {
 }
 
 function _bwCleanupOverlays() {
+  if (_bwInputActive) _bwDeactivateInputKeyboard(false);
   if (isBwMenuOpen()) _bwMenuClose();
   if (isBwShareOpen()) _bwShareClose();
   if (_bwPinMode) _bwPinCloseAll();
@@ -4388,34 +4403,156 @@ function _bwCursorMove(dir) {
   if (scroll) _bwScrollBy(scroll);
   _bwCursorPush(true);
 }
+// ── In-page Text Input Bridge (KaiOS Browser Keyboard & Softkey Bar) ──
+let _bwInputActive = false;
+let _bwInputText = '';
+let _bwInputCursor = 0;
+
+function _bwInputHelperJS() {
+  return `if(!window.__bwInp){window.__bwIsEd=function(el){if(!el||!el.tagName)return false;var t=el.tagName;if(t==='TEXTAREA'||el.isContentEditable)return true;if(t==='INPUT'){var tp=(el.type||'text').toLowerCase();return['text','search','url','email','tel','password','number',''].indexOf(tp)!==-1&&!el.disabled&&!el.readOnly;}return false;};window.__bwFindEd=function(x,y){var el=document.elementFromPoint(x,y);if(!el)return null;if(window.__bwIsEd(el))return el;if(el.closest){var lb=el.closest('label');if(lb){var ctl=lb.control||lb.querySelector('input,textarea');if(window.__bwIsEd(ctl))return ctl;}}var p=el;for(var i=0;i<5&&p&&p!==document.body&&p!==document.documentElement;i++){var tg=p.tagName;if(tg==='A'||tg==='BUTTON'||tg==='SELECT')break;var r=p.getBoundingClientRect?p.getBoundingClientRect():null;if(r&&r.height>90)break;var q=p.querySelector&&p.querySelector('input:not([type=hidden]):not([type=submit]):not([type=button]):not([type=checkbox]):not([type=radio]),textarea,[contenteditable=true]');if(window.__bwIsEd(q))return q;p=p.parentElement;}return null;};window.__bwClick=function(x,y){var ed=window.__bwFindEd(x,y);if(ed){window.__bwActiveInput=ed;try{ed.focus();ed.click&&ed.click();var v=ed.isContentEditable?(ed.textContent||''):(ed.value||'');if(typeof ed.setSelectionRange==='function'){try{ed.setSelectionRange(v.length,v.length);}catch(e){}}}catch(e){}var val=ed.isContentEditable?(ed.textContent||''):(ed.value||'');return{isInput:true,value:val};}var el=document.elementFromPoint(x,y);if(el){try{el.focus&&el.focus();el.click&&el.click();}catch(e){}}var ae=document.activeElement;if(window.__bwIsEd(ae)){window.__bwActiveInput=ae;var v2=ae.isContentEditable?(ae.textContent||''):(ae.value||'');return{isInput:true,value:v2};}try{if(ae&&ae.blur)ae.blur();}catch(e){}return{isInput:false};};window.__bwInp={setVal:function(el,v){try{var proto=el.tagName==='TEXTAREA'?window.HTMLTextAreaElement.prototype:window.HTMLInputElement.prototype;var d=Object.getOwnPropertyDescriptor(proto,'value');if(d&&d.set)d.set.call(el,v);else el.value=v;}catch(e){el.value=v;}try{el.dispatchEvent(new InputEvent('input',{bubbles:true,cancelable:true,data:v}));}catch(e){try{el.dispatchEvent(new Event('input',{bubbles:true}));}catch(e2){}}},type:function(ch){var el=window.__bwActiveInput||document.activeElement;if(!window.__bwIsEd(el))return'';try{el.focus();}catch(e){}if(el.isContentEditable){el.textContent=(el.textContent||'')+ch;return el.textContent;}var v=el.value||'';var s=typeof el.selectionStart==='number'?el.selectionStart:v.length;var e=typeof el.selectionEnd==='number'?el.selectionEnd:v.length;var nv=v.slice(0,s)+ch+v.slice(e);this.setVal(el,nv);try{el.setSelectionRange(s+ch.length,s+ch.length);}catch(err){}return el.value||'';},bs:function(){var el=window.__bwActiveInput||document.activeElement;if(!window.__bwIsEd(el))return'';try{el.focus();}catch(e){}if(el.isContentEditable){var t=Array.from(el.textContent||'');t.pop();el.textContent=t.join('');return el.textContent;}var v=el.value||'';var s=typeof el.selectionStart==='number'?el.selectionStart:v.length;var e=typeof el.selectionEnd==='number'?el.selectionEnd:v.length;if(s===e&&s>0){var arr=Array.from(v.slice(0,s));var last=arr.pop()||'';var nv=arr.join('')+v.slice(e);var ns=s-last.length;this.setVal(el,nv);try{el.setSelectionRange(ns,ns);}catch(err){}}else if(s!==e){var nv2=v.slice(0,s)+v.slice(e);this.setVal(el,nv2);try{el.setSelectionRange(s,s);}catch(err){}}return el.value||'';},move:function(dir){var el=window.__bwActiveInput||document.activeElement;if(!window.__bwIsEd(el))return;try{el.focus();var v=el.value||'';var p=(typeof el.selectionEnd==='number'?el.selectionEnd:v.length)+dir;p=Math.max(0,Math.min(v.length,p));el.setSelectionRange(p,p);}catch(e){}},enter:function(){var el=window.__bwActiveInput||document.activeElement;if(!el)return;try{var o={key:'Enter',code:'Enter',keyCode:13,which:13,bubbles:true,cancelable:true};el.dispatchEvent(new KeyboardEvent('keydown',o));el.dispatchEvent(new KeyboardEvent('keypress',o));el.dispatchEvent(new KeyboardEvent('keyup',o));if(el.form){if(typeof el.form.requestSubmit==='function')el.form.requestSubmit();else{var sb=el.form.querySelector('button[type="submit"],input[type="submit"],button:not([type])');if(sb)sb.click();else el.form.submit();}}}catch(e){}},blur:function(){var el=window.__bwActiveInput||document.activeElement;window.__bwActiveInput=null;try{if(el&&el.blur)el.blur();}catch(e){}}};}`;
+}
+
+function _bwSetBrowserKeyboardSK() {
+  setSK('', 'ENTER', 'Done', false);
+  const bar = document.querySelector('.skbar');
+  bar.style.display = '';
+  bar.style.backgroundColor = '#000000';
+  bar.style.backgroundImage = 'none';
+  bar.style.color = '#ffffff';
+}
+
+function _bwSendInputOp(op, arg) {
+  const wv = document.getElementById('bw-iframe');
+  if (!wv) return;
+  if (wv.tagName === 'WEBVIEW') {
+    const argJS = arg !== undefined ? JSON.stringify(arg) : '';
+    const js = _bwInputHelperJS() + `window.__bwInp.${op}(${argJS});`;
+    try { wv.executeJavaScript(js).catch(()=>{}); } catch(e) {}
+  } else {
+    let done = false;
+    try {
+      const w = wv.contentWindow;
+      if (w && wv.contentDocument) {
+        if (!w.__bwInp) { const s = wv.contentDocument.createElement('script'); s.textContent = _bwInputHelperJS(); wv.contentDocument.documentElement.appendChild(s); }
+        if (w.__bwInp && w.__bwInp[op]) { w.__bwInp[op](arg); done = true; }
+      }
+    } catch(e) {}
+    if (!done) { try { wv.contentWindow.postMessage({ type: 'bw-input-' + op, arg }, '*'); } catch(e) {} }
+  }
+}
+
+function _bwActivateInputKeyboard(initialVal) {
+  _bwInputActive = true;
+  _bwInputText = String(initialVal || '');
+  _bwInputCursor = _bwInputText.length;
+  _bwCursorHide();
+  document.getElementById('bw-nav').classList.remove('visible');
+  document.getElementById('bw-tips-badge').classList.remove('visible');
+  _bwSetBrowserKeyboardSK();
+  if (typeof SimKeyboard !== 'undefined') {
+    SimKeyboard.activate({
+      isBrowserInput: true,
+      type: (ch) => {
+        _bwInputText = _bwInputText.slice(0, _bwInputCursor) + ch + _bwInputText.slice(_bwInputCursor);
+        _bwInputCursor += ch.length;
+        _bwSendInputOp('type', ch);
+      },
+      backspace: () => {
+        if (_bwInputCursor > 0) {
+          const res = deleteCharBeforeCursor(_bwInputText, _bwInputCursor);
+          _bwInputText = res.text;
+          _bwInputCursor = res.cursor;
+          _bwSendInputOp('bs');
+        }
+      },
+      getText: () => _bwInputText,
+      moveCursor: (dir) => {
+        _bwInputCursor = Math.max(0, Math.min(_bwInputText.length, _bwInputCursor + dir));
+        _bwSendInputOp('move', dir);
+      }
+    });
+  }
+}
+
+function _bwDeactivateInputKeyboard(sendBlur = true) {
+  if (!_bwInputActive) return;
+  _bwInputActive = false;
+  if (sendBlur) _bwSendInputOp('blur');
+  if (typeof SimKeyboard !== 'undefined' && SimKeyboard.active) {
+    SimKeyboard.deactivate();
+  }
+  const wv = document.getElementById('bw-iframe');
+  if (wv) { try { wv.blur(); } catch(e) {} }
+  if (bwMode === 'web' && view === 'app-open') {
+    const bar = document.querySelector('.skbar');
+    bar.style.display = 'none';
+    bar.style.backgroundColor = '';
+    bar.style.backgroundImage = '';
+    bar.style.color = '';
+    document.getElementById('bw-nav').classList.add('visible');
+    if (!_bwScrollMode) _bwCursorShow();
+  }
+}
+
+function _bwInputSubmitEnter() {
+  if (typeof SimKeyboard !== 'undefined' && SimKeyboard.active && SimKeyboard.composing) {
+    SimKeyboard.commitChar();
+    return;
+  }
+  _bwSendInputOp('enter');
+  _bwDeactivateInputKeyboard(true);
+}
+
 function _bwCursorClick() {
   const wv = document.getElementById('bw-iframe');
   if (!wv || !_curActive) return;
+  const { cx, cy } = _bwCurCoords();
   if (wv.tagName === 'WEBVIEW') {
+    const js = _bwInputHelperJS() + `window.__bwClick(${cx},${cy});`;
     try {
-      wv.sendInputEvent({ type:'mouseMove', x:_curX, y:_curY });
-      wv.sendInputEvent({ type:'mouseDown', x:_curX, y:_curY, button:'left', clickCount:1 });
-      wv.sendInputEvent({ type:'mouseUp',   x:_curX, y:_curY, button:'left', clickCount:1 });
+      wv.executeJavaScript(js).then(res => {
+        if (res && res.isInput) {
+          _bwActivateInputKeyboard(res.value || '');
+        } else {
+          try {
+            wv.sendInputEvent({ type:'mouseMove', x:_curX, y:_curY });
+            wv.sendInputEvent({ type:'mouseDown', x:_curX, y:_curY, button:'left', clickCount:1 });
+            wv.sendInputEvent({ type:'mouseUp',   x:_curX, y:_curY, button:'left', clickCount:1 });
+          } catch(e) {}
+          setTimeout(() => {
+            if (_bwInputActive) return;
+            try { wv.blur(); } catch(e) {}
+            try { wv.executeJavaScript('(function(){try{if(document.activeElement&&!window.__bwIsEd(document.activeElement)&&document.activeElement.blur)document.activeElement.blur();}catch(e){}})()').catch(()=>{}); } catch(e) {}
+          }, 0);
+        }
+      }).catch(() => {});
     } catch(e) {}
   } else {
-    const { cx, cy } = _bwCurCoords();
-    let done = false;
+    let handled = false;
     try {
+      const w = wv.contentWindow;
       const d = wv.contentDocument;
-      if (d) { const el = d.elementFromPoint(cx, cy); if (el) { el.focus && el.focus(); el.click && el.click(); } done = true; }
+      if (w && d) {
+        if (!w.__bwInp) { const s = d.createElement('script'); s.textContent = _bwInputHelperJS(); d.documentElement.appendChild(s); }
+        if (w.__bwClick) {
+          const res = w.__bwClick(cx, cy);
+          handled = true;
+          if (res && res.isInput) {
+            _bwActivateInputKeyboard(res.value || '');
+            return;
+          }
+        }
+      }
     } catch(e) {}
-    if (!done) { try { wv.contentWindow.postMessage({ type:'bw-click', x:cx, y:cy }, '*'); } catch(e) {} }
-  }
-  // A click gives the page keyboard focus; return it to the simulator so arrows keep
-  // driving the virtual cursor instead of scrolling the page.
-  setTimeout(() => {
-    try { wv.blur(); } catch(e) {}
-    if (wv.tagName === 'WEBVIEW') {
-      try { wv.executeJavaScript('(function(){try{if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();}catch(e){}})()').catch(()=>{}); } catch(e) {}
-    } else {
-      try { const d = wv.contentDocument; if (d && d.activeElement && d.activeElement.blur) d.activeElement.blur(); } catch(e) {}
+    if (!handled) {
+      try { wv.contentWindow.postMessage({ type:'bw-click', x:cx, y:cy }, '*'); } catch(e) {}
     }
-  }, 0);
+    setTimeout(() => {
+      if (_bwInputActive) return;
+      try { wv.blur(); } catch(e) {}
+      try { const d = wv.contentDocument; if (d && d.activeElement && d.activeElement.blur) d.activeElement.blur(); } catch(e) {}
+    }, 0);
+  }
 }
 function _bwScrollBy(dir) {
   const wv = document.getElementById('bw-iframe');
@@ -4784,7 +4921,9 @@ function nav(dir) {
   if (typeof SimKeyboard !== 'undefined' && SimKeyboard.active) {
     const kMap = { up: 'ArrowUp', down: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' };
     if (SimKeyboard.handleKeydown(kMap[dir], false)) return;
+    if (_bwInputActive) { _bwDeactivateInputKeyboard(true); return; }
   }
+  if (_bwInputActive) { _bwDeactivateInputKeyboard(true); return; }
   if (view === 'browser-search') {
     if (dir === 'up' || dir === 'down') bwSearchNav(dir);
     return;
@@ -4975,6 +5114,7 @@ function pressOK() {
   if (typeof SimKeyboard !== 'undefined' && SimKeyboard.active) {
     if (SimKeyboard.handleKeydown('Enter')) return;
   }
+  if (_bwInputActive) { _bwInputSubmitEnter(); return; }
   if (isSleepOpen()) {
     if (view === 'lock') { sleepFocus === 0 ? doRestart() : doPowerOff(); }
     else { if (sleepFocus === 0) doLock(); else if (sleepFocus === 1) doRestart(); else doPowerOff(); }
@@ -5024,6 +5164,7 @@ function pressOK() {
 function pressRight() {
   if (booting || inputLocked) return;
   if (typeof SimKeyboard !== 'undefined' && SimKeyboard.active) { if (SimKeyboard.handleKeydown('F2')) return; }
+  if (_bwInputActive) { _bwDeactivateInputKeyboard(true); return; }
   if (_splashTimer) { pressBack(); return; }
   if (isSleepOpen())       { return; } // RSK disabled in power menu
   if (view === 'lock')     { return; }
@@ -5099,7 +5240,11 @@ function animateCloseApp(elId, cb) {
 }
 
 function pressBack() {
-  if (typeof SimKeyboard !== 'undefined' && SimKeyboard.active) { if (SimKeyboard.handleKeydown('Backspace')) return; }
+  if (typeof SimKeyboard !== 'undefined' && SimKeyboard.active) {
+    if (SimKeyboard.handleKeydown('Backspace')) return;
+    if (_bwInputActive) { _bwDeactivateInputKeyboard(true); return; }
+  }
+  if (_bwInputActive) { _bwDeactivateInputKeyboard(true); return; }
   if (_splashTimer) {
     clearTimeout(_splashTimer);
     _splashTimer = null;
@@ -5171,6 +5316,7 @@ function pressBack() {
 function softLeft() {
   if (booting || inputLocked) return;
   if (typeof SimKeyboard !== 'undefined' && SimKeyboard.active) { if (SimKeyboard.handleKeydown('F1')) return; }
+  if (_bwInputActive) return; // LSK is empty on browser keyboard bar
   if (_splashTimer) { pressBack(); return; }
   if (isSleepOpen())               { closeSleepMenu();                       return; }
   if (view === 'lock')             { return; }
@@ -6075,7 +6221,10 @@ function closeSleepMenu() {
     _sb.style.display = 'none';
     return;
   }
-  if (bwMode === 'web' && view !== 'browser-search' && !isBwSCOpen()) bar.style.display = 'none';
+  if (bwMode === 'web' && view !== 'browser-search' && !isBwSCOpen()) {
+    if (_bwInputActive) { _bwSetBrowserKeyboardSK(); return; }
+    bar.style.display = 'none';
+  }
   restoreSK();
   if (view === 'app-open' && openApp?.id === 'browser' && bwMode === 'home') _setBwSK();
   if (view === 'browser-search') renderBwSearch();
@@ -7053,6 +7202,25 @@ document.addEventListener('keydown', e => {
   if (_bwPinMode && /^[0-9]$/.test(e.key)) { e.preventDefault(); showNumPress(e.key); pressNum(e.key); return; }
   // When webview is active, forward keys to it; keep F8/F1/F2/Backspace for simulator
   if (bwMode === 'web' && view === 'app-open' && !_bwPinMode && !isBwVolOpen() && !isBwShareOpen()) {
+    if (_bwInputActive) {
+      if (e.key === 'Enter')      { e.preventDefault(); showOkPress(); _bwInputSubmitEnter(); return; }
+      if (e.key === 'F1')         { e.preventDefault(); softLeft(); return; }
+      if (e.key === 'F2')         { e.preventDefault(); pressRight(); return; }
+      if (e.key === 'Escape' || e.key === 'Backspace' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (e.key === 'ArrowUp') showArrowPress('up');
+        if (e.key === 'ArrowDown') showArrowPress('down');
+        _bwDeactivateInputKeyboard(true);
+        return;
+      }
+      if (e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey && SimKeyboard.target && SimKeyboard.target.type) {
+        e.preventDefault();
+        SimKeyboard.commitChar();
+        SimKeyboard.target.type(e.key);
+        return;
+      }
+      return;
+    }
     if (_bwScrollMode) {
       if (e.key === 'ArrowUp')    { e.preventDefault(); showArrowPress('up');    _bwScrollBy('up');    return; }
       if (e.key === 'ArrowDown')  { e.preventDefault(); showArrowPress('down');  _bwScrollBy('down');  return; }
