@@ -2908,7 +2908,15 @@ function pressEnd() {
   if (isSysDialogOpen()) { closeDialog(false); return; }
   if (isAppDialogOpen()) { _appConfirmClose(); return; }
   if (isRenameOpen()) { _renameCancel(); return; }
+  if (isOMOpen()) { closeOM(); return; }
+  if (isBwMenuOpen()) { _bwMenuClose(); return; }
+  if (isBwSCOpen()) { closeBwShortcut(); return; }
+  if (_bwPinMode) { _bwPinCloseAll(); _bwMenuOpen(true); return; }
+  if (isBwHistOpen()) { if (_bwHistDialogOpen) { _bwHistDialogCancel(); return; } closeBwHistory(); return; }
+  if (isBwShareOpen()) { _bwShareClose(); _bwMenuOpen(true); return; }
+  if (isBwVolOpen()) { _bwVolClose(); return; }
   if (view === 'browser-search') { closeBwSearch(); return; }
+  if (view === 'app-open' && openApp?.id === 'browser' && isBwDialogOpen()) { closeBwDialog(); return; }
   
   // Instant minimize (Go Home) for any open app
   if (view === 'app-open') {
@@ -3297,8 +3305,8 @@ function isBwMenuOpen() {
   return document.getElementById('bw-options-menu').classList.contains('visible');
 }
 
-function _bwMenuOpen() {
-  _bwOmRow = 0; _bwOmCol = 0;
+function _bwMenuOpen(keepFocus = false) {
+  if (!keepFocus) { _bwOmRow = 0; _bwOmCol = 0; }
   const om = document.getElementById('bw-options-menu');
   om.classList.add('visible');
   _bwFreezePage(true);
@@ -3334,6 +3342,7 @@ function _bwCleanupOverlays() {
   if (isBwShareOpen()) _bwShareClose();
   if (_bwPinMode) _bwPinCloseAll();
   if (typeof isBwVolOpen==='function' && isBwVolOpen()) _bwVolClose();
+  if (typeof isBwSCOpen==='function' && isBwSCOpen()) closeBwShortcut();
 }
 
 function _bwMenuClose() {
@@ -5121,10 +5130,10 @@ function pressBack() {
   if (isOMOpen())                  { closeOM();         return; }
   if (isBwMenuOpen())              { _bwMenuClose();    return; }
   if (isBwSCOpen())                { closeBwShortcut(); return; }
-  if (_bwPinMode)                  { _bwPinExit();      return; }
+  if (_bwPinMode)                  { _bwPinCloseAll(); _bwMenuOpen(true); return; }
   if (isBwHistOpen())              { if (_bwHistDialogOpen) { _bwHistDialogCancel(); return; } closeBwHistory(); return; }
-  if (isBwShareOpen())             { _bwShareClose();   return; }
-  if (isBwVolOpen())               { return; }
+  if (isBwShareOpen())             { _bwShareClose(); _bwMenuOpen(true); return; }
+  if (isBwVolOpen())               { _bwVolClose();     return; }
   if (view === 'browser-search')   { closeBwSearch();   return; }
   if (view === 'app-open' && openApp?.id === 'browser' && isBwDialogOpen()) { closeBwDialog(); return; }
   if (view === 'app-open' && openApp?.id === 'browser' && bwMode === 'web') { handleBwBack(); return; }
