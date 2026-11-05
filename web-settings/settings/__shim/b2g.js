@@ -800,13 +800,16 @@
     }
   });
 
-  document.addEventListener('keydown', function(e) {
+  window.addEventListener('keydown', function(e) {
     if (window.parent && window.parent.SimKeyboard && window.parent.SimKeyboard.active) {
       var key = e.key;
       if (key === 'Escape') key = 'Backspace';
+      else if (key === 'SoftLeft') key = 'F1';
+      else if (key === 'SoftRight') key = 'F2';
+      else if (key === 'Accept') key = 'Enter';
       if (window.parent.SimKeyboard.handleKeydown(key, e.repeat)) {
         e.preventDefault();
-        e.stopPropagation();
+        e.stopImmediatePropagation();
       }
     }
   }, true);

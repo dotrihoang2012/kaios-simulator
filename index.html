@@ -1536,7 +1536,7 @@
     .kb-sym-cell.selected > .kb-sym-frame > .kb-sym-text { color: #fff; }
     .emoji-font, .kb-recent-frame, input, textarea { font-family: 'NotoColorEmoji', 'Open Sans', sans-serif !important; }
     
-    #kb-candidates { display: flex; position: absolute; flex-direction: row; justify-content: flex-start; align-items: center; width: 100%; height: var(--softkeybar-height); bottom: 0; background-color: #cccccc; z-index: 10000; overflow: hidden; opacity: 0; transform: translateY(100%); transition: opacity 150ms ease-in-out, transform 150ms ease-in-out; pointer-events: none; }
+    #kb-candidates { display: flex; position: absolute; flex-direction: row; justify-content: flex-start; align-items: center; width: 100%; height: var(--softkeybar-height); bottom: 0; background-color: #cccccc; z-index: 100001; overflow: hidden; opacity: 0; transform: translateY(100%); transition: opacity 150ms ease-in-out, transform 150ms ease-in-out; pointer-events: none; }
     #kb-candidates.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
     .kb-cand-item { display: flex; flex-direction: row; justify-content: flex-start; align-items: center; box-sizing: border-box; height: 100%; width: max-content; padding: 0 1rem; color: #323232; font-size: 1.7rem; font-variant-numeric: normal; word-break: keep-all; }
     .kb-cand-item.current { color: #fff; background-color: #8000ff; }
@@ -4586,7 +4586,7 @@ function _bwInputHelperJS() {
 }
 
 function _bwSetBrowserKeyboardSK() {
-  setSK('Done', 'ENTER', '', false);
+  setSK('', 'ENTER', 'Done', false);
   const bar = document.querySelector('.skbar');
   bar.style.display = '';
   bar.style.backgroundColor = '#000000';
@@ -5496,7 +5496,7 @@ function pressBack() {
 function softLeft() {
   if (booting || inputLocked) return;
   if (typeof SimKeyboard !== 'undefined' && SimKeyboard.active) { if (SimKeyboard.handleKeydown('F1')) return; }
-  if (_bwInputActive) { _bwDeactivateInputKeyboard(true); return; }
+  if (_bwInputActive) return;
   if (_splashTimer) { pressBack(); return; }
   if (isSleepOpen())               { closeSleepMenu();                       return; }
   if (view === 'lock')             { return; }
@@ -6907,12 +6907,14 @@ const SimKeyboard = {
     this.symRecentIndex = 0;
     const bar = document.querySelector('.skbar');
     this.savedSK = [
-      document.getElementById('sk-l').textContent || document.getElementById('sk-l').innerHTML,
-      document.getElementById('sk-c').textContent || document.getElementById('sk-c').innerHTML,
-      document.getElementById('sk-r').textContent || document.getElementById('sk-r').innerHTML,
+      document.getElementById('sk-l').innerHTML,
+      document.getElementById('sk-c').innerHTML,
+      document.getElementById('sk-r').innerHTML,
       bar.style.backgroundColor,
       bar.style.backgroundImage,
-      bar.style.color
+      bar.style.color,
+      bar.style.display,
+      bar.style.zIndex
     ];
     this.renderSymPage();
     const symEl = document.getElementById('kb-symbols');
@@ -6934,11 +6936,15 @@ const SimKeyboard = {
     
     // Restore softkeys
     if (this.savedSK) {
-      setSK(this.savedSK[0], this.savedSK[1], this.savedSK[2], false); // dummy false
+      document.getElementById('sk-l').innerHTML = this.savedSK[0];
+      document.getElementById('sk-c').innerHTML = this.savedSK[1];
+      document.getElementById('sk-r').innerHTML = this.savedSK[2];
       const bar = document.querySelector('.skbar');
       bar.style.backgroundColor = this.savedSK[3];
       bar.style.backgroundImage = this.savedSK[4];
       bar.style.color = this.savedSK[5];
+      bar.style.display = this.savedSK[6];
+      bar.style.zIndex = this.savedSK[7];
       this.savedSK = null;
     }
   },
@@ -6985,17 +6991,19 @@ const SimKeyboard = {
     
     const lsk = this.isEmoji ? 'Symbols' : '<span class="emoji-font">😀❤️👍</span>';
     setSK(lsk, 'SELECT', `${page + 1}/${totalPages}`, false);
-      const bar = document.querySelector('.skbar');
-      bar.style.backgroundColor = '#e6e6e6';
-      bar.style.backgroundImage = 'none';
-      bar.style.color = '#323232';
+    const bar = document.querySelector('.skbar');
+    bar.style.display = '';
+    bar.style.zIndex = '100001';
+    bar.style.backgroundColor = '#e6e6e6';
+    bar.style.backgroundImage = 'none';
+    bar.style.color = '#323232';
   },
 
   handleSymKey(key) {
     const items = this.isEmoji ? this.emojis : this.symbols;
     const hints = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '0', '#'];
     
-    if (key === 'Enter') {
+    if (key === 'Enter' || key === 'Accept') {
       let typed = '';
       if (this.symFocusRecent) {
         typed = this.recentEmojis[this.symRecentIndex];
@@ -7011,12 +7019,12 @@ const SimKeyboard = {
       }
     } else if (key === 'Escape' || key === 'Backspace') {
       this.closeSymbols();
-    } else if (key === 'F1') {
+    } else if (key === 'F1' || key === 'SoftLeft') {
       this.isEmoji = !this.isEmoji;
       this.symIndex = 0;
       this.symFocusRecent = false;
       this.renderSymPage();
-    } else if (key === 'F2') {
+    } else if (key === 'F2' || key === 'SoftRight') {
       const page = Math.floor(this.symIndex / 12);
       const totalPages = Math.ceil(items.length / 12);
       this.symIndex = ((page + 1) % totalPages) * 12;

@@ -482,6 +482,7 @@
         window.removeEventListener('keydown', onKey, true);
         window.removeEventListener('keyup', onSwallow, true);
         window.removeEventListener('keypress', onSwallow, true);
+        try { if (window.parent && window.parent.SimKeyboard && window.parent.SimKeyboard.active) window.parent.SimKeyboard.deactivate(); } catch (err) {}
         overlay.parentNode && overlay.parentNode.removeChild(overlay);
       }
       // A REAL key press also fires keyup/keypress. The app's softkey layer
@@ -489,7 +490,7 @@
       // the panel underneath (re-opens the form, focus jumps, next Enter
       // "signs in"). Swallow the nav keys' companions too.
       function onSwallow(e) {
-        var nav = ['ArrowDown', 'ArrowUp', 'Enter', 'Accept', 'SoftRight', 'F2', 'SoftLeft', 'Escape', 'Backspace'];
+        var nav = ['ArrowDown', 'ArrowUp', 'Enter', 'Accept', 'SoftRight', 'F2', 'SoftLeft', 'F1', 'Escape', 'Backspace'];
         if (nav.indexOf(e.key) !== -1) e.stopImmediatePropagation();
       }
       function cancel() { cleanup(); resolve(null); }
@@ -518,11 +519,24 @@
         cleanup(); resolve(out);
       }
       function onKey(e) {
+        // Give SimKeyboard (and its symbol/emoji picker) first priority when active
+        if (!pickerCtl && window.parent && window.parent.SimKeyboard && window.parent.SimKeyboard.active) {
+          var skKey = e.key;
+          if (skKey === 'SoftLeft') skKey = 'F1';
+          else if (skKey === 'SoftRight') skKey = 'F2';
+          else if (skKey === 'Accept') skKey = 'Enter';
+          else if (skKey === 'Escape') skKey = 'Backspace';
+          if (window.parent.SimKeyboard.handleKeydown(skKey, e.repeat)) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            return;
+          }
+        }
         // The app's navigation_handler listens for keydown on the bubble phase;
         // plain stopPropagation() does NOT stop other listeners on window, so
         // Back used to both close this form AND navigate the panel underneath.
         // stopImmediatePropagation makes the form a real modal.
-        var nav = ['ArrowDown', 'ArrowUp', 'Enter', 'Accept', 'SoftRight', 'F2', 'SoftLeft', 'Escape', 'Backspace'];
+        var nav = ['ArrowDown', 'ArrowUp', 'Enter', 'Accept', 'SoftRight', 'F2', 'SoftLeft', 'F1', 'Escape', 'Backspace'];
         if (nav.indexOf(e.key) === -1) return;
         e.stopImmediatePropagation();
         // While the region picker is up, this (single) listener drives IT —
@@ -533,7 +547,7 @@
             case 'ArrowDown': pickerCtl.move(1); break;
             case 'ArrowUp': pickerCtl.move(-1); break;
             case 'Enter': case 'Accept': if (!e.repeat) pickerCtl.choose(); break;
-            case 'SoftLeft': case 'Escape': case 'Backspace': pickerCtl.cancel(); break;
+            case 'SoftLeft': case 'F1': case 'Escape': case 'Backspace': pickerCtl.cancel(); break;
           }
           return;
         }
@@ -542,16 +556,14 @@
           case 'ArrowUp': e.preventDefault(); focusRow(cur - 1); break;
           case 'Enter': case 'Accept': e.preventDefault(); if (!e.repeat) activate(); break;
           case 'SoftRight': case 'F2': e.preventDefault(); submit(); break;
-          case 'SoftLeft': e.preventDefault(); forgot(); break;
+          case 'SoftLeft': case 'F1': e.preventDefault(); forgot(); break;
           case 'Escape': e.preventDefault(); cancel(); break;
           case 'Backspace':
-            // Hardware Back cancels — but while EDITING a text field let it
-            // delete a char. Decide off the real DOM focus, not the row index:
-            // after a mouse click focus can sit on the checkbox, and letting
-            // the default through there triggers a history back-navigation.
+            // Hardware Back cancels when the input is empty; while a text field
+            // still has text, let Backspace delete characters first.
             var ae = document.activeElement;
             var editing = ae && ae.tagName === 'INPUT' &&
-              ae.type !== 'checkbox' && overlay.contains(ae);
+              ae.type !== 'checkbox' && overlay.contains(ae) && (ae.value || '').length > 0;
             if (!editing) { e.preventDefault(); cancel(); }
             break;
         }
