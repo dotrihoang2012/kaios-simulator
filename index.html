@@ -4404,7 +4404,7 @@ function closeBwWebView() {
 // Leave an app via Back/Quit: return to the App Menu if launched from there, else Home.
 function returnToOrigin() {
   _bwCleanupOverlays();
-  if (fromApps && openApp && openApp.type !== 'folder') {
+  if (fromApps) {
     document.getElementById('view-open-app').classList.remove('visible');
     const _sb = document.getElementById('statusbar');
     _sb.classList.remove('bw-sb'); _sb.style.background = ''; _sb.style.color = '';
